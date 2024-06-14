@@ -96,50 +96,36 @@ class PromptFormatter:
             self.get_token_count(_input.to_string(), prompt_id)
         return _input.to_string()
 
-    def process_system_chat_prompt(self, prompt_id_system, prompt_id, text):
+    def process_translation_chat_prompt(self, 
+                                   prompt_id_system, prompt_id_user, 
+                                   source_language, target_language, filetype_suffix,
+                                   feature_category, description,
+                                   code, code_call_graph):
+
         system_prompt = self._get_prompt_by_id(prompt_id_system)
-        user_prompt = self._get_prompt_by_id(prompt_id)
+        user_prompt = self._get_prompt_by_id(prompt_id_user)
+        translated_code_example = self._get_prompt_by_id(f"translated_code_example_{target_language}")
+        translated_call_graph_example = self._get_prompt_by_id(f"translated_callgraph_example_{target_language}")
 
         prompt = ChatPromptTemplate.from_messages(
             [("system", system_prompt), ("human", user_prompt)]
         )
 
         prompt_data = {
-            "code": text,
+            "source_language": source_language,
+            "target_language": target_language,
+            "filetype_suffix": filetype_suffix,
+            "translated_code_example": translated_code_example,
+            "translated_call_graph_example": translated_call_graph_example,
+            "feature_category": feature_category,
+            "description": description,
+            "code": code,
+            "code_call_graph": code_call_graph
         }
 
         _input = prompt.format_messages(**prompt_data)
 
         if self.show_token_count:
-            self.get_token_count("".join([x.pretty_repr() for x in _input]), prompt_id)
+            self.get_token_count("".join([x.pretty_repr() for x in _input]), prompt_id_user)
+
         return _input
-
-    def format_prompt(self, prompt_id, prompt_type, text):
-        # TODO: Remove this
-        """
-        Formats a prompt based on the given prompt ID, prompt type, and text.
-
-        Args:
-            prompt_id (str): The ID of the prompt.
-            prompt_type (str): The type of the prompt.
-            text (str): The text to be included in the prompt.
-
-        Returns:
-            str: The formatted prompt.
-
-        Raises:
-            ValueError: If no handler is found for the given prompt type.
-        """
-        try:
-            handler = self.prompt_handlers.get(prompt_type)
-
-            if handler is None:
-                raise ValueError(f"No handlers found for: {prompt_id}")
-
-            return handler(prompt_id, text)
-        except ValueError as ve:
-            logger.error(str(ve))
-            return ""
-        except Exception as e:
-            logger.error(f"An unexpected error occurred: {str(e)}", stack_info=True)
-            return ""

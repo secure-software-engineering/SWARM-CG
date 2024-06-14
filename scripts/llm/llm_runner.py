@@ -35,7 +35,7 @@ class LLMRunner:
         openai_key=None,
         temperature=0.0,
         request_timeout=60,
-        run_in_subprocess=True,
+        run_in_subprocess=False,
         enable_streaming=True,
         enable_chat=False,
         stop=[
@@ -57,7 +57,7 @@ class LLMRunner:
                 temperature=temperature,
                 openai_api_key=openai_key,
             )
-
+            self.llm.bind(response_format={"type": "json_object"})
         else:
             if enable_chat:
                 self.llm = ChatOllama(
