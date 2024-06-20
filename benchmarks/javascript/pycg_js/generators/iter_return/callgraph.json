@@ -1,0 +1,10 @@
+{
+    "main": [
+        "main.func",
+        "main.Cls.constructor",
+        "main.Cls[Symbol.iterator]"
+    ],
+    "main.func": [],
+    "main.Cls.constructor": [],
+    "main.Cls[Symbol.iterator]": []
+}

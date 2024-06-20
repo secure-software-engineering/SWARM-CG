@@ -1,0 +1,11 @@
+{
+    "main": [
+        "<**JSString**>.split",
+        "<**JSString**>.join",
+        "<**JSString**>.split",
+        "<**JSObject**>.entries"
+    ],
+    "<**JSString**>.split": [],
+    "<**JSString**>.join": [],
+    "<**JSObject**>.entries": []
+}

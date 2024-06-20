@@ -1,0 +1,9 @@
+{
+    "main": [
+        "nested.func",
+        "nested.func2"
+    ],
+    "nested": [],
+    "nested.func": [],
+    "nested.func2": []
+}

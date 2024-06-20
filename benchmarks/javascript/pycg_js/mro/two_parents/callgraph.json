@@ -1,0 +1,9 @@
+{
+    "main": [
+        "main.B.constructor",
+        "main.A.func"
+    ],
+    "main.B.constructor": [],
+    "main.B.func": [],
+    "main.A.func": []
+}

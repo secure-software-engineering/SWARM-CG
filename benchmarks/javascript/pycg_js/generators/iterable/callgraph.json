@@ -1,0 +1,10 @@
+{
+    "main": [
+        "main.func.constructor",
+        "main.func[Symbol.iterator]",
+        "main.func[Symbol.iterator].next"
+    ],
+    "main.func.constructor": [],
+    "main.func[Symbol.iterator]": [],
+    "main.func[Symbol.iterator].next": []
+}

@@ -1,0 +1,8 @@
+{
+    "main": [
+        "main.func",
+        "<global>.eval"
+    ],
+    "main.func": [],
+    "<global>.eval": []
+}

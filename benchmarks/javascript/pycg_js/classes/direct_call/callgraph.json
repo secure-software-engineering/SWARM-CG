@@ -1,0 +1,8 @@
+{
+    "main": [
+        "main.MyClass.constructor",
+        "main.MyClass.func"
+    ],
+    "main.MyClass.constructor": [],
+    "main.MyClass.func": []
+}

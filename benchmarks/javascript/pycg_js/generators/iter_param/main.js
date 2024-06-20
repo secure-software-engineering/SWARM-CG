@@ -1,0 +1,1 @@
+function* generatorFunc(max = 0) {    let n = 0;    while (n <= max) {        yield 2 ** n;        n++;    }}function func(c) {    for (let i of c) {        // pass    }}func(generatorFunc());

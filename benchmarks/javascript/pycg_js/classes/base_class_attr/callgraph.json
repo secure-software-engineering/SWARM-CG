@@ -1,0 +1,8 @@
+{
+    "main.C.cfunc": [],
+    "main.A.B.bfunc": [],
+    "main": [
+        "main.C.cfunc",
+        "main.A.B.bfunc"
+    ]
+}

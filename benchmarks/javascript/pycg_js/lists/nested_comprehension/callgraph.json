@@ -1,0 +1,12 @@
+{
+    "main": [
+        "main.func1",
+        "main.func2",
+        "<builtin>.Array.keys",
+        "<builtin>.Array.map"
+    ],
+    "main.func1": [],
+    "main.func2": [],
+    "<builtin>.Array.keys": [],
+    "<builtin>.Array.map": []
+}
