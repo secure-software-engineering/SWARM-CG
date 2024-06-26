@@ -1,0 +1,1 @@
+Pass functions as arguments to another function, use a default function argument, and call the passed functions within the function.
