@@ -1,3 +1,3 @@
-import { func } from "./nest/imported.js";
+import { func } from './nest/imported.js';
 
 func();

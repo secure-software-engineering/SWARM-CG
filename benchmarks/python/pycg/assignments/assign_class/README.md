@@ -1,0 +1,1 @@
+Assign a class to a variable and then reassign it to another class before instantiating it.

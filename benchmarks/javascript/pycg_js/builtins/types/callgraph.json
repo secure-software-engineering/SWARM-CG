@@ -2,7 +2,6 @@
     "main": [
         "<**JSString**>.split",
         "<**JSString**>.join",
-        "<**JSString**>.split",
         "<**JSObject**>.entries"
     ],
     "<**JSString**>.split": [],

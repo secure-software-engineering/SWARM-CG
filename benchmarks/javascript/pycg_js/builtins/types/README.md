@@ -1,1 +1,1 @@
-Calling of builtin functions of types.
+Calling built-in functions for manipulating types in JavaScript.
