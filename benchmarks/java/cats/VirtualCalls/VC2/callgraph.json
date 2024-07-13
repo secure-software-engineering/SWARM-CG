@@ -1,0 +1,11 @@
+{
+    "vc.Class.main(String)": [
+        "vc.Class.callMethod"
+    ],
+    "vc.Class.callMethod": [
+        "vc.SubClass.method",
+        "vc.Class.method"
+    ],
+    "vc.SubClass.method": []
+
+}

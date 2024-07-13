@@ -1,0 +1,11 @@
+{
+    "vc.Class.main(String)": [
+        {
+            "target":"vc.Class.target()",
+            "indirect":false,
+            "annotated":true
+        }
+    ],
+    "vc.Class.target()": []
+}
+ 
