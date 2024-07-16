@@ -1,0 +1,3 @@
+{
+  "demo.Demo:main(Sting[])": [{"target":"java.lang.Integer:compareTo(Integer)", "direct":false}],
+}

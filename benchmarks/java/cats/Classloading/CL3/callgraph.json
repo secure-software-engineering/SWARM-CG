@@ -1,0 +1,5 @@
+{
+  "cl.Demo:main(Sting[])": [
+	{"target":"java.lang.Integer:compare(int,int)", "direct":false},
+	{"target":"java.lang.System:gc()", "direct":false}],
+}
