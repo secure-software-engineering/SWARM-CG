@@ -1,0 +1,3 @@
+{
+  "cl4.Demo:main(Sting[])": [{"target":"lc4.Demo:callback()", "direct":false}],
+}
