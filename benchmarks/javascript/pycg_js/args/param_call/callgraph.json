@@ -1,10 +1,10 @@
 {
     "main": [
-        "main.func",
-        "main.func2"
+      "main.func",
+      "main.func2"
     ],
     "main.func": [
-        "main.func3"
+      "main.func3"
     ],
     "main.func2": [],
     "main.func3": []

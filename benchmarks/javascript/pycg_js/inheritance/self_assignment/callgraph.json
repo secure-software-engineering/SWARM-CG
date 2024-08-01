@@ -1,0 +1,12 @@
+{
+    "main": [
+        "main.Alpha.methodA",
+        "main.Beta.methodB",
+        "main.Alpha.method",
+        "main.Beta.method"
+    ],
+    "main.Alpha.methodA": [],
+    "main.Beta.methodB": [],
+    "main.Alpha.method": [],
+    "main.Beta.method": []
+}

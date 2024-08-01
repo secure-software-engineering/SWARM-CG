@@ -1,0 +1,1 @@
+An object is returned from a function.

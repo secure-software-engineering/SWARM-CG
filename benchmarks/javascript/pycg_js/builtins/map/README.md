@@ -1,1 +1,1 @@
-A function is applied to elements of a list via map.
+A function is applied to elements of an array via map.

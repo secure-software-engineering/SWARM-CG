@@ -1,0 +1,1 @@
+Pass functions as arguments to another function, return them, and invoke the returned function.

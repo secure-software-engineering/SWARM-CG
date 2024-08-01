@@ -1,0 +1,1 @@
+The assign method of objects is used.

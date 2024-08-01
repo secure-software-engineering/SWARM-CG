@@ -1,1 +1,1 @@
-We initialize classes with self parameters in a nested manner.
+Classes are initialized with self parameters in a nested manner, and methods are called between them.

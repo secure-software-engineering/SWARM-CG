@@ -1,10 +1,10 @@
 {
     "main": [
-        "to_import.func"
+      "to_import.func"
     ],
-    "main.param_func": [],
+    "main.paramFunc": [],
     "to_import.func": [
-        "main.param_func"
+      "main.paramFunc"
     ],
     "to_import": []
 }

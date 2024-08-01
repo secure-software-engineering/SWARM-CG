@@ -1,11 +1,15 @@
 class A {
-  static B = class {
-    bfunc() {}
-  };
+    static B = class {
+        bfunc() {
+        }
+    }
 }
+  
 class C extends A.B {
-  cfunc() {}
+    cfunc() {
+    }
 }
+
 const c = new C();
 c.cfunc();
-c.bfunc();
+c.bfunc(); 

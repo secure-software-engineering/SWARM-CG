@@ -1,0 +1,5 @@
+{
+  "main": ["main.funcB"],
+  "main.funcB": [],
+  "main.funcA": []
+}

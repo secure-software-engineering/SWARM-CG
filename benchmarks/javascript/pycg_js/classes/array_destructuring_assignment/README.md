@@ -1,0 +1,1 @@
+Array assignment is performed on class methods.

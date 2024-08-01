@@ -1,3 +1,3 @@
 export function func(a) {
-  a();
+    a();
 }

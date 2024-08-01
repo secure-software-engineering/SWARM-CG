@@ -1,7 +1,8 @@
-function param_func() {}
-
-function func(a) {
-  a();
+function paramFunc() {
 }
 
-func(param_func);
+function func(a) {
+    a();
+}
+
+func(paramFunc);

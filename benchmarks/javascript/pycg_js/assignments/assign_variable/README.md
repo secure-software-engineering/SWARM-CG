@@ -1,0 +1,1 @@
+Assign a function to a variable, assign that variable to another variable, reassign the first variable to a different function, then call the second variable.

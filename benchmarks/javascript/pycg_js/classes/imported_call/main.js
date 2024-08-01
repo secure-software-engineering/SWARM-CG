@@ -1,4 +1,4 @@
-import { MyClass } from "./to_import.js";
+import { MyClass } from './to_import.js';
 
-const myClassInstance = new MyClass();
-myClassInstance.func();
+const a = new MyClass();
+a.func();

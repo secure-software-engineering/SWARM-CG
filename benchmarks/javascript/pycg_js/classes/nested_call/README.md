@@ -1,1 +1,1 @@
-We call functions nested inside class inside a function.
+A class method calls a nested function within itself.

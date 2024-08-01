@@ -1,4 +1,6 @@
 class MyClass {
-  static func() {}
+    static func() {
+    }
 }
+
 MyClass.func();

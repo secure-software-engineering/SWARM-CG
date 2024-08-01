@@ -1,0 +1,1 @@
+Functions are assigned to variables via a destructuring assignment using spread operator
