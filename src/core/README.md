@@ -6,7 +6,8 @@ The `core` module provides basic utilities and configurations for the applicatio
 
 ### Files
 
-- **`__init__.py`**: Marks the directory as a Python package and can be used to initialize the `core` module or expose important functionality.
+### `__init__.py`
+Marks the directory as a Python package and can be used to initialize the `core` module or expose important functionality.
 
 ### `base_runner.py`
 Contains the `BaseRunner` class, which provides a base implementation for running various tools. It includes common methods that can be overridden by specific tool runners.

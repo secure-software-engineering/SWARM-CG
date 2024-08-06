@@ -1,7 +1,8 @@
 import logging
 
 def setup_logger(log_name, log_file):
-    """Set up logging configuration.
+    """
+    Set up a logger with the given name and log file.
     
     This function configures the logging system to log messages to both the console
     and a file with a basic format.

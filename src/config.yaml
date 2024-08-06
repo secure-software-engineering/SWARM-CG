@@ -1,0 +1,6 @@
+ollama:
+  openai_key: "<API_KEY>"
+  ollama_url: "localhost:11434"
+  prompt_id: "questions_based_1"
+  ollama_models:
+    - llama2:7b

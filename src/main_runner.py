@@ -1,40 +1,64 @@
+import os
+import shutil
 import sys
-from src.cli.main import main
-from core import setup_logger, load_config
 from runners import OllamaRunner
+from cli import parse_runner_args
+from core import load_config, setup_logger
+from datetime import datetime
 
-# Set up logging
-logger = setup_logger("main_runner", "logs/main_runner.log")
 CONFIG_FILE = "config.yaml"
 
-def initialize_runners(host_results_path, config, selected_runners):
-    """
-    Initialize runner instances based on the selected runner names.
-    """
+def main():
+    logger = setup_logger("Main Runner","main_runner.log")
+
+    if os.path.exists(CONFIG_FILE):
+        config = load_config(CONFIG_FILE)
+    else:
+        logger.error(f"Configuration file {CONFIG_FILE} not found.")
+        return
+
+    args = parse_runner_args()
+
+    host_results_path = (
+        f"../results/results_{datetime.now().strftime('%d-%m-%y %H_%M')}"
+    )
+
+    # Ensure the destination directory exists
+    os.makedirs(host_results_path, exist_ok=True)
+
+
     available_runners = {
-        "ollama": OllamaRunner,
+        "ollama" : (
+            OllamaRunner,
+            {
+                "debug": args.debug, 
+                "nocache": args.nocache, 
+                "config": config,
+                "language": args.language, 
+                "models": args.models
+            },
+        ) 
     }
 
-    initialized_runners = []
-    for runner_name in selected_runners:
+    for runner_name in args.tool:
         if runner_name in available_runners:
-            RunnerClass = available_runners[runner_name]
-            # Pass config to OllamaRunner, or other runners needing specific configurations
-            if runner_name == "ollama":
-                runner_instance = RunnerClass(host_results_path, config)
-            else:
-                runner_instance = RunnerClass(host_results_path)
-            initialized_runners.append(runner_instance)
+            Runner, kwargs = available_runners[runner_name]
+            try: 
+                runner_instance = Runner(host_results_path, **kwargs)
+                runner_instance.run_tool_test() 
+            except Exception as e:
+                logger.error(f"Error running {runner_name}: {e}")
         else:
             logger.error(f"Unknown runner: {runner_name}")
-            sys.exit(-1)
+            sys.exit(-1) 
 
-    return initialized_runners
+    # run_results_analyzer(host_results_path)
 
-def main():
-     # Parse arguments and load configuration
-    args = main.get_args()
-    config = load_config(CONFIG_FILE)
+    # Move the log file to the results directory
+    try:
+        shutil.move("main_runner.log", f"{str(host_results_path)}/main_runner.log")
+    except FileNotFoundError as e:
+        logger.error(f"Error moving log file: {e}")
 
 if __name__ == "__main__":
     main()
