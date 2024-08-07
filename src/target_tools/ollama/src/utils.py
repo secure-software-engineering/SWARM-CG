@@ -2,7 +2,7 @@ import json
 import os
 import re
 import shutil
-from sys import stdout
+import sys
 import requests
 import logging
 
@@ -18,7 +18,7 @@ def setup_logger():
 
     file_handler.setLevel(logging.DEBUG)
 
-    console_handler = logging.StreamHandler(stdout)
+    console_handler = logging.StreamHandler(sys.stdout)
     console_handler.setLevel(logging.DEBUG)
 
     formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
@@ -41,20 +41,6 @@ def is_running_in_docker():
             "DOCKER_IMAGE_NAME", False
         )  # Check if DOCKER_IMAGE_NAME environment variable is set
     )
-
-def is_ollama_online(server_url):
-    try:
-        res = requests.get(server_url)
-        # Check if the request was successful
-        if res.status_code == 200:
-            # Check the content of the response
-            if res.text == "Ollama is running":
-                return True
-        return False
-    except requests.exceptions.RequestException as e:
-        # Handle any exceptions that occur during the request
-        print(f"An error occurred: {e}")
-        return False
         
 def copy_folder(src, dst):
     """
@@ -176,3 +162,10 @@ def generate_questions_from_json(json_file, file_name="main.py"):
 
     questions = [f"{x}. {y}" for x, y in zip(range(1, len(questions) + 1), questions)]
     return questions
+
+class JsonException(Exception):
+    pass
+
+
+class TimeoutException(Exception):
+    pass

@@ -1,3 +1,4 @@
+import json
 import logging
 import argparse
 import re
@@ -8,7 +9,6 @@ import traceback
 import yaml
 import utils
 import multiprocessing
-
 from sys import stdout
 from pathlib import Path
 from langchain.llms import Ollama
@@ -16,6 +16,12 @@ from langchain.callbacks.manager import CallbackManager
 from langchain.prompts import PromptTemplate
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.output_parsers import OutputFixingParser
+
+# Import functions from llm_utils
+from llm_utils import (
+    process_test_folder,
+    is_ollama_online
+)
 
 AUTOFIX_WITH_OPENAI = False
 ENABLE_STREAMING = True
@@ -31,126 +37,6 @@ BENCHMARK_MAP = {
     "javascript": "javascript/pycg_js",
     "java": "java/cats"
 }
-
-def invoke_llm(llm, prompt, queue):
-    try:
-        output = llm.invoke(prompt)
-        queue.put(output)
-    except Exception as e:
-        queue.put(e)
-
-def get_prompt(prompt_id, code_path, json_filepath, answers_placeholders=True):
-    # with open(json_filepath, "r") as file:
-    #     data = json.load(file)
-    with open(code_path, "r") as file:
-        code = file.read()
-        # Remove comments from code but keep line number structure
-        code = "\n".join(
-            [line if not line.startswith("#") else "#" for line in code.split("\n")]
-        )
-
-    if prompt_id in [
-        "questions_based_1",
-    ]:
-        questions_from_json = utils.generate_questions_from_json(json_filepath)
-        prompt_template = eval(f"prompts.{prompt_id}")
-
-        prompt = PromptTemplate(
-            template=prompt_template,
-            input_variables=["code", "questions", "answers"],
-        )
-
-        prompt_data = {
-            "code": code,
-            "questions": "\n".join(questions_from_json),
-            "answers": (
-                "\n".join([f"{x}." for x in range(1, len(questions_from_json) + 1)])
-                if answers_placeholders
-                else ""
-            ),
-        }
-    else:
-        logger.error("ERROR! Prompt not found!")
-        sys.exit(-1)
-    _input = prompt.format_prompt(**prompt_data)
-
-    return _input.to_string()
-
-def process_file(file_path, llm, openai_llm, prompt_id):
-    file_start_time = time.time()
-    try:
-        code_filepath = os.path.join(file_path, "main.py")
-        json_filepath = os.path.join(file_path, "callgraph.json")
-        result_filepath = os.path.join(file_path, f"main_result.json")
-        result_dump_filepath = os.path.join(file_path, f"response_dump.txt")
-
-        if USE_MULTIPROCESSING_FOR_TERMINATION:
-            # Queue for communication between processes
-            queue = multiprocessing.Queue()
-
-            # Create a process for llm.invoke
-            process = multiprocessing.Process(
-                target=invoke_llm,
-                args=(llm, get_prompt(prompt_id, code_filepath, json_filepath), queue),
-            )
-            process.start()
-
-            # Wait for the process to finish with a timeout (e.g., 60 seconds)
-            process.join(timeout=REQUEST_TIMEOUT)
-
-            if process.is_alive():
-                logger.info(f"Timeout occurred for {code_filepath}")
-                process.terminate()  # Terminate the process if it's still running
-                process.join()
-                logger.info(f"{code_filepath} failed: Not a valid JSON")
-                raise utils.TimeoutException("json")
-
-            result = queue.get_nowait()
-
-            if isinstance(result, Exception):
-                raise result
-
-            output = result
-        else:
-            output = llm.invoke(get_prompt(prompt_id, code_filepath, json_filepath))
-
-        # if isinstance(llm, ChatOpenAI):
-        #     output = output.content
-
-        with open(result_dump_filepath, "w") as file:
-            file.write(output)
-
-        # TODO: Include this in langchain pipeline
-        output = re.sub(r"```json", "", output)
-        output = re.sub(r"```", "", output)
-
-        if AUTOFIX_WITH_OPENAI:
-            new_parser = OutputFixingParser.from_llm(parser=parser, llm=openai_llm)
-            output = new_parser.parse(output)
-
-        logger.info(
-            "File processed for model"
-            f" {llm.model if getattr(llm, 'model', False) else llm.model_name} finished"
-            f" in: {time.time()-file_start_time:.2f}"
-        )
-
-    except Exception as e:
-        # traceback.print_exc()
-        logger.error(f"{code_filepath} failed: {e}")
-        raise
-
-    logger.info(output)
-
-    # TODO: Improve the way this is done. Some plugin based design.
-    if prompt_id in ["questions_based_1"]:
-        translated_json = utils.generate_json_from_answers(json_filepath, output)
-    else:
-        translated_json = output
-
-    is_valid_json = utils.generate_json_file(result_filepath, translated_json)
-    if not is_valid_json:
-        logger.info(f"{code_filepath} failed: Not a valid JSON")
-        raise utils.JsonException("json")
 
 def main_runner(args):
     temperature = 0.1
@@ -186,7 +72,7 @@ def main_runner(args):
         utils.copy_folder(results_src, results_dst)
 
         if not model.startswith(("gpt-", "ft:gpt-")):
-            if utils.is_ollama_online(args.ollama_url):
+            if is_ollama_online(args.ollama_url):
                 logger.info("Ollama is online!")
                 llm = Ollama(
                     model=model,
@@ -235,13 +121,23 @@ def main_runner(args):
                         ),
                         temperature=temperature,
                         timeout=REQUEST_TIMEOUT,
-                        )
+                    )
                 llm.base_url = args.ollama_url 
                 prompt_start_time = time.time()
                 try:
                     logger.info(file)
                     logger.info(model)
-                    process_file(file, llm, None, args.prompt_id)
+                    process_test_folder(
+                        file, 
+                        llm, 
+                        None, 
+                        args.prompt_id, 
+                        args.language,
+                        logger=logger,
+                        request_timeout=REQUEST_TIMEOUT,
+                        autofix_with_openai=AUTOFIX_WITH_OPENAI,
+                        use_multiprocessing_for_termination=USE_MULTIPROCESSING_FOR_TERMINATION
+                    )
                 except Exception as e:
                     logger.info(
                         f"Command returned non-zero exit status: {e} for file: {file}"
