@@ -32,6 +32,7 @@ USE_MULTIPROCESSING_FOR_TERMINATION = True
 logger = utils.setup_logger()
 
 # Benchmark configuration details
+# TODO: move to the main_runner.py
 BENCHMARK_MAP = {
     "python": "python/pycg",
     "javascript": "javascript/pycg_js",

@@ -8,17 +8,18 @@ logger = setup_logger("Base Runner", "base_runner.py")
 
 KEEP_CONTAINERS_RUNNING = False
 
+
 class BaseRunner:
     def __init__(
-        self, 
-        tool_name, 
-        dockerfile_path, 
-        host_results_path, 
-        dockerfile_name="Dockerfile", 
-        volumes={}, 
+        self,
+        tool_name,
+        dockerfile_path,
+        host_results_path,
+        dockerfile_name="Dockerfile",
+        volumes={},
         nocache=False,
-        language=None, 
-        models=None     
+        language=None,
+        models=None,
     ):
         try:
             self.docker_client = docker.from_env()
@@ -34,7 +35,7 @@ class BaseRunner:
         self.test_runner_script_path = "/tmp/src/runner.py"
         self.benchmark_path = "/tmp/benchmarks"
         self.host_results_path = host_results_path
-        self.volumes = volumes 
+        self.volumes = volumes
         self.nocache = nocache
         self.language = language
         self.models = models
@@ -62,7 +63,11 @@ class BaseRunner:
         try:
             logger.info("Creating container")
             container = self.docker_client.containers.run(
-                self.tool_name, detach=True, stdin_open=True, tty=True, volumes=self.volumes
+                self.tool_name,
+                detach=True,
+                stdin_open=True,
+                tty=True,
+                volumes=self.volumes,
             )
             return container
         except docker.errors.APIError as e:
@@ -101,6 +106,7 @@ class BaseRunner:
             self._build_docker_image()
             self.container = self.spawn_docker_instance()
 
+            # TODO: Copy only language specific benchmark files to container
             src = "../benchmarks"
             dst = "/tmp"
             self.file_handler.copy_files_to_container(self.container, src, dst)
@@ -123,7 +129,9 @@ class BaseRunner:
             try:
                 self.copy_results_from_container()
             except Exception as e:
-                logger.error(f"Error during execution of copy_results_from_container: {e}")
+                logger.error(
+                    f"Error during execution of copy_results_from_container: {e}"
+                )
 
         except Exception as e:
             logger.error(f"Error during tool test: {e}")

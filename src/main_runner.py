@@ -38,6 +38,7 @@ def main():
                 "models": args.models
             },
         ) 
+        # TODO: Add more runners here, vllm, transformers
     }
 
     for runner_name in args.tool:

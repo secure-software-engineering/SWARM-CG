@@ -33,4 +33,5 @@ def parse_runner_args():
         action="store_true",
         help="Disable Docker image cache."
     )
+    # TODO: Add benchmark name as an argument
     return parser.parse_args()
