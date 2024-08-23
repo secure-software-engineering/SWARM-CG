@@ -1,2 +1,3 @@
-import { func } from "./to_import.js";
+import { func } from './to_import.js';
+
 func()();

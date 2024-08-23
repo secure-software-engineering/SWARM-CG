@@ -1,5 +1,10 @@
 class MyClass {
-  constructor() {}
-  func() {}
+    constructor() {
+    }
+  
+    func() {
+    }
 }
+  
 new MyClass().func();
+  

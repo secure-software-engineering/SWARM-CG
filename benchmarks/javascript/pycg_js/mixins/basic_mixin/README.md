@@ -1,0 +1,1 @@
+Mixins are implemented by copying methods from one prototype to another to ensure the correct method is called.

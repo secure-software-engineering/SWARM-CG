@@ -1,14 +1,22 @@
 {
     "main": [
-        "main.func",
-        "main.func2",
-        "main.func3",
-        "main.func3.<anonymous>"
+      "<builtin>.map",
+      "main.func",
+      "main.func2",
+      "main.func3"
     ],
     "main.func": [],
     "main.func2": [
-        "main.func"
+      "main.func"
     ],
-    "main.func3": [],
-    "main.func3.<anonymous>": []
+    "main.func3": [
+      "main.func3.innerFunc"
+    ],
+    "main.func3.innerFunc": [],
+    "<builtin>.map": [
+      "main.func",
+      "main.func2",
+      "main.func3"
+    ]
 }
+  

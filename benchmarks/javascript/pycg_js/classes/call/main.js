@@ -1,5 +1,8 @@
 class MyClass {
-  func() {}
+    func() {
+    }
 }
+  
 const a = new MyClass();
 a.func();
+  

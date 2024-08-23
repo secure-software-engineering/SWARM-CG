@@ -1,6 +1,9 @@
-function param_func() {}
-function func(a) {
-  a();
+function paramFunc() {
 }
-let b = param_func;
+  
+function func(a) {
+    a();
+}
+
+const b = paramFunc;
 func(b);

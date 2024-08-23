@@ -1,0 +1,1 @@
+Pass functions as arguments to a class constructor, store them as attributes, and invoke them from an instance of the class.

@@ -1,1 +1,1 @@
-A builtin function is called.
+A built-in function is called. Specifically, the length of an array is accessed.

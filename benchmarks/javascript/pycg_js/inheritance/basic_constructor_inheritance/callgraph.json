@@ -1,0 +1,8 @@
+{
+	"main": [
+		"main.Parent.constructor",
+		"main.Child.method"
+	],
+	"main.Parent.constructor": [],
+	"main.Child.method": []
+}

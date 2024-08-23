@@ -1,0 +1,1 @@
+Three variables are assigned a value using array destructuring

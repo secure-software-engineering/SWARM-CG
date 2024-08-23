@@ -1,5 +1,7 @@
-class MyClass {
-  constructor() {}
-
-  func() {}
+export class MyClass {
+    constructor() {
+    }
+  
+    func() {
+    }
 }

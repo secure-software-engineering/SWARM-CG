@@ -1,12 +1,12 @@
 {
     "main.func": [
-        "main.param_func"
+      "main.paramFunc"
     ],
-    "main.param_func": [
-        "main.nested_func"
+    "main.paramFunc": [
+      "main.nestedFunc"
     ],
-    "main.nested_func": [],
+    "main.nestedFunc": [],
     "main": [
-        "main.func"
+      "main.func"
     ]
 }

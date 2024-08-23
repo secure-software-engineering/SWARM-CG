@@ -1,1 +1,1 @@
-A class has a base that is an attribute.
+A class has a base class that is defined as an attribute of another class.

@@ -1,1 +1,1 @@
-A class is instantiated and its function is called.
+A class is instantiated and its method is called.

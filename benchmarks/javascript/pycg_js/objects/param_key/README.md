@@ -1,0 +1,1 @@
+The key of an object is passed as a function parameter.

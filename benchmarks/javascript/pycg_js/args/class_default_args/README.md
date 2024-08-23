@@ -1,0 +1,1 @@
+Assign a default function to a class attribute during initialization, override it with a different function, and then invoke the stored function.

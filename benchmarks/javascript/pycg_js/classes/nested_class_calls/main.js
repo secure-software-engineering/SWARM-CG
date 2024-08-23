@@ -1,27 +1,29 @@
 class C {
-  func() {}
+    func() {
+    }
 }
-
+  
 class B {
-  constructor(c) {
-    this.c = c;
-  }
-
-  func() {
-    this.c.func();
-  }
+    constructor(c) {
+      this.c = c;
+    }
+  
+    func() {
+      this.c.func();
+    }
 }
-
+  
 class A {
-  constructor() {
-    this.c = new C();
-  }
-
-  func() {
-    let b = new B(this.c);
-    b.func();
-  }
+    constructor() {
+      this.c = new C();
+    }
+  
+    func() {
+      const b = new B(this.c);
+      b.func();
+    }
 }
-
-let a = new A();
+  
+const a = new A();
 a.func();
+  

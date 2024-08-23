@@ -1,0 +1,9 @@
+{
+	"main": [
+		"main.Alpha.constructor",
+		"main.GammaMixin.method"
+	],
+	"main.Alpha.constructor": [],
+	"main.Alpha.method": [],
+	"main.GammaMixin.method": []
+}

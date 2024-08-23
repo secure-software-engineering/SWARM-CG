@@ -1,1 +1,1 @@
-A method returns a method of its parent class.
+A method returns a method from its parent class.

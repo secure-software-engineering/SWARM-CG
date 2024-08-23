@@ -1,0 +1,9 @@
+{
+	"main": [
+		"main.Beta.constructor",
+		"main.Beta.method"
+	],
+	"main.Beta.constructor": [],
+	"main.Beta.method": [],
+	"main.Alpha.method": []
+}

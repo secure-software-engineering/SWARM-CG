@@ -1,9 +1,9 @@
 {
     "main.func": [
-        "main.param_func"
+      "main.paramFunc"
     ],
-    "main.param_func": [],
+    "main.paramFunc": [],
     "main": [
-        "main.func"
+      "main.func"
     ]
 }

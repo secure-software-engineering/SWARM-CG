@@ -1,0 +1,1 @@
+Assign two functions to variables and then swap the variables before calling one of the functions.

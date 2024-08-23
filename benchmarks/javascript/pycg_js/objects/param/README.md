@@ -1,0 +1,1 @@
+An object is passed as a parameter.

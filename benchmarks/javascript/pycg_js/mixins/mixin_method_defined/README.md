@@ -1,0 +1,1 @@
+A class is defined with a single parent and uses a mixin to incorporate additional behavior. However, all the functions called are defined in the class itself.

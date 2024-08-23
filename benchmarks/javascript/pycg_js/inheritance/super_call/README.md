@@ -1,0 +1,1 @@
+Follow the inheritance chain by calling the parent constructor.

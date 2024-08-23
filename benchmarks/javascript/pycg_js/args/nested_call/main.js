@@ -1,10 +1,15 @@
-function nested_func() {}
-function param_func(a) {
-  a();
+function nestedFunc() {
 }
+
+function paramFunc(a) {
+    a();
+}
+
 function func(a) {
-  a(nested_func);
+    a(nestedFunc);
 }
-let b = param_func;
-let c = func;
+  
+const b = paramFunc;
+const c = func;
 c(b);
+  

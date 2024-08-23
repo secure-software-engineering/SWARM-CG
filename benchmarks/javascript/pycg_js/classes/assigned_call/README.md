@@ -1,2 +1,1 @@
-A class is instantiated and we assign one of its functions to a variable and
-then call that variable.
+A class is instantiated, and one of its methods is assigned to a variable which is then called.

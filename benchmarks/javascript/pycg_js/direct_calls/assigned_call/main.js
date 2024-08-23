@@ -1,7 +1,10 @@
-function return_func() {}
-function func() {
-  let a = return_func;
-  return a;
+function returnFunc() {
 }
+  
+function func() {
+    let a = returnFunc;
+    return a;
+}
+
 let a = func;
-a()();
+a()(); // Double call to invoke the function returned by func

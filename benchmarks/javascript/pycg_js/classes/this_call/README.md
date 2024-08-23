@@ -1,1 +1,1 @@
-A function is called inside a class using this.
+A method is called on this within a class.

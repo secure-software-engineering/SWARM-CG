@@ -1,10 +1,10 @@
 {
     "main": [
-        "<**JSString**>.split",
-        "<**JSString**>.join",
-        "<**JSObject**>.entries"
+      "<**JSArray**>.join",
+      "<**JSString**>.split",
+      "<**JSObject**>.entries"
     ],
+    "<**JSArray**>.join": [],
     "<**JSString**>.split": [],
-    "<**JSString**>.join": [],
     "<**JSObject**>.entries": []
 }
