@@ -4,7 +4,7 @@ import docker
 from core import setup_logger, FileHandler
 
 # Create a logger
-logger = setup_logger("Base Runner", "base_runner.py")
+logger = setup_logger("Base Runner", "base_runner.log")
 
 KEEP_CONTAINERS_RUNNING = False
 

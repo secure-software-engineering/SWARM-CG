@@ -5,6 +5,22 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Main Runner",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main_runner.py",
+            "cwd": "${workspaceFolder}/src",
+            "args": [
+                "--language",
+                "python",
+                "--tool",
+                "pycg",
+                "--benchmark_name",
+                "pycg"
+            ],
+            "console": "integratedTerminal",
+        },
+        {
             "name": "Ollama Runner",
             "type": "debugpy",
             "request": "launch",
@@ -12,9 +28,12 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "args": [
-                "--language", "python",
-                "--benchmark_path", "./benchmarks",
-                "--ollama_models", "tinyllama1b",
+                "--language",
+                "python",
+                "--benchmark_path",
+                "./benchmarks",
+                "--ollama_models",
+                "tinyllama1b",
                 "--openai_key",
                 "apikey",
                 "--ollama_url",
@@ -24,6 +43,21 @@
                 "--results_dir",
                 ""
             ]
+        },
+        {
+            "name": "PyCG Runner",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/target_tools/pycg/src/runner.py",
+            "args": [
+                "--language",
+                "python",
+                "--benchmark_path",
+                "${workspaceFolder}/benchmarks",
+                "--results_dir",
+                "${workspaceFolder}/.scrapy/results_pycg"
+            ],
+            "console": "integratedTerminal",
         }
     ]
 }
