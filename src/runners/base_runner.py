@@ -19,6 +19,7 @@ class BaseRunner:
         volumes={},
         nocache=False,
         language=None,
+        benchmark_name=None,
         models=None,
     ):
         try:
@@ -38,6 +39,7 @@ class BaseRunner:
         self.volumes = volumes
         self.nocache = nocache
         self.language = language
+        self.benchmark_name = benchmark_name
         self.models = models
 
         self.file_handler = FileHandler()
@@ -106,13 +108,13 @@ class BaseRunner:
             self._build_docker_image()
             self.container = self.spawn_docker_instance()
 
-            # TODO: Copy only language specific benchmark files to container
-            src = "../benchmarks"
+            # Construct the language-specific src path
+            src = os.path.join("..", "benchmarks", self.language, self.benchmark_name)
             dst = "/tmp"
             self.file_handler.copy_files_to_container(self.container, src, dst)
 
             # self.setup_benchmark_external_library()
-            logger.info("Benchmark files copied to conatiner")
+            logger.info("Benchmark files copied to container")
             logger.info("Call Graph Analysis...")
             start_time = time.time()
 

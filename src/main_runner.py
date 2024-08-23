@@ -8,8 +8,9 @@ from datetime import datetime
 
 CONFIG_FILE = "config.yaml"
 
+
 def main():
-    logger = setup_logger("Main Runner","main_runner.log")
+    logger = setup_logger("Main Runner", "main_runner.log")
 
     if os.path.exists(CONFIG_FILE):
         config = load_config(CONFIG_FILE)
@@ -26,32 +27,32 @@ def main():
     # Ensure the destination directory exists
     os.makedirs(host_results_path, exist_ok=True)
 
-
     available_runners = {
-        "ollama" : (
+        "ollama": (
             OllamaRunner,
             {
-                "debug": args.debug, 
-                "nocache": args.nocache, 
+                "debug": args.debug,
+                "nocache": args.nocache,
                 "config": config,
-                "language": args.language, 
-                "models": args.models
+                "language": args.language,
+                "benchmark_name": args.benchmark_name,
+                "models": args.models,
             },
-        ) 
+        )
         # TODO: Add more runners here, vllm, transformers
     }
 
     for runner_name in args.tool:
         if runner_name in available_runners:
             Runner, kwargs = available_runners[runner_name]
-            try: 
+            try:
                 runner_instance = Runner(host_results_path, **kwargs)
-                runner_instance.run_tool_test() 
+                runner_instance.run_tool_test()
             except Exception as e:
                 logger.error(f"Error running {runner_name}: {e}")
         else:
             logger.error(f"Unknown runner: {runner_name}")
-            sys.exit(-1) 
+            sys.exit(-1)
 
     # run_results_analyzer(host_results_path)
 
@@ -60,6 +61,7 @@ def main():
         shutil.move("main_runner.log", f"{str(host_results_path)}/main_runner.log")
     except FileNotFoundError as e:
         logger.error(f"Error moving log file: {e}")
+
 
 if __name__ == "__main__":
     main()

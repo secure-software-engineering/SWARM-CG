@@ -2,11 +2,13 @@ import utils
 import json
 import os
 import re
-import time 
+import time
 import requests
 import multiprocessing
+import prompts
 from langchain.prompts import PromptTemplate
 from langchain.output_parsers import OutputFixingParser
+
 
 def is_ollama_online(server_url):
     try:
@@ -22,6 +24,7 @@ def is_ollama_online(server_url):
         print(f"An error occurred: {e}")
         return False
 
+
 # Function to invoke LLM
 def invoke_llm(llm, prompt, queue):
     try:
@@ -30,11 +33,20 @@ def invoke_llm(llm, prompt, queue):
     except Exception as e:
         queue.put(e)
 
+
 # Function to generate prompt
-def get_prompt(prompt_id, code, json_filepath, answers_placeholders=True, test_folder=None, logger=None, language=None):
+def get_prompt(
+    prompt_id,
+    code,
+    json_filepath,
+    answers_placeholders=True,
+    test_folder=None,
+    logger=None,
+    language=None,
+):
     # with open(json_filepath, "r") as file:
     #     data = json.load(file)
-    
+
     if prompt_id in [
         "questions_based_1",
     ]:
@@ -72,14 +84,12 @@ def get_prompt(prompt_id, code, json_filepath, answers_placeholders=True, test_f
 
     return _input.to_string()
 
+
 # Returns language extension
 def get_language_extension(language):
     """Returns the file extension for the given programming language."""
-    return {
-        "python": "py",
-        "javascript": "js",
-        "java": "java"
-    }.get(language, "py")
+    return {"python": "py", "javascript": "js", "java": "java"}.get(language, "py")
+
 
 # Function to gather code files from each test folder
 def gather_code_files_from_test_folder(test_folder, language_extension):
@@ -91,8 +101,20 @@ def gather_code_files_from_test_folder(test_folder, language_extension):
                 code_files.append(os.path.join(root, file))
     return code_files
 
+
 # Function to process the test folder
-def process_test_folder(file_path, llm, openai_llm, prompt_id, language, logger=None, request_timeout=60, autofix_with_openai=False, use_multiprocessing_for_termination=True, parser=None):
+def process_test_folder(
+    file_path,
+    llm,
+    openai_llm,
+    prompt_id,
+    language,
+    logger=None,
+    request_timeout=60,
+    autofix_with_openai=False,
+    use_multiprocessing_for_termination=True,
+    parser=None,
+):
     file_start_time = time.time()
     try:
         json_filepath = os.path.join(file_path, "callgraph.json")
@@ -111,7 +133,8 @@ def process_test_folder(file_path, llm, openai_llm, prompt_id, language, logger=
             with open(code_file, "r") as file:
                 code_content = file.read()
                 # Add filename to the code content for context
-                code += f"\n# File: {os.path.basename(code_file)}\n{code_content}\n"
+                # code += f"\n# File: {os.path.basename(code_file)}\n{code_content}\n"
+                code += f"'''{os.path.basename(code_file)}\n{code_content}'''\n"
 
         # Remove comments from code but keep line number structure
         code = "\n".join(
@@ -125,7 +148,18 @@ def process_test_folder(file_path, llm, openai_llm, prompt_id, language, logger=
             # Create a process for llm.invoke
             process = multiprocessing.Process(
                 target=invoke_llm,
-                args=(llm, get_prompt(prompt_id, code, json_filepath, test_folder=file_path, logger=logger, language=language), queue),
+                args=(
+                    llm,
+                    get_prompt(
+                        prompt_id,
+                        code,
+                        json_filepath,
+                        test_folder=file_path,
+                        logger=logger,
+                        language=language,
+                    ),
+                    queue,
+                ),
             )
             process.start()
 
@@ -148,7 +182,16 @@ def process_test_folder(file_path, llm, openai_llm, prompt_id, language, logger=
 
             output = result
         else:
-            output = llm.invoke(get_prompt(prompt_id, code, json_filepath, test_folder=file_path, logger=logger, language=language))
+            output = llm.invoke(
+                get_prompt(
+                    prompt_id,
+                    code,
+                    json_filepath,
+                    test_folder=file_path,
+                    logger=logger,
+                    language=language,
+                )
+            )
 
         # if isinstance(llm, ChatOpenAI):
         #     output = output.content

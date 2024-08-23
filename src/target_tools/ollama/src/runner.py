@@ -18,10 +18,7 @@ from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.output_parsers import OutputFixingParser
 
 # Import functions from llm_utils
-from llm_utils import (
-    process_test_folder,
-    is_ollama_online
-)
+from llm_utils import process_test_folder, is_ollama_online
 
 AUTOFIX_WITH_OPENAI = False
 ENABLE_STREAMING = True
@@ -32,12 +29,12 @@ USE_MULTIPROCESSING_FOR_TERMINATION = True
 logger = utils.setup_logger()
 
 # Benchmark configuration details
-# TODO: move to the main_runner.py
-BENCHMARK_MAP = {
-    "python": "python/pycg",
-    "javascript": "javascript/pycg_js",
-    "java": "java/cats"
-}
+# BENCHMARK_MAP = {
+#     "python": "python/pycg",
+#     "javascript": "javascript/pycg_js",
+#     "java": "java/cats"
+# }
+
 
 def main_runner(args):
     temperature = 0.1
@@ -54,12 +51,12 @@ def main_runner(args):
 
         # Determine the language-specific path for results_src from config
         results_src = benchmark_path
-        if args.language in BENCHMARK_MAP:
-            language_path = BENCHMARK_MAP[args.language]
-        else:
-            logger.error(f"Unsupported language: {args.language}")
-            sys.exit(-1)
-        results_src = Path(benchmark_path) / language_path
+        # if args.language in BENCHMARK_MAP:
+        #     language_path = BENCHMARK_MAP[args.language]
+        # else:
+        #     logger.error(f"Unsupported language: {args.language}")
+        #     sys.exit(-1)
+        # results_src = Path(benchmark_path) / language_path
         if not results_src.exists():
             logger.error(f"Benchmark source path {results_src} does not exist.")
             sys.exit(-1)
@@ -83,9 +80,9 @@ def main_runner(args):
                 llm.invoke("Dummy prompt. limit your response to 1 letter.")
             else:
                 logger.error("Ollama server is not online!!!")
-                sys.exit(-1)
+                # sys.exit(-1)
         model_start_time = time.time()
-        
+
         # Iterating through each category in a language
         for cat in sorted(os.listdir(results_dst)):
             print("Iterating category {}...".format(cat))
@@ -114,30 +111,30 @@ def main_runner(args):
                 #         # )
                 # else:
                 llm = Ollama(
-                        model=model,
-                        callback_manager=(
-                            CallbackManager([StreamingStdOutCallbackHandler()])
-                            if ENABLE_STREAMING
-                            else None
-                        ),
-                        temperature=temperature,
-                        timeout=REQUEST_TIMEOUT,
-                    )
-                llm.base_url = args.ollama_url 
+                    model=model,
+                    callback_manager=(
+                        CallbackManager([StreamingStdOutCallbackHandler()])
+                        if ENABLE_STREAMING
+                        else None
+                    ),
+                    temperature=temperature,
+                    timeout=REQUEST_TIMEOUT,
+                )
+                llm.base_url = args.ollama_url
                 prompt_start_time = time.time()
                 try:
                     logger.info(file)
                     logger.info(model)
                     process_test_folder(
-                        file, 
-                        llm, 
-                        None, 
-                        args.prompt_id, 
+                        file,
+                        llm,
+                        None,
+                        args.prompt_id,
                         args.language,
                         logger=logger,
                         request_timeout=REQUEST_TIMEOUT,
                         autofix_with_openai=AUTOFIX_WITH_OPENAI,
-                        use_multiprocessing_for_termination=USE_MULTIPROCESSING_FOR_TERMINATION
+                        use_multiprocessing_for_termination=USE_MULTIPROCESSING_FOR_TERMINATION,
                     )
                 except Exception as e:
                     logger.info(
@@ -172,14 +169,15 @@ def main_runner(args):
         f" {error_count} | JSON errors: {json_count}"
     )
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Argument Parsing for Ollama runner")
     parser.add_argument(
         "--language",
         choices=["python", "java", "javascript"],
-        required=True, 
+        required=True,
         default="python",
-        help="Language setting for the runner"
+        help="Language setting for the runner",
     )
     parser.add_argument(
         "--benchmark_path",
@@ -187,31 +185,21 @@ if __name__ == "__main__":
         default="/tmp/benchmarks",
     )
     parser.add_argument(
-        "--results_dir", 
+        "--results_dir",
         help="Directory to store results",
         default=None,
     )
     parser.add_argument(
-        "--ollama_url", 
-        help="Specify the ollama server url",
-        required=True
+        "--ollama_url", help="Specify the ollama server url", required=True
     )
-    parser.add_argument(
-        "--prompt_id", 
-        help="Specify the prompt ID",
-        required=True
-    )
+    parser.add_argument("--prompt_id", help="Specify the prompt ID", required=True)
     parser.add_argument(
         "--ollama_models",
         nargs="+",
         type=str,
         help="Space-separated list of ollama models",
-        required=True
+        required=True,
     )
-    parser.add_argument(
-        "--openai_key", 
-        help="Openai API key",
-        required=True
-    )
+    parser.add_argument("--openai_key", help="Openai API key", required=True)
     args = parser.parse_args()
     main_runner(args)

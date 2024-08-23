@@ -148,6 +148,7 @@ def generate_questions_from_json(json_file, file_name="main.py"):
             question = (
                 f"What are the module level function calls in the file '{file_name}'?"
             )
+        # elif key.startswith(f"{folder}") handle questions from subdirectories
         else:
             question = (
                 f"What are the function calls inside the '{key}' function in the"

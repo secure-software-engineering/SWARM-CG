@@ -5,19 +5,30 @@ from core import setup_logger
 # Create a logger
 logger = setup_logger("Ollama Runner", "ollama_runner.py")
 
+
 class OllamaRunner(BaseRunner):
 
-    def __init__(self, host_results_path, config, debug=False, nocache=False,  language=None, models=None):
+    def __init__(
+        self,
+        host_results_path,
+        config,
+        debug=False,
+        nocache=False,
+        language=None,
+        benchmark_name=None,
+        models=None,
+    ):
         super().__init__(
             "ollama", "./target_tools/ollama", host_results_path, nocache=nocache
         )
         self.config = config
         self.language = language
+        self.benchmark_name = benchmark_name
 
     def run_test_in_session(self):
         try:
             command_to_run = [
-                "python", 
+                "python",
                 self.test_runner_script_path,
                 "--benchmark_path",
                 self.benchmark_path,
@@ -49,7 +60,7 @@ class OllamaRunner(BaseRunner):
                     self.container,
                     model_results_path,
                     f"{self.host_results_path}/{model}",
-                ) 
-        except Exception as e: 
+                )
+        except Exception as e:
             logger.error(f"Error copying results for Ollama models: {e}")
             raise
