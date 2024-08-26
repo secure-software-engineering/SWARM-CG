@@ -1,0 +1,13 @@
+[
+	{
+		"caller":"jvmc.TargetRunnable:run()",
+		"targets":
+			[
+				{
+					"callee":"jvmc.TargetRunnable:verifyReachability()",
+					"direct":true,
+					"line":19
+				}
+			]
+	}
+]

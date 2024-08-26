@@ -1,0 +1,13 @@
+[
+	{
+		"caller":"csr.CallTarget:staticInitializerCalled()",
+		"targets":
+			[
+				{
+					"callee":"csr.Demo:verifyCall()",
+					"direct":true,
+					"line":27
+				}
+			]
+	}
+]

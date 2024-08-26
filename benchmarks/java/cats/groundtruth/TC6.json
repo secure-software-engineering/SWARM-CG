@@ -1,0 +1,13 @@
+[
+	{
+		"caller":"tc.Demo:callIfInstanceOfTarget(java.lang.Object)",
+		"targets":
+			[
+				{
+					"callee":"tc.Target:toString()",
+					"direct":true,
+					"line":18
+				}
+			]
+	}
+]

@@ -1,0 +1,13 @@
+[
+	{
+		"caller":"jvmc.Demo:finalize()",
+		"targets":
+			[
+				{
+					"callee":"jvmc.Demo:callback()",
+					"direct":true,
+					"line":18
+				}
+			]
+	}
+]

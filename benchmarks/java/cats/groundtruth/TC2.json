@@ -1,0 +1,13 @@
+[
+	{
+		"caller":"castclassapi.Demo:castToTarget(java.lang.Class,java.lang.Object)",
+		"targets":
+			[
+				{
+					"callee":"castclassapi.Target:toString()",
+					"direct":true,
+					"line":18
+				}
+			]
+	}
+]

@@ -1,0 +1,13 @@
+[
+	{
+		"caller":"lib5.collude.Demo:interfaceCallSite(lib5.collude.PotentialInterface)",
+		"targets":
+			[
+				{
+					"callee":"lib5.internal.InternalClass:method()",
+					"direct":true,
+					"line":9
+				}
+			]
+	}
+]

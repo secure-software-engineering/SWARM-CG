@@ -1,0 +1,18 @@
+[
+	{
+		"caller":"j8dim.CombinedInterface:method()",
+		"targets":
+			[
+				{
+					"callee":"j8dim.SomeInterface:method()",
+					"direct":true,
+					"line":32
+				},
+				{
+					"callee":"j8dim.AnotherInterface:method()",
+					"direct":true,
+					"line":33
+				}
+			]
+	}
+]

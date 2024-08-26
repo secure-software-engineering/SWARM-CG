@@ -1,0 +1,13 @@
+[
+	{
+		"caller":"id.Class:main(java.lang.String[])",
+		"targets":
+			[
+				{
+					"callee":"id.Class:getTypeName()",
+					"direct":false,
+					"line":13
+				}
+			]
+	}
+]

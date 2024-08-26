@@ -1,0 +1,13 @@
+[
+	{
+		"caller":"tr.Demo:main(java.lang.String[])",
+		"targets":
+			[
+				{
+					"callee":"tr.Demo:target()",
+					"direct":false,
+					"line":13
+				}
+			]
+	}
+]
