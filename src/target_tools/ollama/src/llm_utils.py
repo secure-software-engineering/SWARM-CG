@@ -68,26 +68,30 @@ def get_prompt(
             ),
             "language": language.capitalize(),
         }
-        # Save prompt_data to a JSON file for testing purposes
+
+        # Format the prompt using the prompt data
+        _input = prompt.format_prompt(**prompt_data)
+
+        # Save the actual prompt string to a JSON file for testing purposes
         if test_folder is not None:
-            # Get test name from the file_path
+            # Get test name from the file path
             test_name = os.path.basename(test_folder)
-            prompt_data_file = os.path.join(test_folder, f"{test_name}_promptdata.json")
-            with open(prompt_data_file, "w") as file:
-                json.dump(prompt_data, file, indent=2)
+            prompt_file = os.path.join(test_folder, f"{test_name}_prompt.json")
+            with open(prompt_file, "w") as file:
+                json.dump({"prompt": _input.to_string()}, file, indent=2)
     else:
         if logger:
             logger.error("ERROR! Prompt not found!")
         raise ValueError("Prompt not found!")
-
-    _input = prompt.format_prompt(**prompt_data)
 
     return _input.to_string()
 
 
 # Returns language extension
 def get_language_extension(language):
-    """Returns the file extension for the given programming language."""
+    """
+    Returns the file extension for the given programming language.
+    """
     return {"python": "py", "javascript": "js", "java": "java"}.get(language, "py")
 
 
@@ -133,7 +137,6 @@ def process_test_folder(
             with open(code_file, "r") as file:
                 code_content = file.read()
                 # Add filename to the code content for context
-                # code += f"\n# File: {os.path.basename(code_file)}\n{code_content}\n"
                 code += f"'''{os.path.basename(code_file)}\n{code_content}'''\n"
 
         # Remove comments from code but keep line number structure

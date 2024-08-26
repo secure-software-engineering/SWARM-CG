@@ -12,12 +12,14 @@ def parse_analyzer_args():
         "--results_dir", help="Directory containing the results.", default=None
     )
     parser.add_argument(
-        "--output_dir", help="Directory to save the analysis results.", default=None
+        "--analysis_output_dir",
+        help="Directory to save the analysis results.",
+        default=None,
     )
     parser.add_argument(
-        "--analyze_metric",
+        "--analysis_metric",
         help="Metric to analyze (e.g., soundness, completeness).",
-        choices=["soundness", "completeness", "accuracy", "sensitivity"],
+        choices=["sound", "complete", "exact matches"],
         required=False,
     )
     return parser.parse_args()
