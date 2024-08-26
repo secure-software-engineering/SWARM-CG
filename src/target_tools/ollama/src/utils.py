@@ -6,6 +6,7 @@ import sys
 import requests
 import logging
 
+
 def setup_logger():
     """logger for ollama callgraph runenr"""
     logger = logging.getLogger("ollama_runner")
@@ -21,14 +22,17 @@ def setup_logger():
     console_handler = logging.StreamHandler(sys.stdout)
     console_handler.setLevel(logging.DEBUG)
 
-    formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    formatter = logging.Formatter(
+        "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    )
     file_handler.setFormatter(formatter)
     console_handler.setFormatter(formatter)
 
     logger.addHandler(file_handler)
     logger.addHandler(console_handler)
-    
+
     return logger
+
 
 def is_running_in_docker():
     """Check if Python is running inside a Docker container."""
@@ -41,7 +45,8 @@ def is_running_in_docker():
             "DOCKER_IMAGE_NAME", False
         )  # Check if DOCKER_IMAGE_NAME environment variable is set
     )
-        
+
+
 def copy_folder(src, dst):
     """
     Copies a folder from the source (src) to the destination (dst).
@@ -63,6 +68,7 @@ def copy_folder(src, dst):
     shutil.copytree(src, dst, dirs_exist_ok=True)
     print(f"Folder copied from {src} to {dst}")
 
+
 def generate_json_file(filename, type_info):
     # Generate JSON file with type information
     try:
@@ -80,6 +86,7 @@ def generate_json_file(filename, type_info):
         file.write(json_data)
 
     return is_valid_json
+
 
 def generate_json_from_answers(gt_json_file, answers):
     try:
@@ -115,6 +122,7 @@ def generate_json_from_answers(gt_json_file, answers):
         print(e)
         return []
 
+
 def generate_answers_for_fine_tuning(json_file):
     # Read and parse the JSON file
     with open(json_file, "r") as file:
@@ -136,6 +144,7 @@ def generate_answers_for_fine_tuning(json_file):
         counter += 1
 
     return "\n".join(answers)
+
 
 def generate_questions_from_json(json_file, file_name="main.py"):
     # Read and parse the JSON file
@@ -163,6 +172,7 @@ def generate_questions_from_json(json_file, file_name="main.py"):
 
     questions = [f"{x}. {y}" for x, y in zip(range(1, len(questions) + 1), questions)]
     return questions
+
 
 class JsonException(Exception):
     pass

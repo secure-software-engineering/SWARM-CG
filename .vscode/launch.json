@@ -58,6 +58,14 @@
                 "${workspaceFolder}/.scrapy/results_pycg"
             ],
             "console": "integratedTerminal",
+        },
+        {
+            "name": "Result Analyzer",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main_analyze_result.py",
+            "args": [],
+            "console": "integratedTerminal",
         }
     ]
 }

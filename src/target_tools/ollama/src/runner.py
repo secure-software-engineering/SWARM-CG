@@ -28,13 +28,6 @@ USE_MULTIPROCESSING_FOR_TERMINATION = True
 # Call logger
 logger = utils.setup_logger()
 
-# Benchmark configuration details
-# BENCHMARK_MAP = {
-#     "python": "python/pycg",
-#     "javascript": "javascript/pycg_js",
-#     "java": "java/cats"
-# }
-
 
 def main_runner(args):
     temperature = 0.1
@@ -51,12 +44,6 @@ def main_runner(args):
 
         # Determine the language-specific path for results_src from config
         results_src = benchmark_path
-        # if args.language in BENCHMARK_MAP:
-        #     language_path = BENCHMARK_MAP[args.language]
-        # else:
-        #     logger.error(f"Unsupported language: {args.language}")
-        #     sys.exit(-1)
-        # results_src = Path(benchmark_path) / language_path
         if not results_src.exists():
             logger.error(f"Benchmark source path {results_src} does not exist.")
             sys.exit(-1)
