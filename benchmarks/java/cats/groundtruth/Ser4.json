@@ -1,0 +1,13 @@
+[
+	{
+		"caller":"ser.Demo:readObject(java.io.ObjectInputStream)",
+		"targets":
+			[
+				{
+					"callee":"java.io.ObjectInputStream:defaultReadObject()",
+					"direct":true,
+					"line":15
+				}
+			]
+	}
+]

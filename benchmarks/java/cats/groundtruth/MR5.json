@@ -1,0 +1,13 @@
+[
+	{
+		"caller":"id.Class:main(java.lang.String[])",
+		"targets":
+			[
+				{
+					"callee":"id.Class:sum(double,double)",
+					"direct":false,
+					"line":19
+				}
+			]
+	}
+]

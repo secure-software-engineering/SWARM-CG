@@ -1,0 +1,13 @@
+[
+	{
+		"caller":"si.NonConstantFieldRef:init()",
+		"targets":
+			[
+				{
+					"callee":"si.NonConstantFieldRef:callback()",
+					"direct":true,
+					"line":10
+				}
+			]
+	}
+]

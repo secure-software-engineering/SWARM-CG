@@ -1,0 +1,13 @@
+[
+	{
+		"caller":"spm6.VirtualSPMCall:main(java.lang.String[])",
+		"targets":
+			[
+				{
+					"callee":"spm6.Interface:method(byte)",
+					"direct":false,
+					"line":19
+				}
+			]
+	}
+]

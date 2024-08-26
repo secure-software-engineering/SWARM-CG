@@ -1,0 +1,13 @@
+[
+	{
+		"caller":"nvc.Sub:method()",
+		"targets":
+			[
+				{
+					"callee":"nvc.Middle:method()",
+					"direct":true,
+					"line":26
+				}
+			]
+	}
+]

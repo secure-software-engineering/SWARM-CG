@@ -1,0 +1,24 @@
+[
+	{
+		"caller":"lrr.IsEven:staticInitializerCalled()",
+		"targets":
+			[
+				{
+					"callee":"lrr.Demo:verifyCall()",
+					"direct":true,
+					"line":27
+				}
+			]
+	},
+	{
+		"caller":"lrr.IsOdd:staticInitializerCalled()",
+		"targets":
+			[
+				{
+					"callee":"lrr.Demo:verifyCall()",
+					"direct":true,
+					"line":40
+				}
+			]
+	}
+]

@@ -1,0 +1,13 @@
+[
+	{
+		"caller":"spm2.Class:main(java.lang.String[])",
+		"targets":
+			[
+				{
+					"callee":"spm2.Class:method(int)",
+					"direct":false,
+					"line":26
+				}
+			]
+	}
+]

@@ -1,0 +1,13 @@
+[
+	{
+		"caller":"id.Class:callViaMethodReference()",
+		"targets":
+			[
+				{
+					"callee":"id.Class:getTypeName()",
+					"direct":false,
+					"line":14
+				}
+			]
+	}
+]

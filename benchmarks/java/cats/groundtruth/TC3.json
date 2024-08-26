@@ -1,0 +1,13 @@
+[
+	{
+		"caller":"classeq.Demo:callIfInstanceOfTarget(java.lang.Object)",
+		"targets":
+			[
+				{
+					"callee":"classeq.Target:toString()",
+					"direct":true,
+					"line":18
+				}
+			]
+	}
+]

@@ -1,0 +1,13 @@
+[
+	{
+		"caller":"cl4.Demo:main(java.lang.String[])",
+		"targets":
+			[
+				{
+					"callee":"cl4.Demo:callback()",
+					"direct":false,
+					"line":14
+				}
+			]
+	}
+]

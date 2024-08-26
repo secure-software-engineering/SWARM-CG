@@ -1,0 +1,13 @@
+[
+	{
+		"caller":"instanceofcheck.Demo:callIfInstanceOfTarget(java.lang.Object)",
+		"targets":
+			[
+				{
+					"callee":"instanceofcheck.Target:toString()",
+					"direct":true,
+					"line":18
+				}
+			]
+	}
+]

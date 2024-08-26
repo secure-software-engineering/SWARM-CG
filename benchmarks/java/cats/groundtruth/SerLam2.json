@@ -1,0 +1,13 @@
+[
+	{
+		"caller":"serlam.DoDeserialization:main(java.lang.String[])",
+		"targets":
+			[
+				{
+					"callee":"java.lang.invoke.SerializedLambda:readResolve()",
+					"direct":false,
+					"line":18
+				}
+			]
+	}
+]

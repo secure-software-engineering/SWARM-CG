@@ -1,0 +1,13 @@
+[
+	{
+		"caller":"nvc.Class:main(java.lang.String[])",
+		"targets":
+			[
+				{
+					"callee":"nvc.Class:method()",
+					"direct":true,
+					"line":13
+				}
+			]
+	}
+]

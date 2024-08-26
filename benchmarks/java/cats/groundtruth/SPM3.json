@@ -1,0 +1,13 @@
+[
+	{
+		"caller":"spm3.Class:main(java.lang.String[])",
+		"targets":
+			[
+				{
+					"callee":"spm3.Class:method(spm3.MyObject)",
+					"direct":false,
+					"line":26
+				}
+			]
+	}
+]
