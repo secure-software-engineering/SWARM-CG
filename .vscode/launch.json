@@ -24,14 +24,14 @@
             "name": "Ollama Runner",
             "type": "debugpy",
             "request": "launch",
-            "program": "./src/target_tools/ollama/src/runner.py",
+            "program": "${workspaceFolder}/src/target_tools/ollama/src/runner.py",
             "console": "integratedTerminal",
             "justMyCode": true,
             "args": [
                 "--language",
                 "python",
                 "--benchmark_path",
-                "./benchmarks",
+                "${workspaceFolder}/benchmarks/python/pycg",
                 "--ollama_models",
                 "tinyllama1b",
                 "--openai_key",
@@ -41,7 +41,7 @@
                 "--prompt_id",
                 "questions_based_1",
                 "--results_dir",
-                ""
+                "${workspaceFolder}/results"
             ]
         },
         {

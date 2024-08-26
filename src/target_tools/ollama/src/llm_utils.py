@@ -50,7 +50,9 @@ def get_prompt(
     if prompt_id in [
         "questions_based_1",
     ]:
-        questions_from_json = utils.generate_questions_from_json(json_filepath)
+        questions_from_json = utils.generate_questions_from_json(
+            json_filepath, test_folder, logger
+        )
         prompt_template = eval(f"prompts.{prompt_id}")
 
         prompt = PromptTemplate(
@@ -72,13 +74,11 @@ def get_prompt(
         # Format the prompt using the prompt data
         _input = prompt.format_prompt(**prompt_data)
 
-        # Save the actual prompt string to a JSON file for testing purposes
+        # Save the actual prompt string to a file for testing purposes
         if test_folder is not None:
-            # Get test name from the file path
-            test_name = os.path.basename(test_folder)
-            prompt_file = os.path.join(test_folder, f"{test_name}_prompt.json")
+            prompt_file = os.path.join(test_folder, f"prompt.txt")
             with open(prompt_file, "w") as file:
-                json.dump({"prompt": _input.to_string()}, file, indent=2)
+                file.write(_input.to_string())
     else:
         if logger:
             logger.error("ERROR! Prompt not found!")

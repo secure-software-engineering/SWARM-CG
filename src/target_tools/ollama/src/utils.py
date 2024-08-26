@@ -146,31 +146,135 @@ def generate_answers_for_fine_tuning(json_file):
     return "\n".join(answers)
 
 
-def generate_questions_from_json(json_file, file_name="main.py"):
-    # Read and parse the JSON file
-    with open(json_file, "r") as file:
-        data = json.load(file)
+# def generate_questions_from_json(json_file, file_name="main.py"):
+#     # Read and parse the JSON file
+#     with open(json_file, "r") as file:
+#         data = json.load(file)
+
+#     questions = []
+#     for key in sorted(data):
+#         if file_name.split(".")[0] == key:
+#             question = (
+#                 f"What are the module level function calls in the file '{file_name}'?"
+#             )
+#         # elif key.startswith(f"{folder}") handle questions from subdirectories
+#         else:
+#             question = (
+#                 f"What are the function calls inside the '{key}' function in the"
+#                 f" file '{file_name}'?"
+#             )
+
+#         questions.append(question)
+
+#     if len(data) != len(questions):
+#         print("ERROR! Type questions length does not match json length")
+#         sys.exit(-1)
+
+#     questions = [f"{x}. {y}" for x, y in zip(range(1, len(questions) + 1), questions)]
+#     return questions
+
+
+def generate_questions_from_json(json_file, test_folder, logger=None):
+    """
+    Generate questions based on the callgraph JSON file.
+
+    :param json_file: Path to the callgraph.json file.
+    :param test_folder: Path to the test folder containing code files.
+    :param logger: Logger instance for logging information.
+    :return: A list of generated questions.
+    """
 
     questions = []
-    for key in sorted(data):
-        if file_name.split(".")[0] == key:
-            question = (
-                f"What are the module level function calls in the file '{file_name}'?"
-            )
-        # elif key.startswith(f"{folder}") handle questions from subdirectories
+    file_map = {}
+    default_file_name = None
+
+    try:
+        # Read and parse the JSON file
+        with open(json_file, "r") as file:
+            data = json.load(file)
+    except (FileNotFoundError, json.JSONDecodeError) as e:
+        if logger:
+            logger.error(f"Failed to read or parse JSON file '{json_file}': {e}")
+        return questions
+
+    # Walk through the test_folder to gather all code files
+    for root, _, files in os.walk(test_folder):
+        for file in files:
+            try:
+                # Get the base name of the file (without extension) and store it in the map
+                file_base_name = os.path.splitext(file)[0]
+                file_map[file_base_name] = os.path.relpath(
+                    os.path.join(root, file), test_folder
+                )
+                # Set the default file name
+                if file_base_name == "main":
+                    default_file_name = file_map[file_base_name]
+            except Exception as e:
+                if logger:
+                    logger.error(
+                        f"Error processing file '{file}' in generate questions functions: {e}"
+                    )
+                continue
+
+    if logger:
+        logger.info(f"Files in test folder '{test_folder}' are {file_map}")
+
+    for key in data:
+        # Identify the corresponding file for this function based on the key in JSON
+        file_name = None
+
+        # If the key directly matches a file base name, use that file
+        if key in file_map:
+            file_name = file_map[key]
         else:
+            # If the key doesn't match directly, find files where the key is a prefix
+            matching_files = [f for f in file_map if key.startswith(f)]
+            if len(matching_files) == 1:
+                file_name = file_map[matching_files[0]]
+            else:
+                # If no matching files, use the default file name (main.py or main.js)
+                if default_file_name:
+                    file_name = default_file_name
+                else:
+                    # Skip if no file can be determined
+                    if logger:
+                        logger.error(
+                            f"No matching file found for key: {key} in {test_folder}"
+                        )
+                    continue
+
+        # Generate the question based on the identified file
+        if key == os.path.splitext(os.path.basename(file_name))[0]:
+            # If the key is a module-level function, ask about module-level calls
             question = (
-                f"What are the function calls inside the '{key}' function in the"
-                f" file '{file_name}'?"
+                f"What are the module-level function calls in the file '{file_name}'?"
             )
+        else:
+            # Otherwise, ask about the function calls inside a specific function
+            question = f"What are the function calls inside the '{key}' function in the file '{file_name}'?"
 
         questions.append(question)
 
+    # Check if the number of questions matches the entries in the JSON data
     if len(data) != len(questions):
-        print("ERROR! Type questions length does not match json length")
-        sys.exit(-1)
+        if logger:
+            logger.error(
+                f"ERROR! Number of questions ({len(questions)}) does not match JSON entries ({len(data)}) for '{test_folder}'"
+            )
+        else:
+            print(
+                f"ERROR! Number of questions ({len(questions)}) does not match JSON entries ({len(data)}) for '{test_folder}'"
+            )
+        return []
 
+    # Number the questions for clarity
     questions = [f"{x}. {y}" for x, y in zip(range(1, len(questions) + 1), questions)]
+
+    if logger:
+        logger.info(
+            f"{len(questions)} questions generated for test folder '{test_folder}'."
+        )
+
     return questions
 
 
