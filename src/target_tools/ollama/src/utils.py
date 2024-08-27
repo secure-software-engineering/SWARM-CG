@@ -231,6 +231,10 @@ def generate_questions_from_json(json_file, test_folder, logger=None):
             matching_files = [f for f in file_map if key.startswith(f)]
             if len(matching_files) == 1:
                 file_name = file_map[matching_files[0]]
+            elif len(matching_files) > 1:
+                # TODO: this needs to be updated
+                matching_files.sort(key=lambda f: len(f), reverse=True)
+                file_name = file_map[matching_files[0]]
             else:
                 # If no matching files, use the default file name (main.py or main.js)
                 if default_file_name:
