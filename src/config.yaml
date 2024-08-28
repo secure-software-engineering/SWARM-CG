@@ -1,6 +1,0 @@
-ollama:
-  openai_key: "<API_KEY>"
-  ollama_url: "http://sse-llm-1.cs.upb.de:11434"
-  prompt_id: "questions_based_1"
-  ollama_models:
-    - tinyllama:1.1b
