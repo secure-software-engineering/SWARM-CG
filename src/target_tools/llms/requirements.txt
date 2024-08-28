@@ -1,0 +1,10 @@
+requests
+langchain
+langchain_openai
+openai
+vllm
+einops
+pytest
+bitsandbytes
+accelerate
+# flash-attn
