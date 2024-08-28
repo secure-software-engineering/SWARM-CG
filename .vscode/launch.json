@@ -33,15 +33,17 @@
                 "--benchmark_path",
                 "${workspaceFolder}/benchmarks/python/pycg",
                 "--ollama_models",
-                "tinyllama1b",
+                "llama3.1:70b",
+                // "mistral:v0.3",
                 "--openai_key",
                 "apikey",
                 "--ollama_url",
-                "http://sse-llm-1.cs.upb.de:11434",
+                "http://ssegpu.cs.upb.de:11434",
+                // "",
                 "--prompt_id",
                 "questions_based_1",
                 "--results_dir",
-                "${workspaceFolder}/results"
+                "${workspaceFolder}/results_llm"
             ]
         },
         {

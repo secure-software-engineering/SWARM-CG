@@ -93,30 +93,50 @@ def generate_json_from_answers(gt_json_file, answers):
         with open(gt_json_file, "r") as file:
             gt_data = json.load(file)
 
-        parsed_answers = []
+        parsed_answers = {}
         pattern = re.compile(r"(\d+)\.\s*(.*)")
         lines = answers.split("\n")
+
         for i, line in enumerate(lines):
+            # i: This variable will store the index of the current line (starting from 0).
+            # line: This variable will store the actual content of the current line (a string).
             match = pattern.match(line)
             if match:
-                parsed_answers.append(match.groups())
-            else:
-                parsed_answers.append((i, ""))
+                # parsed_answers.append(match.groups())
+                question_number, answer_text = match.groups()
+                parsed_answers[int(question_number)] = answer_text
+            # else:
+            #     parsed_answers.append((i, ""))
+        # Initialize the answers JSON structure based on gt_data
+        answers_json_data = {key: [] for key in gt_data.keys()}
 
-        if not parsed_answers:
-            parsed_answers = [(0, answers)]
-
-        answers_json_data = {}
-        for i, line_number in enumerate(gt_data):
-            if (i + 1) <= len(parsed_answers):
-                if parsed_answers[i][1] == "":
-                    answers_json_data[line_number] = []
+        # Map parsed answers to gt_data keys
+        for i, (gt_key, _) in enumerate(gt_data.items(), start=1):
+            if i in parsed_answers:
+                answer = parsed_answers[i]
+                if answer.strip() == "":
+                    answers_json_data[gt_key] = []
                 else:
-                    answers_json_data[line_number] = [
-                        x.strip() for x in parsed_answers[i][1].split(",")
-                    ]
+                    answers_json_data[gt_key] = [x.strip() for x in answer.split(",")]
+            else:
+                answers_json_data[gt_key] = []
 
         return answers_json_data
+
+        # if not parsed_answers:
+        #     parsed_answers = [(0, answers)]
+
+        # answers_json_data = {}
+        # for i, line_number in enumerate(gt_data):
+        #     if (i + 1) <= len(parsed_answers):
+        #         if parsed_answers[i][1] == "":
+        #             answers_json_data[line_number] = []
+        #         else:
+        #             answers_json_data[line_number] = [
+        #                 x.strip() for x in parsed_answers[i][1].split(",")
+        #             ]
+
+        # return answers_json_data
     except Exception as e:
         print("Error generating json from questions")
         print(e)
