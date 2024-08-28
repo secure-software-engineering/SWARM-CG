@@ -54,15 +54,20 @@ logger.addHandler(file_handler)
 logger.addHandler(console_handler)
 
 
-def get_prompt_mapping(prompt_template, python_files, use_system_prompt=False):
+def get_prompt_mapping(
+    prompt_template, python_files, use_system_prompt=False, language=None
+):
     id_mapping = {
         idx: {
             "file_path": file_path,
-            "json_filepath": str(file_path).replace(".py", "_gt.json"),
-            "result_filepath": str(file_path).replace(".py", f"_result.json"),
-            "result_dump_filepath": str(file_path).replace(".py", f"_result_dump.txt"),
+            "json_filepath": os.path.join(file_path, "callgraph.json"),
+            "result_filepath": os.path.join(file_path, f"main_result.json"),
+            "result_dump_filepath": os.path.join(file_path, f"response_dump.txt"),
             "prompt": utils.get_prompt(
-                prompt_template, file_path, use_system_prompt=use_system_prompt
+                prompt_template,
+                file_path,
+                use_system_prompt=use_system_prompt,
+                language=language,
             ),
         }
         for idx, file_path in enumerate(python_files)
@@ -81,18 +86,17 @@ def create_result_json_file(file_info, output_raw, prompt_template):
 
     # TODO: Improve the way this is done. Some plugin based design.
     if prompt_template in [
-        "prompt_template_questions_based_2",
+        "prompt_template_questions_based_1",
     ]:
         answers_json = utils.generate_json_from_answers(
             file_info["json_filepath"], output
         )
-        translated_json = translator.translate_content(answers_json)
-    else:
-        translated_json = translator.translate_content(output)
 
-    is_valid_json = utils.generate_json_file(
-        file_info["result_filepath"], translated_json
-    )
+        # translated_json = translator.translate_content(answers_json)
+    # else:
+    #     translated_json = translator.translate_content(output)
+
+    is_valid_json = utils.generate_json_file(file_info["result_filepath"], answers_json)
     if not is_valid_json:
         logger.info(f"{file_info['file_path']} failed: Not a valid JSON")
         raise utils.JsonException("json")
@@ -100,9 +104,18 @@ def create_result_json_file(file_info, output_raw, prompt_template):
     # logger.info(f"Processed file: {file_info['file_path']}")
 
 
-def list_python_files(folder_path):
-    python_files = sorted(Path(folder_path).rglob("main.py"))
-    return python_files
+def list_files(benchmark_folder_path):
+    files = []
+    for cat in sorted(os.listdir(benchmark_folder_path)):
+        files_analyzed = 0
+        tests = os.listdir(os.path.join(benchmark_folder_path, cat))
+
+        # Iterating through each test in a category
+        for test in tests:
+            file = os.path.join(benchmark_folder_path, cat, test)
+            files.append(file)
+
+    return files
 
 
 def model_evaluation_vllm(
@@ -114,9 +127,12 @@ def model_evaluation_vllm(
     use_system_prompt=False,
     lora_request=None,
     sampling_params=None,
+    language=None,
 ):
 
-    id_mapping = get_prompt_mapping(prompt_template, python_files, use_system_prompt)
+    id_mapping = get_prompt_mapping(
+        prompt_template, python_files, use_system_prompt, language
+    )
 
     prompts = [x["prompt"] for x in id_mapping.values()]
 
@@ -143,9 +159,12 @@ def model_evaluation_transformers(
     results_dst,
     use_system_prompt=False,
     batch_size=32,
+    language=None,
 ):
 
-    id_mapping = get_prompt_mapping(prompt_template, python_files, use_system_prompt)
+    id_mapping = get_prompt_mapping(
+        prompt_template, python_files, use_system_prompt, language
+    )
 
     prompts = [x["prompt"] for x in id_mapping.values()]
 
@@ -183,9 +202,12 @@ def model_evaluation_openai(
     python_files,
     results_dst,
     use_system_prompt=False,
+    language=None,
 ):
 
-    id_mapping = get_prompt_mapping(prompt_template, python_files, use_system_prompt)
+    id_mapping = get_prompt_mapping(
+        prompt_template, python_files, use_system_prompt, language
+    )
 
     prompts = [x["prompt"] for x in id_mapping.values()]
 
@@ -223,7 +245,7 @@ def main_runner(args, runner_config, models_to_run, openai_models_models_to_run)
 
         utils.copy_folder(results_src, results_dst)
 
-        python_files = list_python_files(results_dst)
+        python_files = list_files(results_dst)
 
         if model["use_vllms_for_evaluation"]:
             engine = vllm_helpers.initialize_engine(
@@ -251,6 +273,7 @@ def main_runner(args, runner_config, models_to_run, openai_models_models_to_run)
                 use_system_prompt=model["use_system_prompt"],
                 lora_request=lora_request,
                 sampling_params=sampling_params,
+                language=args.language,
             )
 
             del engine
@@ -274,6 +297,7 @@ def main_runner(args, runner_config, models_to_run, openai_models_models_to_run)
                 results_dst,
                 use_system_prompt=model["use_system_prompt"],
                 batch_size=model["batch_size"],
+                language=args.language,
             )
 
             del pipe
@@ -304,7 +328,7 @@ def main_runner(args, runner_config, models_to_run, openai_models_models_to_run)
 
         utils.copy_folder(results_src, results_dst)
 
-        python_files = list_python_files(results_dst)
+        python_files = list_files(results_dst)
 
         model_start_time = time.time()
         model_evaluation_openai(
@@ -314,6 +338,7 @@ def main_runner(args, runner_config, models_to_run, openai_models_models_to_run)
             python_files,
             results_dst,
             use_system_prompt=model["use_system_prompt"],
+            language=args.language,
         )
 
         logger.info(

@@ -5,6 +5,48 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "LLMs runner",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "/home/ssegpu/SWARM-CG/src/target_tools/llms/src/runner.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "args": [
+                "--language",
+                "python",
+                "--benchmark_path",
+                "${workspaceFolder}/benchmarks/python/pycg",
+                "--prompt_id",
+                "prompt_template_questions_based_1",
+                "--models",
+                // "tinyllama-1.1b",
+                // "mistral-large-it-2407-123b",
+                "codestral-v0.1-22b",
+                // CUSTOM MODELS
+
+                // "--custom_models",
+                // "TinyLlama-1.1B-Chat-v1.0-finetuned",
+
+                // OPENAI MODELS
+
+                // "--openai_models",
+                // "gpt-3.5-turbo",
+                
+                // OTHER ARGS
+                "--hf_token",
+                "",
+                "--openai_key",
+                "teest",
+                // "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",
+                "--enable_streaming",
+                "True",
+                "--models_config",
+                "/home/ssegpu/TypeEvalPy/TypeEvalPy/src/target_tools/llms/src/models_config.yaml",
+                "--results_dir",
+                "/home/ssegpu/SWARM-CG/.scrapy/results"
+            ]
+        },
+        {
             "name": "Main Runner",
             "type": "debugpy",
             "request": "launch",

@@ -46,9 +46,8 @@ a()()
 3.
 
 **{language} Code Provided**:
-```{language}
+
 {code}
-```
 
 **Questions**:
 {questions}
