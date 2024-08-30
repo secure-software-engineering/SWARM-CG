@@ -307,8 +307,8 @@ def main_runner(args, runner_config, models_to_run, openai_models_models_to_run)
         logger.info(
             f"Model {model['name']} finished in {time.time()-model_start_time:.2f} seconds"
         )
-        logger.info("Running translator")
-        translator.main_translator(results_dst)
+        # logger.info("Running translator")
+        # translator.main_translator(results_dst)
 
     # running gpt models
     for model in openai_models_models_to_run:
@@ -344,8 +344,8 @@ def main_runner(args, runner_config, models_to_run, openai_models_models_to_run)
         logger.info(
             f"Model {model['name']} finished in {time.time()-model_start_time:.2f} seconds"
         )
-        logger.info("Running translator")
-        translator.main_translator(results_dst)
+        # logger.info("Running translator")
+        # translator.main_translator(results_dst)
 
     logger.info(
         f"Runner finished in {time.time()-runner_start_time:.2f} seconds, with errors:"
