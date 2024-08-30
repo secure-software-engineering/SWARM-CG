@@ -2,6 +2,9 @@ import transformers
 import torch
 from tqdm import tqdm
 from torch.utils.data import Dataset
+import logging
+
+logger = logging.getLogger("llm_runner.transformers_helpers")
 
 
 class ListDataset(Dataset):
@@ -67,7 +70,9 @@ def load_model_and_configurations(
         token=HF_TOKEN,
         trust_remote_code=True,
         torch_dtype="bfloat16" if model_name.startswith("google") else "auto",
-        # attn_implementation="flash_attention_2",
+        attn_implementation=(
+            "flash_attention_2" if model_name.startswith("microsoft") else None
+        ),
     )
 
     tokenizer = transformers.AutoTokenizer.from_pretrained(
@@ -77,7 +82,7 @@ def load_model_and_configurations(
 
     if not tokenizer.chat_template:
         tokenizer.chat_template = DEFAULT_CHAT_TEMPLATE
-        print("Default Chat template set")
+        logger.info("Default Chat template set")
 
     if not tokenizer.pad_token:
         tokenizer.pad_token = tokenizer.eos_token
@@ -102,7 +107,7 @@ def process_requests(
 ):
     """Continuously process a list of prompts and handle the outputs."""
     # dataset = ListDataset(prompts) # TODO: issues making this work, mainly to show progress bar
-    # print(f"Processing {len(prompts)} prompts for model {pipe.model.name_or_path}")
+    # logger.info(f"Processing {len(prompts)} prompts for model {pipe.model.name_or_path}")
     responses = [
         i for i in pipe(prompts, max_new_tokens=max_new_tokens, batch_size=batch_size)
     ]
