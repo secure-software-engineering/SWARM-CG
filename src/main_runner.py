@@ -1,7 +1,7 @@
 import os
 import shutil
 import sys
-from runners import OllamaRunner, PyCGRunner
+from runners import OllamaRunner, PyCGRunner, LLMRunner
 from cli import parse_runner_args
 from core import load_config, setup_logger
 from datetime import datetime
@@ -47,6 +47,16 @@ def main():
                 "config": config,
                 "benchmark_name": args.benchmark_name,
                 "language": args.language,
+            },
+        ),
+        "llms": (
+            LLMRunner,
+            {
+                "debug": args.debug,
+                "nocache": args.nocache,
+                "benchmark_name": args.benchmark_name,
+                "language": args.language,
+                "config": config,
             },
         ),
         # TODO: Add more runners here, vllm, transformers

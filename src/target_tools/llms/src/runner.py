@@ -365,7 +365,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--benchmark_path",
         help="Specify the benchmark path",
-        default="/tmp/micro-benchmark",
+        default="/tmp/benchmarks",
     )
 
     parser.add_argument(
