@@ -1,5 +1,9 @@
 {
-  "main": ["main.return_func", "main.func2"],
-  "main.func": [],
+  "main": [
+    "main.return_func",
+    "main.func2"
+  ],
+  "main.func1": [],
+  "main.func2": [],
   "main.return_func": []
 }
