@@ -8,7 +8,7 @@ ollama:
 llm:
   openai_key: API_KEY
   hf_token: 
-  prompt_id: "prompt_template_questions_based_2"
+  prompt_id: "prompt_template_questions_based_1"
   models:
     # - qwen2-it-7b
     # - qwen2-it-72b

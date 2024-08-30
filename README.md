@@ -13,11 +13,42 @@ SWARM-CG (Swiss Army Knife of Call Graph Micro-Benchmark) aims to standardize th
 
 Our repository includes benchmarks for the following languages:
 
-- C
-- C++
 - Java
 - Python
 - JavaScript
-- Kotlin
 
-*More languages will be added based on community contributions and demand.*
+*More languages will be added soon.*
+
+
+## :whale: Running with Docker
+
+### 1️⃣ Clone the repo
+
+```bash
+git clone https://github.com/ashwinprasadme/SWARM-CG/
+```
+
+### 2️⃣ Build Docker image
+
+```bash
+docker build -t swarmcg .
+```
+
+### 3️⃣ Run SWARM-CG
+
+🕒 Takes about 30mins on first run to build Docker containers.
+
+📂 Results will be generated in the `results` folder within the root directory of the repository.
+Each results folder will have a timestamp, allowing you to easily track and compare different runs.
+
+🔧 run analysis on specific tools:
+
+```bash
+docker run \
+      -v /var/run/docker.sock:/var/run/docker.sock \
+      -v ./results:/app/results \
+      -v ./src:/app/src \
+      swarmcg --language python --benchmark_name pycg --tool llms 
+```
+
+🛠️ Available options: `pycg`, `ollama`, `llms`
