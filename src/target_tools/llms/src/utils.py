@@ -359,8 +359,9 @@ def get_prompt(
     for code_file in code_files:
         with open(code_file, "r") as file:
             code_content = file.read()
+            relative_path = os.path.relpath(code_file, file_path)
             # Add filename to the code content for context
-            code += f"```{os.path.basename(code_file)}\n{code_content}```\n"
+            code += f"```{relative_path}\n{code_content}```\n\n"
 
     # Remove comments from code but keep line number structure
     code = "\n".join(
