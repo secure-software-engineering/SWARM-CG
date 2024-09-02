@@ -200,10 +200,22 @@ def normalize_path(path=None):
     return normalized.rsplit(".", 1)[0]
 
 
-def best_match(key, file_map):
+def best_match(key, file_map, init_file_name):
     """Find the best matching file based on the key."""
     if key in file_map:
         return file_map[key]
+
+    # Direct match with the key as a directory name
+    init_key = f"{key}.{init_file_name}"
+    if init_key in file_map:
+        return file_map[init_key]
+
+    # Check if the key corresponds to a function in an __init__.py file
+    parts = key.split(".")
+    if len(parts) > 1:
+        potential_init_key = ".".join(parts[:-1]) + f".{init_file_name}"
+        if potential_init_key in file_map:
+            return file_map[potential_init_key]
 
     # Find files where the key is a prefix or is contained within
     candidates = [f for f in file_map if key.startswith(f) or f == key]
@@ -213,6 +225,16 @@ def best_match(key, file_map):
         # Sort candidates by similarity (longer matches are considered better)
         candidates.sort(key=lambda f: len(f), reverse=True)
         return file_map[candidates[0]]
+    return None
+
+
+def identify_language(file_map):
+    """Identify the programming language based on file extensions."""
+    extensions = {file.rsplit(".", 1)[-1] for file in file_map.values()}
+    if "py" in extensions:
+        return "python"
+    elif "js" in extensions:
+        return "javascript"
     return None
 
 
@@ -258,9 +280,12 @@ def generate_questions_from_json(json_file, test_folder, logger=None):
     if logger:
         logger.info(f"Files in test folder '{test_folder}' are {file_map}")
 
+    language = identify_language(file_map)
+    init_file_name = "__init__" if language == "python" else "index"
+
     for key in data:
         # Identify the corresponding file for this function based on the key in JSON
-        file_name = best_match(key, file_map)
+        file_name = best_match(key, file_map, init_file_name)
 
         if not file_name and default_file_name:
             file_name = default_file_name
@@ -276,6 +301,8 @@ def generate_questions_from_json(json_file, test_folder, logger=None):
             question = (
                 f"What are the module-level function calls in the file '{file_name}'?"
             )
+        elif f"{key}.{init_file_name}" == normalize_path(file_name):
+            question = f"What are the function calls in the file '{file_name}'?"
         else:
             # Otherwise, ask about the function calls inside a specific function
             question = f"What are the function calls inside the '{key}' function in the file '{file_name}'?"
