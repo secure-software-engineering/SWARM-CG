@@ -389,7 +389,7 @@ def get_prompt(
             code_content = file.read()
             relative_path = os.path.relpath(code_file, file_path)
             # Add filename to the code content for context
-            code += f"```{relative_path}\n{code_content}```\n\n"
+            code += f"```{relative_path}\n{code_content}\n```\n\n"
 
     # Remove comments from code but keep line number structure
     code = "\n".join(
@@ -397,7 +397,8 @@ def get_prompt(
     )
 
     if prompt_id in [
-        "prompt_template_questions_based_1",
+        "prompt_template_questions_based_1_py",
+        "prompt_template_questions_based_1_js",
     ]:
         questions_from_json = generate_questions_from_json(json_filepath, file_path)
 

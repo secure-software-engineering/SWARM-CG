@@ -86,7 +86,8 @@ def create_result_json_file(file_info, output_raw, prompt_template):
 
     # TODO: Improve the way this is done. Some plugin based design.
     if prompt_template in [
-        "prompt_template_questions_based_1",
+        "prompt_template_questions_based_1_py",
+        "prompt_template_questions_based_1_js",
     ]:
         answers_json = utils.generate_json_from_answers(
             file_info["json_filepath"], output
@@ -99,7 +100,7 @@ def create_result_json_file(file_info, output_raw, prompt_template):
     is_valid_json = utils.generate_json_file(file_info["result_filepath"], answers_json)
     if not is_valid_json:
         logger.info(f"{file_info['file_path']} failed: Not a valid JSON")
-        raise utils.JsonException("json")
+        # raise utils.JsonException("json")
 
     # logger.info(f"Processed file: {file_info['file_path']}")
 
@@ -216,7 +217,7 @@ def model_evaluation_openai(
         prompts,
         openai_key,
         max_new_tokens=MAX_NEW_TOKENS,
-        max_workers=1,
+        max_workers=3,
     )
 
     for id, r_output in enumerate(request_outputs):
