@@ -1,5 +1,0 @@
-def recursive():
-    recursive()
-
-
-recursive()

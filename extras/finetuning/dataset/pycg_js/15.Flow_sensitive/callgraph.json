@@ -1,8 +1,8 @@
 {
     "main": [
-        "main.first_func",
-        "main.second_func"
+        "main.firstFunc",
+        "main.secondFunc"
     ],
-    "main.first_func": [],
-    "main.second_func": []
+    "main.firstFunc": [],
+    "main.secondFunc": []
 }

@@ -1,6 +1,6 @@
 {
-    "main.simple_func": [],
+    "main.func": [],
     "main": [
-        "main.simple_func"
+        "main.func"
     ]
 }

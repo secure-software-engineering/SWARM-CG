@@ -1,6 +1,6 @@
 {
     "main": [
-        "main.SimpleException.__init__"
+        "main.SimpleException.constructor"
     ],
-    "main.SimpleException.__init__": []
+    "main.SimpleException.constructor": []
 }

@@ -1,8 +1,8 @@
 {
     "main": [
-        "main.simple_dec",
-        "main.simple_func"
+        "main.simpleDec",
+        "main.simpleFunc"
     ],
-    "main.simple_dec": [],
-    "main.simple_func": []
+    "main.simpleDec": [],
+    "main.simpleFunc": []
 }
