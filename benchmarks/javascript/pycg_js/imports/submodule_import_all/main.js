@@ -1,3 +1,4 @@
-import * as nestedModule from "./from_module/nested_module.js";
-nestedModule.func1();
-nestedModule.func2();
+import * as nested from './from_module/nested_module.js';
+
+nested.func1();
+nested.func2();

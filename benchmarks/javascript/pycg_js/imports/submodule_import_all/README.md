@@ -1,1 +1,1 @@
-Same concept as `import_all` but with a submodule
+Same concept as import_all but with a submodule

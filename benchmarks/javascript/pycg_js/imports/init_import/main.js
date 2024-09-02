@@ -1,3 +1,3 @@
-import { smth } from "./nested/index.js";
+import { smth } from './nested/index.js';
 
 smth.func();

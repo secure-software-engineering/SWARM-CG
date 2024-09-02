@@ -1,1 +1,1 @@
-Same concept as `import_from` but with a submodule.
+Same concept as import_from but with a submodule.

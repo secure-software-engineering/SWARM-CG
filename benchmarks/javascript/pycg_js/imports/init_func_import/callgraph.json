@@ -1,9 +1,10 @@
 {
     "main": [
         "nested.func",
-        "nested.func2"
+        "nested.mod.func2"
     ],
     "nested": [],
     "nested.func": [],
-    "nested.func2": []
+    "nested.mod": [],
+    "nested.mod.func2": []
 }

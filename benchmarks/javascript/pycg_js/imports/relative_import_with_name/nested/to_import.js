@@ -1,5 +1,7 @@
-import { func2 } from "./relative.js";
-
-export function func1() {
-  func2();
+import { func2 } from './relative.js';
+ 
+function func1() {
+    func2();
 }
+
+export { func1 };

@@ -1,1 +1,1 @@
-export { smth } from "./nested.js";
+export { smth } from './nested.js';

@@ -1,3 +1,6 @@
-import { func } from "./to_import.js";
+import * as to_import from './to_import.js';
 
-func();
+function func() {
+}
+
+to_import.func();

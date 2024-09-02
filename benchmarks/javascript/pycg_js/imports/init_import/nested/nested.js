@@ -1,5 +1,7 @@
 class Smth {
-  static func() {}
+    func() {
+    }
 }
 
-export const smth = new Smth();
+const smth = new Smth();
+export { smth };

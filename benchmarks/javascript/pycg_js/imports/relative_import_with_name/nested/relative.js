@@ -1,1 +1,4 @@
-export function func2() {}
+function func2() {
+}
+
+export { func2 };

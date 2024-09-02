@@ -1,3 +1,4 @@
-import { func, func2 } from "./nested.js";
-func();
-func2();
+import { func, func2 } from './nested/index.js';
+	
+	func();
+	func2();
