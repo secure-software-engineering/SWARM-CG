@@ -1,11 +1,8 @@
-class ParentClass:
-    def parent_function(self):
-        pass
+class ParentClass {
+    parent_function() {}
+}
 
+class ChildClass extends ParentClass {}
 
-class ChildClass(ParentClass):
-    pass
-
-
-a = ChildClass()
-a.parent_function()
+a = new ChildClass();
+a.parent_function();
