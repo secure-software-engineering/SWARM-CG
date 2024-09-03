@@ -177,18 +177,10 @@ def generate_answers_for_fine_tuning(json_file):
     with open(json_file, "r") as file:
         data = json.load(file)
 
-    questions = generate_questions_from_json(json_file)
-    for i, q in enumerate(questions):
-        if "module" in q:
-            module_q = i + 1
-
     counter = 1
     answers = []
     for fact in data:
-        if fact == "main":
-            answers.append(f"{counter}. {', '.join(data['main'])}")
-        else:
-            answers.append(f"{counter}. {', '.join(data[fact])}")
+        answers.append(f"{counter}. {', '.join(data[fact])}")
 
         counter += 1
 
@@ -425,6 +417,33 @@ def get_prompt(
         sys.exit(-1)
 
     return prompt
+
+
+def dump_ft_jsonl(id_mapping, output_file):
+    mappings = copy.deepcopy(id_mapping)
+    for _m in mappings.values():
+        print(_m)
+        assistant_message = {
+            "role": "assistant",
+            "content": generate_answers_for_fine_tuning(_m["json_filepath"]),
+        }
+        _m["prompt"].append(assistant_message)
+
+    prompts = [x["prompt"] for x in mappings.values()]
+
+    with open(output_file, "w") as output:
+        for _m in prompts:
+            output.write(json.dumps(_m))
+            output.write("\n")
+
+
+def dump_batch_prompt_jsonl(id_mapping, output_file):
+    prompts = [x["prompt"] for x in id_mapping.values()]
+
+    with open(output_file, "w") as output:
+        for _m in prompts:
+            output.write(json.dumps(_m))
+            output.write("\n")
 
 
 # Example usage:

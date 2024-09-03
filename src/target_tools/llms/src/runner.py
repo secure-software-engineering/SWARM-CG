@@ -212,6 +212,9 @@ def model_evaluation_openai(
 
     prompts = [x["prompt"] for x in id_mapping.values()]
 
+    utils.dump_ft_jsonl(id_mapping, f"{results_dst}/ft_dataset.jsonl")
+    utils.dump_batch_prompt_jsonl(id_mapping, f"{results_dst}/batch_prompt.jsonl")
+
     request_outputs = openai_helpers.process_requests(
         model_name,
         prompts,
@@ -238,70 +241,80 @@ def main_runner(args, runner_config, models_to_run, openai_models_models_to_run)
         # Create result folder for model specific results
         benchmark_path = Path(args.benchmark_path)
         results_src = benchmark_path
+        # TODO: Fix naming of the results folder
         if args.results_dir is None:
-            results_dst = benchmark_path.parent / model["name"] / benchmark_path.name
+            results_dst = benchmark_path.parent / model["name"] / "benchmarks"
         else:
-            results_dst = Path(args.results_dir) / model["name"] / benchmark_path.name
+            results_dst = Path(args.results_dir) / model["name"] / "benchmarks"
             os.makedirs(results_dst, exist_ok=True)
 
         utils.copy_folder(results_src, results_dst)
 
         python_files = list_files(results_dst)
 
-        if model["use_vllms_for_evaluation"]:
-            engine = vllm_helpers.initialize_engine(
-                model["model_path"],
-                model["quantization"],
-                model["lora_repo"],
-                model["max_model_len"],
-            )
-            lora_request = None
-            if model["lora_repo"] is not None:
-                lora_request = LoRARequest(
-                    f"{model['name']}-lora", 1, model["lora_repo"]
+        pipe = None
+        try:
+            if model["use_vllms_for_evaluation"]:
+                engine = vllm_helpers.initialize_engine(
+                    model["model_path"],
+                    model["quantization"],
+                    model["lora_repo"],
+                    model["max_model_len"],
+                )
+                lora_request = None
+                if model["lora_repo"] is not None:
+                    lora_request = LoRARequest(
+                        f"{model['name']}-lora", 1, model["lora_repo"]
+                    )
+
+                sampling_params = SamplingParams(
+                    temperature=TEMPARATURE, top_p=0.95, max_tokens=MAX_TOKENS
+                )
+                model_start_time = time.time()
+                model_evaluation_vllm(
+                    model["name"],
+                    args.prompt_id,
+                    python_files,
+                    engine,
+                    results_dst,
+                    use_system_prompt=model["use_system_prompt"],
+                    lora_request=lora_request,
+                    sampling_params=sampling_params,
+                    language=args.language,
                 )
 
-            sampling_params = SamplingParams(
-                temperature=TEMPARATURE, top_p=0.95, max_tokens=MAX_TOKENS
-            )
-            model_start_time = time.time()
-            model_evaluation_vllm(
-                model["name"],
-                args.prompt_id,
-                python_files,
-                engine,
-                results_dst,
-                use_system_prompt=model["use_system_prompt"],
-                lora_request=lora_request,
-                sampling_params=sampling_params,
-                language=args.language,
-            )
-
-            del engine
-            gc.collect()
-            torch.cuda.empty_cache()
-        else:
-            if model["lora_repo"] is None:
-                model_path = model["model_path"]
+                del engine
+                gc.collect()
+                torch.cuda.empty_cache()
             else:
-                model_path = model["lora_repo"]
+                if model["lora_repo"] is None:
+                    model_path = model["model_path"]
+                else:
+                    model_path = model["lora_repo"]
 
-            pipe = transformers_helpers.load_model_and_configurations(
-                args.hf_token, model_path, model["quantization"], TEMPARATURE
-            )
-            model_start_time = time.time()
-            model_evaluation_transformers(
-                model["name"],
-                args.prompt_id,
-                python_files,
-                pipe,
-                results_dst,
-                use_system_prompt=model["use_system_prompt"],
-                batch_size=model["batch_size"],
-                language=args.language,
-            )
+                pipe = transformers_helpers.load_model_and_configurations(
+                    args.hf_token, model_path, model["quantization"], TEMPARATURE
+                )
+                model_start_time = time.time()
+                model_evaluation_transformers(
+                    model["name"],
+                    args.prompt_id,
+                    python_files,
+                    pipe,
+                    results_dst,
+                    use_system_prompt=model["use_system_prompt"],
+                    batch_size=model["batch_size"],
+                    language=args.language,
+                )
 
-            del pipe
+                del pipe
+                gc.collect()
+                torch.cuda.empty_cache()
+
+        except Exception as e:
+            logger.error(f"Error in model {model['name']}: {e}")
+            if pipe is not None:
+                del pipe
             gc.collect()
             torch.cuda.empty_cache()
 
