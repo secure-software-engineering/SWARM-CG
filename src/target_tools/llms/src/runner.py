@@ -212,6 +212,9 @@ def model_evaluation_openai(
 
     prompts = [x["prompt"] for x in id_mapping.values()]
 
+    utils.dump_ft_jsonl(id_mapping, f"{results_dst}/ft_dataset.jsonl")
+    utils.dump_batch_prompt_jsonl(id_mapping, f"{results_dst}/batch_prompt.jsonl")
+
     request_outputs = openai_helpers.process_requests(
         model_name,
         prompts,
