@@ -1,0 +1,14 @@
+{
+  "main.local_func": [],
+  "main": [
+    "from_module.func1",
+    "main.cls.constructor",
+    "from_module.change"
+  ],
+  "main.cls.constructor": [],
+  "main.change": [],
+  "main.cls": [],
+  "from_module": [],
+  "from_module.func1": [],
+  "from_module.change": []
+}

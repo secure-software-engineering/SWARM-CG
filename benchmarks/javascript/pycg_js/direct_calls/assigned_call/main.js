@@ -7,4 +7,4 @@ function func() {
 }
 
 let a = func;
-a()(); // Double call to invoke the function returned by func
+a()();

@@ -1,1 +1,20 @@
-function* generatorFunc(max = 0) {    let n = 0;    while (n <= max) {        yield 2 ** n;        n++;    }}function func(c) {    for (let i of c) {        // pass    }}func(generatorFunc());
+function func(c) {
+    for (let i of c) {
+    }
+}
+
+class Cls {
+    constructor(max = 0) {
+        this.max = max;
+        this.n = 0;
+    }
+
+    *[Symbol.iterator]() {
+        while (this.n <= this.max) {
+            yield 2 ** this.n;
+            this.n += 1;
+        }
+    }
+}
+
+func(new Cls());

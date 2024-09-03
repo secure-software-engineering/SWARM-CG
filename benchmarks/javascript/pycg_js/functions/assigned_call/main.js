@@ -1,4 +1,4 @@
 function func() {}
 
-var a = func;
+const a = func;
 a();

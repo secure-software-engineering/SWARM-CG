@@ -1,3 +1,3 @@
-import * as toImport from './to_import.js';
+import * as to_import from './to_import.js';
 
-toImport.func();
+to_import.func();

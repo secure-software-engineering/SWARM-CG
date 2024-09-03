@@ -1,0 +1,12 @@
+{
+  "main": [
+    "main.cls.change",
+    "main.func2",
+    "main.cls.constructor"
+  ],
+  "main.cls.constructor": [],
+  "main.cls.change": [],
+  "main.func2": [],
+  "main.cls": [],
+  "main.func1": []
+}

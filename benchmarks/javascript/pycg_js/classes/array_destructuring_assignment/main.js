@@ -20,8 +20,8 @@ class MyClass2 {
 const a = new MyClass();
 const b = new MyClass2();
 
-const c = a.func1.bind(a);
-const [d, e] = [a.func2.bind(a), a.func3.bind(a)];
+const c = a.func1;
+const [d, e] = [a.func2, a.func3];
 
 c();
 d();

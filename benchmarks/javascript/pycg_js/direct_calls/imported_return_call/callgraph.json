@@ -1,9 +1,8 @@
 {
-    "main": [
-      "to_import.func",
-      "to_import.return_func"
-    ],
-    "to_import.func": [],
-    "to_import.return_func": []
+  "main": [
+    "to_import.func",
+    "to_import.returnFunc"
+  ],
+  "to_import.func": [],
+  "to_import.returnFunc": []
 }
-  

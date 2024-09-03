@@ -1,11 +1,10 @@
 {
-    "main": [
-      "main.func",
-      "main.return_func",
-      "main.return_func.nested_return_func"
-    ],
-    "main.func": [],
-    "main.return_func": [],
-    "main.return_func.nested_return_func": []
+  "main": [
+    "main.func",
+    "main.returnFunc",
+    "main.returnFunc.nestedReturnFunc"
+  ],
+  "main.func": [],
+  "main.returnFunc": [],
+  "main.returnFunc.nestedReturnFunc": []
 }
-  

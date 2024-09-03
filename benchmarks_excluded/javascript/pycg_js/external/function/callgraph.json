@@ -1,0 +1,6 @@
+{
+    "main": [
+        "ext.func"
+    ],
+    "ext.func": []
+}

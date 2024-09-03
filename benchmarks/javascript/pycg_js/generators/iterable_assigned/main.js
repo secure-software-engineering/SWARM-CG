@@ -1,1 +1,18 @@
-class Cls {    constructor(max = 0) {        this.max = max;    }    [Symbol.iterator]() {        this.n = 0;        return {            next: () => {                if (this.n > this.max) {                    return { done: true };                }                const result = 2 ** this.n;                this.n++;                return { value: this.n, done: false };            }        };    }}const c = new Cls();for (let i of c) {    // pass}
+class Cls {
+    constructor(max = 0) {
+        this.max = max;
+        this.n = 0;
+    }
+
+    *[Symbol.iterator]() {
+        while (this.n <= this.max) {
+            yield this.n;
+            this.n += 1;
+        }
+    }
+}
+
+const c = new Cls();
+
+for (let i of c) {
+}

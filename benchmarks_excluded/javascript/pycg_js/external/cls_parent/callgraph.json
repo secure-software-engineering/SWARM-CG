@@ -1,0 +1,11 @@
+{
+    "main": [
+        "main.A.fn",
+        "ext.parent.constructor"
+    ],
+    "main.A.fn": [
+        "ext.parent.parent_fn"
+    ],
+    "ext.parent.constructor": [],
+    "ext.parent.parent_fn": []
+}

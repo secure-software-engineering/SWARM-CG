@@ -1,8 +1,0 @@
-{
-    "main": [
-        "<builtin>.Array",
-        "main.func"
-    ],
-    "main.func": [],
-    "<builtin>.Array": []
-}

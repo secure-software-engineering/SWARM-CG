@@ -1,9 +1,0 @@
-{
-    "main": [
-        "main.A.constructor",
-        "main.C.func"
-    ],
-    "main.A.constructor": [],
-    "main.A.func": [],
-    "main.C.func": []
-}
