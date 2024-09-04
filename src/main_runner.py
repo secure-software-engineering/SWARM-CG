@@ -1,7 +1,7 @@
 import os
 import shutil
 import sys
-from runners import OllamaRunner, PyCGRunner, LLMRunner
+from runners import OllamaRunner, PyCGRunner, LLMRunner, HeaderGenCSRunner
 from cli import parse_runner_args
 from core import load_config, setup_logger
 from datetime import datetime
@@ -57,6 +57,16 @@ def main():
                 "benchmark_name": args.benchmark_name,
                 "language": args.language,
                 "config": config,
+            },
+        ),
+        "headergen_cs": (
+            HeaderGenCSRunner,
+            {
+                "debug": args.debug,
+                "nocache": args.nocache,
+                "config": config,
+                "benchmark_name": args.benchmark_name,
+                "language": args.language,
             },
         ),
         # TODO: Add more runners here, vllm, transformers

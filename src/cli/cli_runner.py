@@ -20,7 +20,7 @@ def parse_runner_args():
     parser.add_argument(
         "--tool",
         nargs="+",  # Allow multiple values
-        choices=["ollama", "pycg", "llms"],  # Add more tools as needed
+        choices=["ollama", "pycg", "llms", "headergen_cs"],  # Add more tools as needed
         help="Specify the target tool(s) for call graph construction.",
     )
     parser.add_argument(
