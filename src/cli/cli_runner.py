@@ -15,7 +15,7 @@ def parse_runner_args():
     parser.add_argument(
         "--benchmark_name",
         required=True,
-        help="Specify the name of the micro-benchmark (eg: pycg, cats).",
+        help="Specify the name of the micro-benchmark (eg: pycg, swarm_js).",
     )
     parser.add_argument(
         "--tool",

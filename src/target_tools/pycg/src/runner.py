@@ -15,7 +15,7 @@ logger = utils.setup_logger()
 # TODO: move to the main_runner.py
 BENCHMARK_MAP = {
     "python": "python/pycg",
-    "javascript": "javascript/pycg_js",
+    "javascript": "javascript/swarm_js",
     "java": "java/cats",
 }
 
