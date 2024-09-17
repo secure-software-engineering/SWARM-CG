@@ -52,10 +52,6 @@ class BaseAnalyzer:
 
         for cat in sorted(get_subdirs(tool_results_dir)):
             self.logger.info(f"Iterating through benchmark categories..")
-
-            if cat in ["context_sensitive", "dynamic", "external", "task_test"]:
-                continue
-
             complete_passed = 0
             sound_passed = 0
             tests = get_subdirs(Path(tool_results_dir) / cat)
