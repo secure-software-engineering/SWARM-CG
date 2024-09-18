@@ -1,0 +1,12 @@
+[
+    {
+        "caller": "extser.Demo:<init>()",
+        "targets": [
+            {
+                "callee": "extser.Demo:callback()",
+                "direct": true,
+                "line": 19
+            }
+        ]
+    }
+]

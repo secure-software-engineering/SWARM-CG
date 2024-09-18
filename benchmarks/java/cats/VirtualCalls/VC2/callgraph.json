@@ -1,11 +1,12 @@
-{
-    "vc.Class.main(String)": [
-        "vc.Class.callMethod"
-    ],
-    "vc.Class.callMethod": [
-        "vc.SubClass.method",
-        "vc.Class.method"
-    ],
-    "vc.SubClass.method": []
-
-}
+[
+    {
+        "caller": "vc.Class:callMethod(vc.Class)",
+        "targets": [
+            {
+                "callee": "vc.SubClass:method()",
+                "direct": true,
+                "line": 11
+            }
+        ]
+    }
+]

@@ -1,0 +1,12 @@
+[
+    {
+        "caller": "instanceofclassapi.Demo:callIfInstanceOfTarget(java.lang.Object)",
+        "targets": [
+            {
+                "callee": "instanceofclassapi.Target:toString()",
+                "direct": true,
+                "line": 18
+            }
+        ]
+    }
+]
