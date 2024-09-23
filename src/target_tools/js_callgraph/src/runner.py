@@ -74,7 +74,7 @@ if __name__ == "__main__":
         "--language",
         choices=["python", "java", "javascript"],
         required=True,
-        default="python",
+        default="javascript",
         help="Language setting for the runner",
     )
     parser.add_argument(
