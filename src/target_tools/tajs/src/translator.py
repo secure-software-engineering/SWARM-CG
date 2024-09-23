@@ -87,105 +87,73 @@ def add_link(j, from_name, to_name, nomod=False):
 
 
 def convert_tajs(wd):
+    # NNODEREGEX matches lines representing nodes
+    # EDGEREGEX matches lines representing edges
     NODEREGEX = re.compile(r".* \[.*\]")
-    nodes = {}
+    EDGEREGEX = re.compile(r".*->.*")
+
     for f in glob.glob(os.path.join(wd, "*.dot")):
+        nodes = {}
+        callgraph = {}
         edges = set()
-        j = create_schema()
+
+        # Read the TAJS dot file
         with open(f, "r") as fp:
             lines = fp.readlines()
-
+            content = fp.read()
+        print(content)
+        # Process nodes and assign names
         for line in lines:
-            if NODEREGEX.match(line) and ("HOST" not in line):
-                node = {"file": None, "line": None, "column": None}
-                matches = re.compile(r"(?P<alias>f\d+).*label=\"(?P<label>.*)\"")
-                search = matches.search(line)
-                alias = search.group("alias")
+            if NODEREGEX.match(line):
+                matches = re.search(r"(?P<alias>f\d+).*label=\"(?P<label>.*)\"", line)
+                alias = matches.group("alias")
+                label = matches.group("label")
 
-                label = search.group("label")
                 if label == "<main>":
-                    node["file"] = "toplevel"
-                    node["line"] = "1"
-                    node["column"] = "1"
-                    nodes[alias] = node
-                    continue
-                c = label.split("\\n")
-                s = c[1].split(":")
-                node["line"] = s[1]
-                node["column"] = s[2]
-
-                detect_function = re.compile(r".*\((?P<filename>.*)\).*")
-                search_function = detect_function.search(s[0])
-                if search_function != None:
-                    node["file"] = os.path.basename(search_function.group("filename"))
+                    func_name = "main"
                 else:
-                    node["file"] = os.path.basename(s[0])
-                nodes[alias] = node
-                continue
+                    # Extract the function name and file path
+                    parts = label.split("\\n")
+                    function_name = parts[0].split("(")[0].strip()
+                    file_info = parts[1]
 
+                    # Only process benchmark files
+                    # TODO: Verify this
+                    if "HOST" in file_info:
+                        continue  # Skip nodes that aren't part of the benchmark
+
+                    # Get just the function name without adding file suffix
+                    # TODO: multi-file testcases needs to be handled
+                    func_name = "main." + function_name
+
+                nodes[alias] = func_name
+                if func_name not in callgraph:
+                    callgraph[func_name] = []
+
+        # Process edges and construct the callgraph
         for line in lines:
             if EDGEREGEX.match(line):
-                line = line.strip()
-                line = line.replace('"', "")
-                c = line.split("->")
+                c = line.replace('"', "").split("->")
                 src = c[0].strip()
                 tgt = c[1].strip()
-                if src + "->" + tgt in edges:
-                    continue
-                if src not in nodes.keys() or tgt not in nodes.keys():
-                    continue
-                node_src = nodes.get(src)
-                add_node(
-                    j,
-                    (
-                        node_src.get("file") + "@" + node_src.get("line")
-                        if node_src.get("file") != "toplevel"
-                        else "[toplevel]"
-                    ),
-                    node_src.get("file")
-                    + ":"
-                    + node_src.get("line")
-                    + ":"
-                    + node_src.get("column"),
-                )
-                node_tgt = nodes.get(tgt)
-                add_node(
-                    j,
-                    (
-                        node_tgt.get("file") + "@" + node_tgt.get("line")
-                        if node_tgt.get("file") != "toplevel"
-                        else "[toplevel]"
-                    ),
-                    node_tgt.get("file")
-                    + ":"
-                    + node_tgt.get("line")
-                    + ":"
-                    + node_tgt.get("column"),
-                )
-                add_link(
-                    j,
-                    node_src.get("file")
-                    + ":"
-                    + node_src.get("line")
-                    + ":"
-                    + node_src.get("column"),
-                    node_tgt.get("file")
-                    + ":"
-                    + node_tgt.get("line")
-                    + ":"
-                    + node_tgt.get("column"),
-                    False,
-                )
-                edges.add(src + "->" + tgt)
 
-        with open(
-            os.path.join(
-                os.path.dirname(f),
-                "output_" + os.path.basename(f).replace(".dot", ".json"),
-            ),
-            "w",
-        ) as fp:
-            json.dump(j, fp, indent=2)
+                if src in nodes and tgt in nodes:
+                    src_func = nodes[src]
+                    tgt_func = nodes[tgt]
+
+                    # Add the target function to the source function's list of callees
+                    if tgt_func not in callgraph[src_func]:
+                        callgraph[src_func].append(tgt_func)
+                    edges.add(src + "->" + tgt)
+    # Write output to JSON
+    with open(
+        os.path.join(
+            os.path.dirname(f),
+            "output_" + os.path.basename(f).replace(".dot", ".json"),
+        ),
+        "w",
+    ) as fp:
+        json.dump(callgraph, fp, indent=2)
 
 
 def stats_for_json(wd):

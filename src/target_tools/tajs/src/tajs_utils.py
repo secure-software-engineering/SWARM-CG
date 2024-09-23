@@ -15,6 +15,9 @@ def get_language_extension(language):
 
 def get_tajs_cg(file_path, path_to_jar):
     try:
+        # Ensure the .jar path exists
+        if not os.path.isfile(path_to_jar):
+            raise FileNotFoundError(f"TAJS JAR file not found at {path_to_jar}")
         command_to_run = [
             "java",
             "-jar",
@@ -47,8 +50,10 @@ def get_tajs_cg(file_path, path_to_jar):
             # delete the output dir not exist ok
 
         else:
+            print(f"Error processing {file_path}")
             print("Command Failed with return code", result.returncode)
             print("Error Output:\n", result.stderr)
+            raise Exception(f"Error processing {file_path}")
 
     except FileNotFoundError:
         print("Error: Java or the specified file was not found.")
