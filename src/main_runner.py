@@ -1,7 +1,16 @@
 import os
 import shutil
 import sys
-from runners import OllamaRunner, PyCGRunner, LLMRunner, HeaderGenCSRunner, TAJSRunner
+
+# TODO: could be dynamically imported
+from runners import (
+    OllamaRunner,
+    PyCGRunner,
+    LLMRunner,
+    HeaderGenCSRunner,
+    TAJSRunner,
+    JsCallgraphRunner,
+)
 from cli import parse_runner_args
 from core import load_config, setup_logger
 from datetime import datetime
@@ -71,6 +80,16 @@ def main():
         ),
         "tajs": (
             TAJSRunner,
+            {
+                "debug": args.debug,
+                "nocache": args.nocache,
+                "config": config,
+                "benchmark_name": args.benchmark_name,
+                "language": args.language,
+            },
+        ),
+        "js_callgraph": (
+            JsCallgraphRunner,
             {
                 "debug": args.debug,
                 "nocache": args.nocache,
