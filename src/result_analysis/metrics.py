@@ -25,12 +25,26 @@ class Metrics:
         num_exact_matches = 0
 
         for node in expected:
-            num_all += len(expected[node])
-            for item in expected[node]:
-                if actual.get(node, None) is None:
+            expected_items = expected[node]
+            actual_items = actual.get(node, None)
+
+            # If the expected list is empty, still count it towards num_all
+            if not expected_items:
+                num_all += 1
+                if actual_items == []:
+                    num_exact_matches += 1
+                else:
+                    self.not_found_counter.append(node)
+                continue
+
+            num_all += len(expected_items)
+
+            for item in expected_items:
+                # If the key doesn't exist in actual, add to not found
+                if actual_items is None:
                     self.not_found_counter.append(item)
-                    continue
-                if item in actual[node]:
+                # Otherwise check if the item is in the actual list
+                elif item in actual_items:
                     num_exact_matches += 1
                 else:
                     self.not_found_counter.append(item)
