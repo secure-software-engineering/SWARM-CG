@@ -9,6 +9,7 @@ import logging
 import prompts
 import copy
 import yaml
+import traceback
 
 
 def is_running_in_docker():
@@ -148,7 +149,7 @@ def generate_json_from_answers(gt_json_file, answers):
                 else:
                     answers_json_data[gt_key] = [x.strip() for x in answer.split(",")]
             else:
-                answers_json_data[gt_key] = []
+                answers_json_data.pop(gt_key, None)
 
         return answers_json_data
 
@@ -167,9 +168,13 @@ def generate_json_from_answers(gt_json_file, answers):
 
         # return answers_json_data
     except Exception as e:
+        # print stack trace
         print("Error generating json from questions")
+        print(gt_json_file)
+        traceback.print_exc()
+
         print(e)
-        return []
+        return {}
 
 
 def generate_json_from_answers_cs(gt_json_file, answers):
