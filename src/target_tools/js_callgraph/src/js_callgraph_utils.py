@@ -36,7 +36,7 @@ def get_js_callgraph_cg(file_path):
             with open(file_path.replace(".js", ".json"), "r") as file:
                 # TODO: Translate the output to SWARM Format JSON
                 cg_json = json.load(file)
-                cg = convert_js_callgraph(cg_json)
+                cg = convert_js_callgraph(file_path, cg_json)
 
         else:
             print("Command Failed with return code", result.returncode)
