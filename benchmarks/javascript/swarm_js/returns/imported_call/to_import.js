@@ -1,4 +1,4 @@
-function return_func() {}
-function func() {
+export function return_func() {}
+export function func() {
   return return_func;
 }

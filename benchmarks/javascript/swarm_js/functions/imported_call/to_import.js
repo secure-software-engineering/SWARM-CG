@@ -1,1 +1,1 @@
-function func() {}
+export function func() {}
