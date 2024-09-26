@@ -22,8 +22,6 @@ RUN /venv/bin/pip install esprima
 # Install the required Node.js packages globally
 RUN npm install -g @persper/js-callgraph
 
-# RUN npm install -g esbuild
-
 # Create a symbolic link for python
 RUN ln -s /usr/bin/python3 /usr/bin/python
 

@@ -39,14 +39,17 @@ def get_js_callgraph_cg(file_path):
                 cg = convert_js_callgraph(file_path, cg_json)
 
         else:
-            print("Command Failed with return code", result.returncode)
+            logger.error("Command Failed with return code", result.returncode)
             print("Error Output:\n", result.stderr)
+            logger.error(f"Error Output in {file_path}: {result.stderr}")
+            raise Exception(f"Error processing {file_path}")
 
     except FileNotFoundError:
         print("Error: The specified file was not found.")
+        logger.error("Error: The specified file was not found.")
     except Exception as e:
         logger.error(f"Error running js_callgraph test: {e}")
-        raise
+        raise Exception(f"Error processing {file_path}")
 
     return json.dumps(cg, indent=4)
 

@@ -2,6 +2,7 @@ import utils
 import json
 import os
 import subprocess
+import traceback
 from translator import convert_tajs
 
 logger = utils.setup_logger()
@@ -53,12 +54,21 @@ def get_tajs_cg(file_path, path_to_jar):
             print(f"Error processing {file_path}")
             print("Command Failed with return code", result.returncode)
             print("Error Output:\n", result.stderr)
+            logger.error(f"Error Output: {result.stderr}")
             raise Exception(f"Error processing {file_path}")
 
     except FileNotFoundError:
         print("Error: Java or the specified file was not found.")
     except Exception as e:
-        logger.error(f"Error running TAJS test: {e}")
+        # Log the type of the exception and detailed information like traceback
+        error_type = type(e).__name__
+        stack_trace = traceback.format_exc()
+
+        # Log more details: exception type, error message, and full traceback
+        logger.error(
+            f"Error running TAJS test. Exception type: {error_type}, Error: {str(e)}\n"
+            f"Stack trace:\n{stack_trace}"
+        )
         raise
 
     try:
@@ -70,10 +80,9 @@ def get_tajs_cg(file_path, path_to_jar):
 
 # Function to process the test folder
 def process_test_folder(file_folder, path_to_jar="/usr/src/app/dist/tajs-all.jar"):
+    file_path = os.path.join(file_folder, f"main.js")
+    result_filepath = os.path.join(file_folder, f"main_result.json")
     try:
-        file_path = os.path.join(file_folder, f"main.js")
-        result_filepath = os.path.join(file_folder, f"main_result.json")
-
         output = get_tajs_cg(file_path, path_to_jar)
 
         with open(result_filepath, "w") as file:
@@ -81,4 +90,8 @@ def process_test_folder(file_folder, path_to_jar="/usr/src/app/dist/tajs-all.jar
 
     except Exception as e:
         logger.error(f"{file_path} failed: {e}")
+
+        # Write an empty JSON object to the result file
+        with open(result_filepath, "w") as file:
+            file.write(json.dumps({}))
         raise
