@@ -15,12 +15,20 @@ def parse_runner_args():
     parser.add_argument(
         "--benchmark_name",
         required=True,
-        help="Specify the name of the micro-benchmark (eg: pycg, cats).",
+        help="Specify the name of the micro-benchmark (eg: pycg, swarm_js).",
     )
+    # TODO: Can this be configured in a central place?
     parser.add_argument(
         "--tool",
         nargs="+",  # Allow multiple values
-        choices=["ollama", "pycg", "llms"],  # Add more tools as needed
+        choices=[
+            "ollama",
+            "pycg",
+            "llms",
+            "headergen_cs",
+            "tajs",
+            "js_callgraph",
+        ],  # Add more tools as needed
         help="Specify the target tool(s) for call graph construction.",
     )
     parser.add_argument(

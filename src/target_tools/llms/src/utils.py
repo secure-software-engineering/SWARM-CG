@@ -9,6 +9,7 @@ import logging
 import prompts
 import copy
 import yaml
+import traceback
 
 
 def is_running_in_docker():
@@ -148,7 +149,7 @@ def generate_json_from_answers(gt_json_file, answers):
                 else:
                     answers_json_data[gt_key] = [x.strip() for x in answer.split(",")]
             else:
-                answers_json_data[gt_key] = []
+                answers_json_data.pop(gt_key, None)
 
         return answers_json_data
 
@@ -166,6 +167,35 @@ def generate_json_from_answers(gt_json_file, answers):
         #             ]
 
         # return answers_json_data
+    except Exception as e:
+        # print stack trace
+        print("Error generating json from questions")
+        print(gt_json_file)
+        traceback.print_exc()
+
+        print(e)
+        return {}
+
+
+def generate_json_from_answers_cs(gt_json_file, answers):
+    try:
+        with open(gt_json_file, "r") as file:
+            gt_data = json.load(file)
+
+        pattern = re.compile(r"^\s*(\d+)\.\s+(.+)\s*$", re.MULTILINE)
+        parsed_answers = pattern.findall(answers)
+
+        if not parsed_answers:
+            parsed_answers = [(0, answers)]
+
+        answers_json_data = {}
+        for i, line_number in enumerate(gt_data):
+            if (i + 1) <= len(parsed_answers):
+                answers_json_data[line_number] = [
+                    x.strip() for x in parsed_answers[i][1].split(",")
+                ]
+
+        return answers_json_data
     except Exception as e:
         print("Error generating json from questions")
         print(e)
@@ -323,6 +353,29 @@ def generate_questions_from_json(json_file, test_folder, logger=None):
     return questions
 
 
+def generate_questions_cs_from_json(json_file, file_name="main.py"):
+    # Read and parse the JSON file
+    with open(json_file, "r") as file:
+        data = json.load(file)
+
+    questions = []
+
+    for line_number in data:
+        question = (
+            f"What are the fully qualified function calls at line {line_number} in"
+            f" file '{file_name}'?"
+        )
+
+        questions.append(question)
+
+    if len(data) != len(questions):
+        print("ERROR! Type questions length does not match json length")
+        sys.exit(-1)
+
+    questions = [f"{x}. {y}" for x, y in zip(range(1, len(questions) + 1), questions)]
+    return questions
+
+
 def load_models_config(config_path):
     models_config = {"models": {}, "custom_models": {}, "openai_models": {}}
     with open(config_path, "r") as file:
@@ -369,7 +422,6 @@ def get_prompt(
     use_system_prompt=True,
     language=None,
 ):
-    json_filepath = os.path.join(file_path, "callgraph.json")
     extension = get_language_extension(language)
 
     code_files = gather_code_files_from_test_folder(file_path, extension)
@@ -392,7 +444,31 @@ def get_prompt(
         "prompt_template_questions_based_1_py",
         "prompt_template_questions_based_1_js",
     ]:
+        json_filepath = os.path.join(file_path, "callgraph.json")
+
         questions_from_json = generate_questions_from_json(json_filepath, file_path)
+
+        prompt_data = {
+            "code": code,
+            "questions": "\n".join(questions_from_json),
+            "answers": (
+                "\n".join([f"{x}." for x in range(1, len(questions_from_json) + 1)])
+                if answers_placeholders
+                else ""
+            ),
+            "language": language.capitalize(),
+        }
+
+        if use_system_prompt:
+            prompt = copy.deepcopy(eval(f"prompts.{prompt_id}"))
+            prompt[1]["content"] = prompt[1]["content"].format(**prompt_data)
+        else:
+            prompt = copy.deepcopy(eval(f"prompts.{prompt_id}_no_sys"))
+            prompt[0]["content"] = prompt[0]["content"].format(**prompt_data)
+
+    elif prompt_id in ["prompt_template_questions_based_1_py_callsites"]:
+        json_filepath = os.path.join(file_path, "linesCallSite.json")
+        questions_from_json = generate_questions_cs_from_json(json_filepath)
 
         prompt_data = {
             "code": code,
@@ -422,7 +498,6 @@ def get_prompt(
 def dump_ft_jsonl(id_mapping, output_file):
     mappings = copy.deepcopy(id_mapping)
     for _m in mappings.values():
-        print(_m)
         assistant_message = {
             "role": "assistant",
             "content": generate_answers_for_fine_tuning(_m["json_filepath"]),
@@ -437,12 +512,22 @@ def dump_ft_jsonl(id_mapping, output_file):
             output.write("\n")
 
 
-def dump_batch_prompt_jsonl(id_mapping, output_file):
-    prompts = [x["prompt"] for x in id_mapping.values()]
-
+def dump_batch_prompt_jsonl(
+    id_mapping, output_file, id_prefix="types", model="gpt-4o-mini"
+):
     with open(output_file, "w") as output:
-        for _m in prompts:
-            output.write(json.dumps(_m))
+        for idx, _m in id_mapping.items():
+            prompt_dict = {
+                "custom_id": f"request-{id_prefix}-{idx}",
+                "method": "POST",
+                "url": "/v1/chat/completions",
+                "body": {
+                    "model": model,
+                    "messages": _m["prompt"],
+                    "max_tokens": 250,
+                },
+            }
+            output.write(json.dumps(prompt_dict))
             output.write("\n")
 
 

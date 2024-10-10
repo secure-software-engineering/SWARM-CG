@@ -22,4 +22,11 @@ def parse_analyzer_args():
         choices=["sound", "complete", "exact matches"],
         required=False,
     )
+
+    parser.add_argument(
+        "--is_callsites",
+        action="store_true",
+        required=False,
+    )
+
     return parser.parse_args()

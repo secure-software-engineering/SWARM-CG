@@ -1,0 +1,12 @@
+{
+	"main": [
+		"main.Gamma.constructor",
+		"main.Gamma.method"
+	],
+	"main.Gamma.constructor": [
+		"main.Alpha.constructor"
+	],
+	"main.Gamma.method": [],
+	"main.Alpha.constructor": [],
+	"main.Beta.method": []
+}

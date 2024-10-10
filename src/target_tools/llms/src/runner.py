@@ -57,10 +57,15 @@ logger.addHandler(console_handler)
 def get_prompt_mapping(
     prompt_template, python_files, use_system_prompt=False, language=None
 ):
+    is_callsites = "callsites" in prompt_template
     id_mapping = {
         idx: {
             "file_path": file_path,
-            "json_filepath": os.path.join(file_path, "callgraph.json"),
+            "json_filepath": (
+                os.path.join(file_path, "linesCallSite.json")
+                if is_callsites
+                else os.path.join(file_path, "callgraph.json")
+            ),
             "result_filepath": os.path.join(file_path, f"main_result.json"),
             "result_dump_filepath": os.path.join(file_path, f"response_dump.txt"),
             "prompt": utils.get_prompt(
@@ -90,6 +95,11 @@ def create_result_json_file(file_info, output_raw, prompt_template):
         "prompt_template_questions_based_1_js",
     ]:
         answers_json = utils.generate_json_from_answers(
+            file_info["json_filepath"], output
+        )
+
+    elif prompt_template in ["prompt_template_questions_based_1_py_callsites"]:
+        answers_json = utils.generate_json_from_answers_cs(
             file_info["json_filepath"], output
         )
 
@@ -212,8 +222,12 @@ def model_evaluation_openai(
 
     prompts = [x["prompt"] for x in id_mapping.values()]
 
-    utils.dump_ft_jsonl(id_mapping, f"{results_dst}/ft_dataset.jsonl")
-    utils.dump_batch_prompt_jsonl(id_mapping, f"{results_dst}/batch_prompt.jsonl")
+    utils.dump_ft_jsonl(id_mapping, f"{results_dst}/ft_dataset_{model_name}.jsonl")
+    utils.dump_batch_prompt_jsonl(
+        id_mapping,
+        f"{results_dst}/batch_prompt_{model_name}.jsonl",
+        model=model_name,
+    )
 
     request_outputs = openai_helpers.process_requests(
         model_name,

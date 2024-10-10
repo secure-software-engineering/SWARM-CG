@@ -23,7 +23,12 @@ def find_latest_results_dir():
     return directories[0] if directories else None
 
 
-def main(results_dir=None, analysis_results_dir=None, analysis_metric=None):
+def main(
+    results_dir=None,
+    analysis_results_dir=None,
+    analysis_metric=None,
+    is_callsites=False,
+):
 
     # Set up logging for the analyzer
     logger = setup_result_analysis_logging()
@@ -43,10 +48,17 @@ def main(results_dir=None, analysis_results_dir=None, analysis_metric=None):
     analysis_results_dir.mkdir(parents=True, exist_ok=True)
     logger.info(f"Analysis results stored in: {analysis_results_dir}")
 
-    analyzer = BaseAnalyzer(results_dir, analysis_results_dir, analysis_metric)
+    analyzer = BaseAnalyzer(
+        results_dir, analysis_results_dir, analysis_metric, is_callsites
+    )
     analyzer.analyze()
 
 
 if __name__ == "__main__":
     args = parse_analyzer_args()  # Call the function to parse arguments
-    main(args.results_dir, args.analysis_output_dir, args.analysis_metric)
+    main(
+        args.results_dir,
+        args.analysis_output_dir,
+        args.analysis_metric,
+        args.is_callsites,
+    )

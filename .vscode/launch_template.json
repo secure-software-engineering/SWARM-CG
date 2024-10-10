@@ -1,0 +1,132 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "LLMs runner",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/target_tools/llms/src/runner.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "args": [
+                "--language",
+                "python",
+                "--benchmark_path",
+                "${workspaceFolder}/extras/finetuning/dataset/pycg",
+                "--prompt_id",
+                "prompt_template_questions_based_1_py_callsites",
+                // "--models",
+                // "tinyllama-1.1b",
+                // "mistral-large-it-2407-123b",
+                // "codestral-v0.1-22b",
+                // CUSTOM MODELS
+                // "--custom_models",
+                // "TinyLlama-1.1B-Chat-v1.0-finetuned",
+                // OPENAI MODELS
+                "--openai_models",
+                "gpt-4o",
+                // OTHER ARGS
+                "--hf_token",
+                "test",
+                "--openai_key",
+                "test",
+                "--enable_streaming",
+                "True",
+                "--models_config",
+                "${workspaceFolder}/src/target_tools/llms/src/models_config.yaml",
+                "--results_dir",
+                "${workspaceFolder}/.scrapy/results/llms_js"
+            ]
+        },
+        {
+            "name": "Main Runner",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main_runner.py",
+            "cwd": "${workspaceFolder}/src",
+            "args": [
+                "--language",
+                "javascript",
+                "--tool",
+                "tajs",
+                "--benchmark_name",
+                "swarm_js",
+                "--debug"
+            ],
+            "console": "integratedTerminal",
+        },
+        {
+            "name": "Ollama Runner",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/target_tools/ollama/src/runner.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--language",
+                "python",
+                "--benchmark_path",
+                "${workspaceFolder}/benchmarks/python/pycg",
+                "--ollama_models",
+                "llama3.1:70b",
+                // "mistral:v0.3",
+                "--openai_key",
+                "apikey",
+                "--ollama_url",
+                "http://ssegpu.cs.upb.de:11434",
+                // "",
+                "--prompt_id",
+                "questions_based_1",
+                "--results_dir",
+                "${workspaceFolder}/results_llm"
+            ]
+        },
+        {
+            "name": "PyCG Runner",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/target_tools/pycg/src/runner.py",
+            "args": [
+                "--language",
+                "python",
+                "--benchmark_path",
+                "${workspaceFolder}/benchmarks",
+                "--results_dir",
+                "${workspaceFolder}/.scrapy/results_pycg"
+            ],
+            "console": "integratedTerminal",
+        },
+        {
+            "name": "TAJS Runner",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/target_tools/tajs/src/runner.py",
+            "args": [
+                "--language",
+                "python",
+                "--benchmark_path",
+                "${workspaceFolder}/benchmarks/javascript/swarm_js",
+                "--results_dir",
+                "${workspaceFolder}/.scrapy/results_pycg",
+                "--path_to_jar",
+                "/mnt/Projects/PhD/Research/Student-Thesis/8_Rose/git_sources/SWARM-CG/.scrapy/TAJS/dist/tajs-all.jar"
+            ],
+            "console": "integratedTerminal",
+        },
+        {
+            "name": "Result Analyzer",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main_analyze_result.py",
+            "args": [
+                "--results_dir",
+                "/mnt/Projects/PhD/Research/EMSE_FORGE/results/callsites/runner_hg_cs/runner_hg_1",
+                "--is_callsites"
+            ],
+            "console": "integratedTerminal",
+        }
+    ]
+}

@@ -1,0 +1,1 @@
+A module imports an item from another module in its index file. Then that item is imported by another module.
