@@ -1,3 +1,12 @@
-{
-  "cl4.Demo:main(Sting[])": [{"target":"lc4.Demo:callback()", "direct":false}],
-}
+[
+  {
+    "caller": "cl4.Demo:main(java.lang.String[])",
+    "targets": [
+      {
+        "callee": "cl4.Demo:callback()",
+        "direct": false,
+        "line": 14
+      }
+    ]
+  }
+]

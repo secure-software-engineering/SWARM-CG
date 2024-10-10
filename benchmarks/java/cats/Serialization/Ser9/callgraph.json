@@ -1,0 +1,12 @@
+[
+    {
+        "caller": "ser.Superclass:<init>()",
+        "targets": [
+            {
+                "callee": "ser.Superclass:callback()",
+                "direct": true,
+                "line": 10
+            }
+        ]
+    }
+]

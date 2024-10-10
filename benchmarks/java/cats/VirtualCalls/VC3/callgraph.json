@@ -1,0 +1,12 @@
+[
+    {
+        "caller": "vc.Class:callOnInterface(vc.Interface)",
+        "targets": [
+            {
+                "callee": "vc.ClassImpl:method()",
+                "direct": true,
+                "line": 15
+            }
+        ]
+    }
+]

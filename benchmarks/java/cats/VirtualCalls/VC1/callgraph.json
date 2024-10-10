@@ -1,11 +1,12 @@
-{
-    "vc.Class.main(String)": [
-        {
-            "target":"vc.Class.target()",
-            "indirect":false,
-            "annotated":true
-        }
-    ],
-    "vc.Class.target()": []
-}
- 
+[
+    {
+        "caller": "vc.Class:main(java.lang.String[])",
+        "targets": [
+            {
+                "callee": "vc.Class:target()",
+                "direct": true,
+                "line": 12
+            }
+        ]
+    }
+]
