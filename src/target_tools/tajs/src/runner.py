@@ -1,4 +1,5 @@
 import argparse
+import shutil
 import sys
 import time
 import os
@@ -66,6 +67,15 @@ def main_runner(args):
         f"Runner finished in {time.time()-runner_start_time:.2f} seconds, with errors:"
         f" {error_count} | JSON errors: {json_count}"
     )
+    # Move the log file to the results directory
+    try:
+        if utils.is_running_in_docker():
+            shutil.move(
+                f"/tmp/tajs_tajs.log",
+                f"{str(results_dst)}/tajs_tajs.log.log",
+            )
+    except FileNotFoundError as e:
+        logger.error(f"Error moving log file: {e}")
 
 
 if __name__ == "__main__":
