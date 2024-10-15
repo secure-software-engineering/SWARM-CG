@@ -300,10 +300,9 @@ def main_runner(args, runner_config, models_to_run, openai_models_models_to_run)
                 else:
                     model_path = model["lora_repo"]
 
-                # pipe = transformers_helpers.load_model_and_configurations(
-                #     args.hf_token, model_path, model["quantization"], TEMPARATURE
-                # )
-                pipe = None
+                pipe = transformers_helpers.load_model_and_configurations(
+                    args.hf_token, model_path, model["quantization"], TEMPARATURE
+                )
                 model_start_time = time.time()
                 evaluation_started = True
                 model_evaluation_transformers(

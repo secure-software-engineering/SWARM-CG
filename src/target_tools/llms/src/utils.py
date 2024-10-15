@@ -169,12 +169,68 @@ def generate_json_from_answers(gt_json_file, answers):
         # return answers_json_data
     except Exception as e:
         # print stack trace
-        print("Error generating json from questions")
+        print("Error generating JSON from LLM answers")
         print(gt_json_file)
         traceback.print_exc()
 
         print(e)
         return {}
+
+
+def generate_json_from_answers_java(gt_json_file, llm_output):
+    try:
+        with open(gt_json_file, "r") as file:
+            gt_data = json.load(file)
+
+        # Initialize the JSON structure for output
+        callgraph_json = []
+
+        # Regex pattern to match LLM output
+        pattern = re.compile(r"(\d+)\.\s*(.*)")
+        output_lines = llm_output.strip().split("\n")
+
+        # Initialize a dictionary to hold targets for each caller
+        targets_dict = {i: [] for i in range(1, len(gt_data) + 1)}
+
+        # Process each line of LLM output
+        for line in output_lines:
+            match = pattern.match(line.strip())
+            if match:
+                question_number, callee_str = match.groups()
+                question_number = int(question_number.strip())
+
+                # Split the callee string into individual callees
+                callees = [callee.strip() for callee in callee_str.split(",")]
+
+                # Store the targets in the corresponding caller's entry
+                if question_number in targets_dict:
+                    targets_dict[question_number].extend(callees)
+
+        # Construct the final call graph JSON
+        for i, (gt_entry) in enumerate(gt_data.items(), start=1):
+            caller = gt_entry["caller"]  # Assuming gt_entry has a key 'caller'
+            targets = []
+
+            for callee in targets_dict[i]:
+                target_entry = {
+                    "callee": callee,
+                    "direct": True,  # Default value
+                    "line": 0,  # Default value
+                }
+                targets.append(target_entry)
+
+            callgraph_json.append({"caller": caller, "targets": targets})
+
+        return callgraph_json
+
+    except Exception as e:
+        # print stack trace
+        print("Error generating JSON from LLM answers")
+        print(gt_json_file)
+        traceback.print_exc()
+
+        print(e)
+        return []
 
 
 def generate_json_from_answers_cs(gt_json_file, answers):
@@ -250,17 +306,7 @@ def best_match(key, file_map, init_file_name):
     return None
 
 
-def identify_language(file_map):
-    """Identify the programming language based on file extensions."""
-    extensions = {file.rsplit(".", 1)[-1] for file in file_map.values()}
-    if "py" in extensions:
-        return "python"
-    elif "js" in extensions:
-        return "javascript"
-    return None
-
-
-def generate_questions_from_json(json_file, test_folder, logger=None):
+def generate_questions_from_json(json_file, test_folder, language, logger=None):
     """
     Generate questions based on the callgraph JSON file.
 
@@ -302,7 +348,6 @@ def generate_questions_from_json(json_file, test_folder, logger=None):
     if logger:
         logger.info(f"Files in test folder '{test_folder}' are {file_map}")
 
-    language = identify_language(file_map)
     init_file_name = "__init__" if language == "python" else "index"
 
     for key in data:
@@ -350,6 +395,75 @@ def generate_questions_from_json(json_file, test_folder, logger=None):
             f"{len(questions)} questions generated for test folder '{test_folder}'."
         )
 
+    return questions
+
+
+def generate_questions_java_from_json(json_file, test_folder, logger=None):
+    """
+    Generate questions based on the callgraph JSON file.
+
+    :param json_file: Path to the callgraph.json file.
+    :param test_folder: Path to the test folder containing the code files (one or more). This may have subdirectories also that contain more code files
+    :param logger: Logger instance.
+    :return: A list of generated questions.
+    """
+
+    questions = []
+
+    try:
+        # Read and parse the JSON file
+        with open(json_file, "r") as file:
+            callgraph_data = json.load(file)
+    except (FileNotFoundError, json.JSONDecodeError) as e:
+        if logger:
+            logger.error(f"Failed to read or parse JSON file '{json_file}': {e}")
+        return questions
+
+    # Iterate through the callgraph entries
+    for entry in callgraph_data:
+        caller = entry.get("caller", "")
+
+        # Ensure the caller is non-empty
+        if not caller:
+            if logger:
+                logger.warning(f"Missing caller information in entry: {entry}")
+            continue
+
+        # Extract class and function name from the caller string (format: className:functionName)
+        if ":" in caller:
+            class_name, _ = caller.split(":")
+        else:
+            # If the format is unexpected, skip this entry
+            if logger:
+                logger.warning(f"Invalid caller format: {caller}")
+            continue
+
+        # Generate questions for the caller
+        question_1 = (
+            f"What are the function calls inside {caller} in the {class_name} class?"
+        )
+        # Append the questions to the list
+        questions.append(question_1)
+
+    # Check if the number of questions matches the entries in the JSON data
+    if len(callgraph_data) != len(questions):
+        if logger:
+            logger.error(
+                f"ERROR! Number of questions ({len(questions)}) does not match JSON entries ({len(callgraph_data)}) for '{test_folder}'"
+            )
+        else:
+            print(
+                f"ERROR! Number of questions ({len(questions)}) does not match JSON entries ({len(callgraph_data)}) for '{test_folder}'"
+            )
+        return []
+
+    # Number the questions for clarity
+    questions = [f"{x}. {y}" for x, y in zip(range(1, len(questions) + 1), questions)]
+
+    if logger:
+        logger.info(
+            f"{len(questions)} questions generated for test folder '{test_folder}'."
+        )
     return questions
 
 
@@ -446,7 +560,34 @@ def get_prompt(
     ]:
         json_filepath = os.path.join(file_path, "callgraph.json")
 
-        questions_from_json = generate_questions_from_json(json_filepath, file_path)
+        questions_from_json = generate_questions_from_json(
+            json_filepath, file_path, language
+        )
+
+        prompt_data = {
+            "code": code,
+            "questions": "\n".join(questions_from_json),
+            "answers": (
+                "\n".join([f"{x}." for x in range(1, len(questions_from_json) + 1)])
+                if answers_placeholders
+                else ""
+            ),
+            "language": language.capitalize(),
+        }
+
+        if use_system_prompt:
+            prompt = copy.deepcopy(eval(f"prompts.{prompt_id}"))
+            prompt[1]["content"] = prompt[1]["content"].format(**prompt_data)
+        else:
+            prompt = copy.deepcopy(eval(f"prompts.{prompt_id}_no_sys"))
+            prompt[0]["content"] = prompt[0]["content"].format(**prompt_data)
+
+    elif prompt_id in ["prompt_template_questions_based_1_java"]:
+
+        json_filepath = os.path.join(file_path, "callgraph.json")
+        questions_from_json = generate_questions_java_from_json(
+            json_filepath, file_path
+        )
 
         prompt_data = {
             "code": code,

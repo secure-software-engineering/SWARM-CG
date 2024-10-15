@@ -97,8 +97,13 @@ def create_result_json_file(file_info, output_raw, prompt_template):
         answers_json = utils.generate_json_from_answers(
             file_info["json_filepath"], output
         )
+    elif prompt_template in ["prompt_template_questions_based_1_java"]:
 
+        answers_json = utils.generate_json_from_answers_java(
+            file_info["json_filepath"], output
+        )
     elif prompt_template in ["prompt_template_questions_based_1_py_callsites"]:
+
         answers_json = utils.generate_json_from_answers_cs(
             file_info["json_filepath"], output
         )
@@ -117,14 +122,25 @@ def create_result_json_file(file_info, output_raw, prompt_template):
 
 def list_files(benchmark_folder_path):
     files = []
+    files_analyzed = 0
     for cat in sorted(os.listdir(benchmark_folder_path)):
-        files_analyzed = 0
-        tests = os.listdir(os.path.join(benchmark_folder_path, cat))
+        cat_path = os.path.join(benchmark_folder_path, cat)
+
+        # Skip files like README.md, only process directories
+        if not os.path.isdir(cat_path):
+            continue  # Skip if it's a file
+
+        tests = [
+            d for d in os.listdir(cat_path) if os.path.isdir(os.path.join(cat_path, d))
+        ]
 
         # Iterating through each test in a category
         for test in tests:
             file = os.path.join(benchmark_folder_path, cat, test)
             files.append(file)
+            files_analyzed += 1
+
+    logger.info(f"Number of Test Files analyzed: {files_analyzed}")
 
     return files
 
