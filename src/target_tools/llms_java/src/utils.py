@@ -241,74 +241,51 @@ def generate_questions_from_json(json_file, test_folder, logger=None):
     """
 
     questions = []
-    file_map = {}
-    default_file_name = None
 
     try:
         # Read and parse the JSON file
         with open(json_file, "r") as file:
-            data = json.load(file)
+            callgraph_data = json.load(file)
     except (FileNotFoundError, json.JSONDecodeError) as e:
         if logger:
             logger.error(f"Failed to read or parse JSON file '{json_file}': {e}")
         return questions
 
-    # Walk through the test_folder to gather all code files
-    for root, _, files in os.walk(test_folder):
-        for file in files:
-            try:
-                relative_path = os.path.relpath(os.path.join(root, file), test_folder)
-                normalized_name = normalize_path(relative_path)
-                file_map[normalized_name] = relative_path
-                # Set the default file name
-                if normalized_name == "main":
-                    default_file_name = file_map[normalized_name]
-            except Exception as e:
-                if logger:
-                    logger.error(
-                        f"Error processing file '{file}' in generate questions functions: {e}"
-                    )
-                continue
-    if logger:
-        logger.info(f"Files in test folder '{test_folder}' are {file_map}")
+    # Iterate through the callgraph entries
+    for entry in callgraph_data:
+        caller = entry.get("caller", "")
 
-    language = identify_language(file_map)
-    init_file_name = "__init__" if language == "python" else "index"
-
-    for key in data:
-        # Identify the corresponding file for this function based on the key in JSON
-        file_name = best_match(key, file_map, init_file_name)
-
-        if not file_name and default_file_name:
-            file_name = default_file_name
-        elif not file_name:
-            # Skip if no file can be determined
+        # Ensure the caller is non-empty
+        if not caller:
             if logger:
-                logger.error(f"No matching file found for key: {key} in {test_folder}")
+                logger.warning(f"Missing caller information in entry: {entry}")
             continue
 
-        # Generate the question based on the identified file
-        if key == normalize_path(file_name):
-            # If the key is a module-level function, ask about module-level calls
-            question = (
-                f"What are the module-level function calls in the file '{file_name}'?"
-            )
-        elif f"{key}.{init_file_name}" == normalize_path(file_name):
-            question = f"What are the function calls in the file '{file_name}'?"
+        # Extract class and function name from the caller string (format: className:functionName)
+        if ":" in caller:
+            class_name, function_name = caller.split(":")
         else:
-            # Otherwise, ask about the function calls inside a specific function
-            question = f"What are the function calls inside the '{key}' function in the file '{file_name}'?"
-        questions.append(question)
+            # If the format is unexpected, skip this entry
+            if logger:
+                logger.warning(f"Invalid caller format: {caller}")
+            continue
+
+        # Generate questions for the caller
+        question_1 = (
+            f"What are the function calls inside {caller} in the {class_name} class?"
+        )
+        # Append the questions to the list
+        questions.append(question_1)
 
     # Check if the number of questions matches the entries in the JSON data
-    if len(data) != len(questions):
+    if len(callgraph_data) != len(questions):
         if logger:
             logger.error(
-                f"ERROR! Number of questions ({len(questions)}) does not match JSON entries ({len(data)}) for '{test_folder}'"
+                f"ERROR! Number of questions ({len(questions)}) does not match JSON entries ({len(callgraph_data)}) for '{test_folder}'"
             )
         else:
             print(
-                f"ERROR! Number of questions ({len(questions)}) does not match JSON entries ({len(data)}) for '{test_folder}'"
+                f"ERROR! Number of questions ({len(questions)}) does not match JSON entries ({len(callgraph_data)}) for '{test_folder}'"
             )
         return []
 
@@ -319,7 +296,6 @@ def generate_questions_from_json(json_file, test_folder, logger=None):
         logger.info(
             f"{len(questions)} questions generated for test folder '{test_folder}'."
         )
-
     return questions
 
 
@@ -329,11 +305,12 @@ def load_models_config(config_path):
         config_data = yaml.safe_load(file)
         for model_data in config_data["models"]:
             models_config["models"][model_data["name"]] = model_data
-        for model_data in config_data["custom_models"]:
-            models_config["custom_models"][model_data["name"]] = model_data
-        for model_data in config_data["openai_models"]:
-            models_config["openai_models"][model_data["name"]] = model_data
-
+        if config_data.get("custom_models", []):
+            for model_data in config_data["custom_models"]:
+                models_config["custom_models"][model_data["name"]] = model_data
+        if config_data.get("openai_models", []):
+            for model_data in config_data["openai_models"]:
+                models_config["openai_models"][model_data["name"]] = model_data
     return models_config
 
 
@@ -383,14 +360,8 @@ def get_prompt(
             # Add filename to the code content for context
             code += f"```{relative_path}\n{code_content}\n```\n\n"
 
-    # Remove comments from code but keep line number structure
-    code = "\n".join(
-        [line if not line.startswith("#") else "#" for line in code.split("\n")]
-    )
-
     if prompt_id in [
-        "prompt_template_questions_based_1_py",
-        "prompt_template_questions_based_1_js",
+        "prompt_template_questions_based_1_java",
     ]:
         questions_from_json = generate_questions_from_json(json_filepath, file_path)
 

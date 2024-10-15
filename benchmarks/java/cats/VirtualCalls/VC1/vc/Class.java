@@ -1,6 +1,5 @@
 // vc/Class.java
 package vc;
-
 import lib.annotations.callgraph.DirectCall;
 
 class Class {

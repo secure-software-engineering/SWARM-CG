@@ -85,10 +85,7 @@ def create_result_json_file(file_info, output_raw, prompt_template):
         f.write(output_raw)
 
     # TODO: Improve the way this is done. Some plugin based design.
-    if prompt_template in [
-        "prompt_template_questions_based_1_py",
-        "prompt_template_questions_based_1_js",
-    ]:
+    if prompt_template in ["prompt_template_questions_based_1_java"]:
         answers_json = utils.generate_json_from_answers(
             file_info["json_filepath"], output
         )
@@ -108,8 +105,16 @@ def create_result_json_file(file_info, output_raw, prompt_template):
 def list_files(benchmark_folder_path):
     files = []
     for cat in sorted(os.listdir(benchmark_folder_path)):
+        cat_path = os.path.join(benchmark_folder_path, cat)
+        # Skip files like README.md, only process directories
+        if not os.path.isdir(cat_path):
+            continue  # Skip if it's a file
+
         files_analyzed = 0
-        tests = os.listdir(os.path.join(benchmark_folder_path, cat))
+
+        tests = [
+            d for d in os.listdir(cat_path) if os.path.isdir(os.path.join(cat_path, d))
+        ]
 
         # Iterating through each test in a category
         for test in tests:
@@ -253,6 +258,8 @@ def main_runner(args, runner_config, models_to_run, openai_models_models_to_run)
         python_files = list_files(results_dst)
 
         pipe = None
+        model_start_time = None
+        evaluation_started = False
         try:
             if model["use_vllms_for_evaluation"]:
                 engine = vllm_helpers.initialize_engine(
@@ -271,6 +278,7 @@ def main_runner(args, runner_config, models_to_run, openai_models_models_to_run)
                     temperature=TEMPARATURE, top_p=0.95, max_tokens=MAX_TOKENS
                 )
                 model_start_time = time.time()
+                evaluation_started = True
                 model_evaluation_vllm(
                     model["name"],
                     args.prompt_id,
@@ -292,10 +300,12 @@ def main_runner(args, runner_config, models_to_run, openai_models_models_to_run)
                 else:
                     model_path = model["lora_repo"]
 
-                pipe = transformers_helpers.load_model_and_configurations(
-                    args.hf_token, model_path, model["quantization"], TEMPARATURE
-                )
+                # pipe = transformers_helpers.load_model_and_configurations(
+                #     args.hf_token, model_path, model["quantization"], TEMPARATURE
+                # )
+                pipe = None
                 model_start_time = time.time()
+                evaluation_started = True
                 model_evaluation_transformers(
                     model["name"],
                     args.prompt_id,
@@ -318,9 +328,12 @@ def main_runner(args, runner_config, models_to_run, openai_models_models_to_run)
             gc.collect()
             torch.cuda.empty_cache()
 
-        logger.info(
-            f"Model {model['name']} finished in {time.time()-model_start_time:.2f} seconds"
-        )
+        if evaluation_started:
+            logger.info(
+                f"Model {model['name']} finished in {time.time() - model_start_time:.2f} seconds"
+            )
+        else:
+            logger.info(f"Model {model['name']} encountered an error before execution")
         # logger.info("Running translator")
         # translator.main_translator(results_dst)
 
