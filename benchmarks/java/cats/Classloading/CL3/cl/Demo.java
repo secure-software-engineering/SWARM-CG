@@ -25,10 +25,10 @@ public class Demo {
         }
     }
 
-    @IndirectCalls({
-        @IndirectCall(name = "compare", line = 53, returnType = int.class, resolvedTargets = "Ljava/lang/Integer;"),
-        @IndirectCall(name = "gc", line = 54, resolvedTargets = "Ljava/lang/System;")
-    })
+    //
+    //
+    //
+    //
     public static void main(String[] args)
             throws ClassNotFoundException, IllegalAccessException, InstantiationException {
         ClassLoader oldParent = Thread.currentThread().getContextClassLoader();

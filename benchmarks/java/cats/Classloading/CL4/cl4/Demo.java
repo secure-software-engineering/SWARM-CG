@@ -3,7 +3,6 @@ package cl4;
 
 import lib.annotations.callgraph.IndirectCall;
 import java.util.Comparator;
-
 public class Demo {
 
 	@IndirectCall(name = "callback", line = 14, resolvedTargets = "Lcl4/Demo;")

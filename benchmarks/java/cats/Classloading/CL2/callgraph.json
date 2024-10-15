@@ -1,3 +1,12 @@
-{
-  "demo.Main:main(Sting[])": [{"target":"java.lang.Integer:compareTo(Integer)", "direct":false}],
-}
+[
+  {
+    "caller": "demo.Main:main(java.lang.String[])",
+    "targets": [
+      {
+        "callee": "java.lang.Integer:compareTo(Integer)",
+        "direct": false,
+        "line": 35
+      }
+    ]
+  }
+]

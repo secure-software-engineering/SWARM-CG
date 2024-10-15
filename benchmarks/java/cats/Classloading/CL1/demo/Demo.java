@@ -22,7 +22,7 @@ public class Demo {
 
     private static final String CLS_NAME = "lib.IntComparator";
 
-    @IndirectCall(name = "compareTo", returnType = int.class, line = 34, resolvedTargets = "Ljava/lang/Integer;")
+    //
     public static void main(String[] args)
             throws ClassNotFoundException, IllegalAccessException, InstantiationException {
         ClassLoader parent = ClassLoader.getSystemClassLoader();
