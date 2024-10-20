@@ -115,22 +115,23 @@ a()();
 
 questions_based_1_java = """## Task Description
 
-**Objective**: Examine and identify the function calls in the given {language} code and answer the questions.
+**Objective**: Examine the provided {language} code, analyze the function calls, and answer the questions about the caller-target relationships.
 
 **Instructions**:
-1. For each question below, provide a concise answer indicating the targets called by each caller.
-2. For each question, list every target as a comma-separated list.
-3. Do not include additional explanations or commentary in your answers.
-4. Include both explicit and implicit function calls in your answers. An implicit function call is a function that is called as a result of another operation, such as the __init__ method being called when an object is created.
-5. If a caller's target is identified through an alias or a reference, list the actual target function that is called after resolving the alias.
+1. For each question provide the target functions as a comma-separated list.
+2. **IMPORTANT**: Ensure that the target function in each response is formatted as specified in the method signature format: 
+	- [Fullname of Class]:[method name]([Parameterlist])
+    - Example: vc.Class:target(java.lang.String[])
+3. Do not include additional explanations or comments in your answers.
+4. Do not include the questions in your response. Only list the answers using the question number format shown below, that is, provide your answer for each question next to the corresponding question number
+    - Response format example:
+    - 1. vc.Class:(java.lang.String[]), vc.Class:(java.lang.Integer)
+5. For methods called through aliases or references, resolve and return the actual target method.
 6. Example of {language} code, questions, and answers are given below. This example should be used as training data.
  
-**Format for Answers**:
-- Provide your answer next to each question number, using only one word.
-- Do not include the questions in your answer.
-- Example:
-    1. vc.Class:target
-    2. vc.Class:anotherTarget
+**Format for Response**:
+    1. vc.Class:targetFunction(), vc.Class:targetFunction2()
+    2. vc.Class:anotherTargetFunction()
 
 **Example Java Code**: 
 ```java
@@ -138,16 +139,16 @@ questions_based_1_java = """## Task Description
 package vc;
 import lib.annotations.callgraph.DirectCall;
 
-class Class {
+class Class {{
 
-    public void target(){ }
+    public void target(){{ }}
 
     @DirectCall(name = "target", line = 12, resolvedTargets = "Lvc/Class;")
-    public static void main(String[] args){
+    public static void main(String[] args){{
         Class cls = new Class();
         cls.target();
-    }
-}
+    }}
+}}
 ```
 
 **Example Questions**:

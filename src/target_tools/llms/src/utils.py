@@ -5,11 +5,13 @@ import shutil
 import sys
 import requests
 import logging
-
 import prompts
 import copy
 import yaml
 import traceback
+
+logger = logging.getLogger("runner")
+logger.setLevel(logging.DEBUG)
 
 
 def is_running_in_docker():
@@ -26,7 +28,7 @@ def is_running_in_docker():
 
 
 def setup_logger():
-    """logger for ollama callgraph runenr"""
+    """logger for llm callgraph runenr"""
     logger = logging.getLogger("llm_runner")
     logger.setLevel(logging.DEBUG)
 
@@ -102,7 +104,7 @@ def copy_folder(src, dst):
 def generate_json_file(filename, type_info):
     # Generate JSON file with type information
     try:
-        if isinstance(type_info, dict):
+        if isinstance(type_info, (dict, list)):
             pass
         else:
             type_info = json.loads(type_info)
@@ -207,11 +209,11 @@ def generate_json_from_answers_java(gt_json_file, llm_output):
                     targets_dict[question_number].extend(callees)
 
         # Construct the final call graph JSON
-        for i, (gt_entry) in enumerate(gt_data.items(), start=1):
+        for i, gt_entry in enumerate(gt_data):
             caller = gt_entry["caller"]  # Assuming gt_entry has a key 'caller'
             targets = []
 
-            for callee in targets_dict[i]:
+            for callee in targets_dict[i + 1]:
                 target_entry = {
                     "callee": callee,
                     "direct": True,  # Default value
@@ -542,97 +544,99 @@ def get_prompt(
 
     # Concatenate code contents
     code = ""
-    for code_file in code_files:
-        with open(code_file, "r") as file:
-            code_content = file.read()
-            relative_path = os.path.relpath(code_file, file_path)
-            # Add filename to the code content for context
-            code += f"```{relative_path}\n{code_content}\n```\n\n"
+    try:
+        for code_file in code_files:
+            with open(code_file, "r") as file:
+                code_content = file.read()
+                relative_path = os.path.relpath(code_file, file_path)
+                # Add filename to the code content for context
+                code += f"```{relative_path}\n{code_content}\n```\n\n"
 
-    # Remove comments from code but keep line number structure
-    code = "\n".join(
-        [line if not line.startswith("#") else "#" for line in code.split("\n")]
-    )
-
-    if prompt_id in [
-        "prompt_template_questions_based_1_py",
-        "prompt_template_questions_based_1_js",
-    ]:
-        json_filepath = os.path.join(file_path, "callgraph.json")
-
-        questions_from_json = generate_questions_from_json(
-            json_filepath, file_path, language
+        # Remove comments from code but keep line number structure
+        code = "\n".join(
+            [line if not line.startswith("#") else "#" for line in code.split("\n")]
         )
 
-        prompt_data = {
-            "code": code,
-            "questions": "\n".join(questions_from_json),
-            "answers": (
-                "\n".join([f"{x}." for x in range(1, len(questions_from_json) + 1)])
-                if answers_placeholders
-                else ""
-            ),
-            "language": language.capitalize(),
-        }
+        if prompt_id in [
+            "prompt_template_questions_based_1_py",
+            "prompt_template_questions_based_1_js",
+        ]:
+            json_filepath = os.path.join(file_path, "callgraph.json")
 
-        if use_system_prompt:
-            prompt = copy.deepcopy(eval(f"prompts.{prompt_id}"))
-            prompt[1]["content"] = prompt[1]["content"].format(**prompt_data)
+            questions_from_json = generate_questions_from_json(
+                json_filepath, file_path, language
+            )
+
+            prompt_data = {
+                "code": code,
+                "questions": "\n".join(questions_from_json),
+                "answers": (
+                    "\n".join([f"{x}." for x in range(1, len(questions_from_json) + 1)])
+                    if answers_placeholders
+                    else ""
+                ),
+                "language": language.capitalize(),
+            }
+
+            if use_system_prompt:
+                prompt = copy.deepcopy(eval(f"prompts.{prompt_id}"))
+                prompt[1]["content"] = prompt[1]["content"].format(**prompt_data)
+            else:
+                prompt = copy.deepcopy(eval(f"prompts.{prompt_id}_no_sys"))
+                prompt[0]["content"] = prompt[0]["content"].format(**prompt_data)
+
+        elif prompt_id in ["prompt_template_questions_based_1_java"]:
+
+            json_filepath = os.path.join(file_path, "callgraph.json")
+            questions_from_json = generate_questions_java_from_json(
+                json_filepath, file_path
+            )
+
+            prompt_data = {
+                "code": code,
+                "questions": "\n".join(questions_from_json),
+                "answers": (
+                    "\n".join([f"{x}." for x in range(1, len(questions_from_json) + 1)])
+                    if answers_placeholders
+                    else ""
+                ),
+                "language": language.capitalize(),
+            }
+
+            if use_system_prompt:
+                prompt = copy.deepcopy(eval(f"prompts.{prompt_id}"))
+                prompt[1]["content"] = prompt[1]["content"].format(**prompt_data)
+            else:
+                prompt = copy.deepcopy(eval(f"prompts.{prompt_id}_no_sys"))
+                prompt[0]["content"] = prompt[0]["content"].format(**prompt_data)
+
+        elif prompt_id in ["prompt_template_questions_based_1_py_callsites"]:
+            json_filepath = os.path.join(file_path, "linesCallSite.json")
+            questions_from_json = generate_questions_cs_from_json(json_filepath)
+
+            prompt_data = {
+                "code": code,
+                "questions": "\n".join(questions_from_json),
+                "answers": (
+                    "\n".join([f"{x}." for x in range(1, len(questions_from_json) + 1)])
+                    if answers_placeholders
+                    else ""
+                ),
+                "language": language.capitalize(),
+            }
+
+            if use_system_prompt:
+                prompt = copy.deepcopy(eval(f"prompts.{prompt_id}"))
+                prompt[1]["content"] = prompt[1]["content"].format(**prompt_data)
+            else:
+                prompt = copy.deepcopy(eval(f"prompts.{prompt_id}_no_sys"))
+                prompt[0]["content"] = prompt[0]["content"].format(**prompt_data)
         else:
-            prompt = copy.deepcopy(eval(f"prompts.{prompt_id}_no_sys"))
-            prompt[0]["content"] = prompt[0]["content"].format(**prompt_data)
-
-    elif prompt_id in ["prompt_template_questions_based_1_java"]:
-
-        json_filepath = os.path.join(file_path, "callgraph.json")
-        questions_from_json = generate_questions_java_from_json(
-            json_filepath, file_path
-        )
-
-        prompt_data = {
-            "code": code,
-            "questions": "\n".join(questions_from_json),
-            "answers": (
-                "\n".join([f"{x}." for x in range(1, len(questions_from_json) + 1)])
-                if answers_placeholders
-                else ""
-            ),
-            "language": language.capitalize(),
-        }
-
-        if use_system_prompt:
-            prompt = copy.deepcopy(eval(f"prompts.{prompt_id}"))
-            prompt[1]["content"] = prompt[1]["content"].format(**prompt_data)
-        else:
-            prompt = copy.deepcopy(eval(f"prompts.{prompt_id}_no_sys"))
-            prompt[0]["content"] = prompt[0]["content"].format(**prompt_data)
-
-    elif prompt_id in ["prompt_template_questions_based_1_py_callsites"]:
-        json_filepath = os.path.join(file_path, "linesCallSite.json")
-        questions_from_json = generate_questions_cs_from_json(json_filepath)
-
-        prompt_data = {
-            "code": code,
-            "questions": "\n".join(questions_from_json),
-            "answers": (
-                "\n".join([f"{x}." for x in range(1, len(questions_from_json) + 1)])
-                if answers_placeholders
-                else ""
-            ),
-            "language": language.capitalize(),
-        }
-
-        if use_system_prompt:
-            prompt = copy.deepcopy(eval(f"prompts.{prompt_id}"))
-            prompt[1]["content"] = prompt[1]["content"].format(**prompt_data)
-        else:
-            prompt = copy.deepcopy(eval(f"prompts.{prompt_id}_no_sys"))
-            prompt[0]["content"] = prompt[0]["content"].format(**prompt_data)
-
-    else:
-        logger.error("ERROR! Prompt not found!")
+            logger.error("ERROR! Prompt Id not found!")
+            sys.exit(-1)
+    except Exception as e:
+        logger.error("An error occurred while generating the prompt: %s", str(e))
         sys.exit(-1)
-
     return prompt
 
 

@@ -58,26 +58,29 @@ def get_prompt_mapping(
     prompt_template, python_files, use_system_prompt=False, language=None
 ):
     is_callsites = "callsites" in prompt_template
-    id_mapping = {
-        idx: {
-            "file_path": file_path,
-            "json_filepath": (
-                os.path.join(file_path, "linesCallSite.json")
-                if is_callsites
-                else os.path.join(file_path, "callgraph.json")
-            ),
-            "result_filepath": os.path.join(file_path, f"main_result.json"),
-            "result_dump_filepath": os.path.join(file_path, f"response_dump.txt"),
-            "prompt": utils.get_prompt(
-                prompt_template,
-                file_path,
-                use_system_prompt=use_system_prompt,
-                language=language,
-            ),
+    try:
+        id_mapping = {
+            idx: {
+                "file_path": file_path,
+                "json_filepath": (
+                    os.path.join(file_path, "linesCallSite.json")
+                    if is_callsites
+                    else os.path.join(file_path, "callgraph.json")
+                ),
+                "result_filepath": os.path.join(file_path, f"main_result.json"),
+                "result_dump_filepath": os.path.join(file_path, f"response_dump.txt"),
+                "prompt": utils.get_prompt(
+                    prompt_template,
+                    file_path,
+                    use_system_prompt=use_system_prompt,
+                    language=language,
+                ),
+            }
+            for idx, file_path in enumerate(python_files)
         }
-        for idx, file_path in enumerate(python_files)
-    }
-
+        logger.info("Successfully built id_mapping: %s", id_mapping)
+    except Exception as e:
+        logger.error("An error occurred while building prompt mapping: %s", str(e))
     return id_mapping
 
 
