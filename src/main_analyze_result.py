@@ -1,10 +1,7 @@
 import os
 from pathlib import Path
 from cli import parse_analyzer_args  # Import the argument parsing function
-from result_analysis import (
-    setup_result_analysis_logging,
-    BaseAnalyzer,
-)
+from result_analysis import setup_result_analysis_logging, BaseAnalyzer, JavaAnalyzer
 
 
 SCRIPT_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -28,6 +25,7 @@ def main(
     analysis_results_dir=None,
     analysis_metric=None,
     is_callsites=False,
+    language="python",
 ):
 
     # Set up logging for the analyzer
@@ -48,9 +46,12 @@ def main(
     analysis_results_dir.mkdir(parents=True, exist_ok=True)
     logger.info(f"Analysis results stored in: {analysis_results_dir}")
 
-    analyzer = BaseAnalyzer(
-        results_dir, analysis_results_dir, analysis_metric, is_callsites
-    )
+    if language == "java":
+        analyzer = JavaAnalyzer(results_dir, analysis_results_dir, analysis_metric)
+    else:
+        analyzer = BaseAnalyzer(
+            results_dir, analysis_results_dir, analysis_metric, is_callsites
+        )
     analyzer.analyze()
 
 
@@ -61,4 +62,5 @@ if __name__ == "__main__":
         args.analysis_output_dir,
         args.analysis_metric,
         args.is_callsites,
+        args.language,
     )

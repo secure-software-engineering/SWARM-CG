@@ -29,4 +29,11 @@ def parse_analyzer_args():
         required=False,
     )
 
+    parser.add_argument(
+        "--language",
+        choices=["java", "python", "javascript"],
+        default="python",
+        required=False,
+    )
+
     return parser.parse_args()
