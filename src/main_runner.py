@@ -48,17 +48,6 @@ def main():
                 "models": args.models,
             },
         ),
-        "ollama_java": (
-            OllamaRunner,
-            {
-                "debug": args.debug,
-                "nocache": args.nocache,
-                "config": config,
-                "language": args.language,
-                "benchmark_name": args.benchmark_name,
-                "models": args.models,
-            },
-        ),
         "pycg": (
             PyCGRunner,
             {
