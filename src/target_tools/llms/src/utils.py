@@ -9,6 +9,8 @@ import prompts
 import copy
 import yaml
 import traceback
+import csv
+
 
 logger = logging.getLogger("runner")
 logger.setLevel(logging.DEBUG)
@@ -674,6 +676,21 @@ def dump_batch_prompt_jsonl(
             }
             output.write(json.dumps(prompt_dict))
             output.write("\n")
+
+
+def log_model_time_to_csv(csv_file, model_name, time_taken):
+    file_exists = os.path.isfile(csv_file)
+
+    # Open the file in append mode
+    with open(csv_file, mode="a", newline="") as file:
+        writer = csv.writer(file)
+
+        # Write the header if the file doesn't exist
+        if not file_exists:
+            writer.writerow(["Model Name", "Time (seconds)"])
+
+        # Write the model name and time taken
+        writer.writerow([model_name, f"{time_taken:.2f}"])
 
 
 # Example usage:

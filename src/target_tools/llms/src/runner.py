@@ -40,8 +40,10 @@ logger.setLevel(logging.DEBUG)
 
 if utils.is_running_in_docker():
     file_handler = logging.FileHandler("/tmp/llm_log.log", mode="w")
+    time_log_csv = "/tmp/llm_time_log.csv"
 else:
     file_handler = logging.FileHandler("llm_log.log", mode="w")
+    time_log_csv = "llm_time_log.csv"
 
 file_handler.setLevel(logging.DEBUG)
 
@@ -354,6 +356,9 @@ def main_runner(args, runner_config, models_to_run, openai_models_models_to_run)
         logger.info(
             f"Model {model['name']} finished in {time.time()-model_start_time:.2f} seconds"
         )
+        utils.log_model_time_to_csv(
+            time_log_csv, model["name"], time.time() - model_start_time
+        )
         # logger.info("Running translator")
         # translator.main_translator(results_dst)
 
@@ -390,6 +395,9 @@ def main_runner(args, runner_config, models_to_run, openai_models_models_to_run)
 
         logger.info(
             f"Model {model['name']} finished in {time.time()-model_start_time:.2f} seconds"
+        )
+        utils.log_model_time_to_csv(
+            time_log_csv, model["name"], time.time() - model_start_time
         )
         # logger.info("Running translator")
         # translator.main_translator(results_dst)

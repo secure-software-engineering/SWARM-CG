@@ -3,6 +3,7 @@ import shutil
 import sys
 
 # TODO: could be dynamically imported
+from result_analysis.utils import run_results_analyzer
 from runners import (
     OllamaRunner,
     PyCGRunner,
@@ -113,7 +114,7 @@ def main():
             logger.error(f"Unknown runner: {runner_name}")
             sys.exit(-1)
 
-    # run_results_analyzer(host_results_path)
+    run_results_analyzer(host_results_path, args.language)
 
     # Move the log file to the results directory
     try:
