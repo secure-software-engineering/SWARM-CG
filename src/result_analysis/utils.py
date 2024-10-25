@@ -65,33 +65,3 @@ def load_json(file_path):
     except Exception as e:
         logger.error(f"Unexpected error: {e}")
         return {}
-
-
-def run_results_analyzer(results_dir, language):
-    """
-    Runs the main_analyze_result.py script with the required arguments.
-
-    :param results_dir: Path to the directory containing the results.
-    :param language: The language to analyze (passed as an argument).
-    """
-
-    analyzer_script = os.path.join(os.path.dirname(__file__), "main_analyze_result.py")
-
-    try:
-        # Running the script using subprocess
-        subprocess.run(
-            [
-                sys.executable,  # Python interpreter
-                analyzer_script,  # Path to the analysis script
-                "--results_dir",
-                results_dir,  # Passing the results directory
-                "--language",
-                language,  # Passing the language
-            ],
-            check=True,  # Raises an exception if the command fails
-        )
-        logger.info(
-            f"Successfully ran analysis on results in {results_dir} for {language}"
-        )
-    except subprocess.CalledProcessError as e:
-        logger.error(f"Error running result analysis: {e}")

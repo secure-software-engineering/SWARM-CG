@@ -46,12 +46,12 @@ def main(
     analysis_results_dir.mkdir(parents=True, exist_ok=True)
     logger.info(f"Analysis results stored in: {analysis_results_dir}")
 
-    if language == "java":
-        analyzer = JavaAnalyzer(results_dir, analysis_results_dir, analysis_metric)
-    else:
-        analyzer = BaseAnalyzer(
-            results_dir, analysis_results_dir, analysis_metric, is_callsites
-        )
+    # if language == "java":
+    #     analyzer = JavaAnalyzer(results_dir, analysis_results_dir, analysis_metric)
+
+    analyzer = BaseAnalyzer(
+        results_dir, analysis_results_dir, analysis_metric, is_callsites
+    )
     analyzer.analyze()
 
 

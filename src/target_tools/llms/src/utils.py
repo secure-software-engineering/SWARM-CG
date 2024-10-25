@@ -181,62 +181,6 @@ def generate_json_from_answers(gt_json_file, answers):
         return {}
 
 
-def generate_json_from_answers_java(gt_json_file, llm_output):
-    try:
-        with open(gt_json_file, "r") as file:
-            gt_data = json.load(file)
-
-        # Initialize the JSON structure for output
-        callgraph_json = []
-
-        # Regex pattern to match LLM output
-        pattern = re.compile(r"(\d+)\.\s*(.*)")
-        output_lines = llm_output.strip().split("\n")
-
-        # Initialize a dictionary to hold targets for each caller
-        targets_dict = {i: [] for i in range(1, len(gt_data) + 1)}
-
-        # Process each line of LLM output
-        for line in output_lines:
-            match = pattern.match(line.strip())
-            if match:
-                question_number, callee_str = match.groups()
-                question_number = int(question_number.strip())
-
-                # Split the callee string into individual callees
-                callees = [callee.strip() for callee in callee_str.split(",")]
-
-                # Store the targets in the corresponding caller's entry
-                if question_number in targets_dict:
-                    targets_dict[question_number].extend(callees)
-
-        # Construct the final call graph JSON
-        for i, gt_entry in enumerate(gt_data):
-            caller = gt_entry["caller"]  # Assuming gt_entry has a key 'caller'
-            targets = []
-
-            for callee in targets_dict[i + 1]:
-                target_entry = {
-                    "callee": callee,
-                    "direct": True,  # Default value
-                    "line": 0,  # Default value
-                }
-                targets.append(target_entry)
-
-            callgraph_json.append({"caller": caller, "targets": targets})
-
-        return callgraph_json
-
-    except Exception as e:
-        # print stack trace
-        print("Error generating JSON from LLM answers")
-        print(gt_json_file)
-        traceback.print_exc()
-
-        print(e)
-        return []
-
-
 def generate_json_from_answers_cs(gt_json_file, answers):
     try:
         with open(gt_json_file, "r") as file:
@@ -424,13 +368,12 @@ def generate_questions_java_from_json(json_file, test_folder, logger=None):
         return questions
 
     # Iterate through the callgraph entries
-    for entry in callgraph_data:
-        caller = entry.get("caller", "")
+    for caller, callees in callgraph_data.items():
 
         # Ensure the caller is non-empty
         if not caller:
             if logger:
-                logger.warning(f"Missing caller information in entry: {entry}")
+                logger.warning(f"Missing caller information in entry: {caller}")
             continue
 
         # Extract class and function name from the caller string (format: className:functionName)
@@ -443,11 +386,11 @@ def generate_questions_java_from_json(json_file, test_folder, logger=None):
             continue
 
         # Generate questions for the caller
-        question_1 = (
+        question = (
             f"What are the function calls inside {caller} in the {class_name} class?"
         )
         # Append the questions to the list
-        questions.append(question_1)
+        questions.append(question)
 
     # Check if the number of questions matches the entries in the JSON data
     if len(callgraph_data) != len(questions):

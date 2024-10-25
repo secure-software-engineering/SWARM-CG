@@ -98,15 +98,16 @@ def create_result_json_file(file_info, output_raw, prompt_template):
     if prompt_template in [
         "prompt_template_questions_based_1_py",
         "prompt_template_questions_based_1_js",
+        "prompt_template_questions_based_1_java",
     ]:
         answers_json = utils.generate_json_from_answers(
             file_info["json_filepath"], output
         )
-    elif prompt_template in ["prompt_template_questions_based_1_java"]:
+    # elif prompt_template in ["prompt_template_questions_based_1_java"]:
 
-        answers_json = utils.generate_json_from_answers_java(
-            file_info["json_filepath"], output
-        )
+    #     answers_json = utils.generate_json_from_answers_java(
+    #         file_info["json_filepath"], output
+    #     )
     elif prompt_template in ["prompt_template_questions_based_1_py_callsites"]:
 
         answers_json = utils.generate_json_from_answers_cs(
