@@ -2,14 +2,10 @@
 package tr;
 
 import java.lang.reflect.Field;
-import lib.annotations.callgraph.IndirectCall;
 
 public class Demo {
     public Target field;
 
-    @IndirectCall(
-        name = "target", line = 18, resolvedTargets = "Ltr/CallTarget;"
-    )
     public static void main(String[] args) throws Exception {
         Demo demo = new Demo();
         demo.field = new CallTarget();

@@ -1,11 +1,9 @@
 // nvc/Class.java
 package nvc;
 
-import lib.annotations.callgraph.DirectCall;
 
 class Class extends Superclass {
 
-    @DirectCall(name = "method", line = 9, resolvedTargets = "Lnvc/Rootclass;")
     protected void method(){
         super.method();
     }

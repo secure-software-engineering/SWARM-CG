@@ -1,12 +1,5 @@
-[
-    {
-        "caller": "si.NonConstantFieldRef:init()",
-        "targets": [
-            {
-                "callee": "si.NonConstantFieldRef:callback()",
-                "direct": true,
-                "line": 10
-            }
-        ]
-    }
-]
+{
+    "si.NonConstantFieldRef:init()": [
+        "si.NonConstantFieldRef:callback()"
+    ]
+}

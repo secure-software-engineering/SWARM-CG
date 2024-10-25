@@ -1,12 +1,5 @@
-[
-    {
-        "caller": "id.Class:main(java.lang.String[])",
-        "targets": [
-            {
-                "callee": "id.SuperClass:version()",
-                "direct": false,
-                "line": 13
-            }
-        ]
-    }
-]
+{
+    "id.Class:main(java.lang.String[])": [
+        "id.SuperClass:version()"
+    ]
+}

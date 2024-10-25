@@ -1,12 +1,5 @@
-[
-    {
-        "caller": "tr.Demo:main(java.lang.String[])",
-        "targets": [
-            {
-                "callee": "tr.CallTarget:target()",
-                "direct": false,
-                "line": 18
-            }
-        ]
-    }
-]
+{
+    "tr.Demo:main(java.lang.String[])": [
+        "tr.CallTarget:target()"
+    ]
+}

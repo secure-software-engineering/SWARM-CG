@@ -1,12 +1,5 @@
-[
-    {
-        "caller": "nvc.Class:method()",
-        "targets": [
-            {
-                "callee": "nvc.Rootclass:method()",
-                "direct": true,
-                "line": 9
-            }
-        ]
-    }
-]
+{
+    "nvc.Class:method()": [
+        "nvc.Rootclass:method()"
+    ]
+}

@@ -2,7 +2,7 @@
 package id;
 
 import java.util.function.Supplier;
-import lib.annotations.callgraph.IndirectCall;
+
 
 class Class {
 
@@ -12,9 +12,6 @@ class Class {
         double apply(double a, double b);
     }
 
-    @IndirectCall(
-       name = "sum", returnType = double.class, rtParameterTypes = {double.class, double.class}, line = 19,
-       resolvedTargets = "Lid/Class;")
     public static void main(String[] args){
         FIDoubleDouble fidd = Class::sum;
         fidd.apply(1d,2d);

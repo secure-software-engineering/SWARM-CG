@@ -1,12 +1,5 @@
-[
-    {
-        "caller": "ser.Demo:writeReplace()",
-        "targets": [
-            {
-                "callee": "ser.Demo:replace()",
-                "direct": true,
-                "line": 17
-            }
-        ]
-    }
-]
+{
+    "ser.Demo:writeReplace()": [
+        "ser.Demo:replace()"
+    ]
+}

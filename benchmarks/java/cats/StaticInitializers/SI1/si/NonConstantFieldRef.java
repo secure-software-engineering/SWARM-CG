@@ -1,12 +1,10 @@
 // si/NonConstantFieldRef.java
 package si;
 
-import lib.annotations.callgraph.DirectCall;
 public interface NonConstantFieldRef {
 
 	static String nonConstantField = init();
 
-    @DirectCall(name = "callback", line = 10, resolvedTargets = "Lsi/NonConstantFieldRef;")
 	static String init() {
 		callback();
 		return "Demo";

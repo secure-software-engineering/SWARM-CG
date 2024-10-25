@@ -1,7 +1,4 @@
 package demo;
-
-import lib.annotations.callgraph.IndirectCall;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -22,7 +19,6 @@ public class Demo {
 
     private static final String CLS_NAME = "lib.IntComparator";
 
-    //
     public static void main(String[] args)
             throws ClassNotFoundException, IllegalAccessException, InstantiationException {
         ClassLoader parent = ClassLoader.getSystemClassLoader();

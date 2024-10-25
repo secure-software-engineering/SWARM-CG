@@ -1,12 +1,5 @@
-[
-    {
-        "caller": "ser.Demo:readResolve()",
-        "targets": [
-            {
-                "callee": "ser.Demo:replace()",
-                "direct": true,
-                "line": 17
-            }
-        ]
-    }
-]
+{
+    "ser.Demo:readResolve()": [
+        "ser.Demo:replace()"
+    ]
+}

@@ -1,12 +1,5 @@
-[
-  {
-    "caller": "demo.Demo:main(java.lang.String[])",
-    "targets": [
-      {
-        "callee": "java.lang.Integer:compareTo(Integer)",
-        "direct": false,
-        "line": 34
-      }
+{
+    "demo.Demo:main(java.lang.String[])": [
+        "java.lang.Integer:compareTo(Integer)"
     ]
-  }
-]
+}

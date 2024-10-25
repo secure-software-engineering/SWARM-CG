@@ -1,12 +1,5 @@
-[
-    {
-        "caller": "jvmc.TargetRunnable:run()",
-        "targets": [
-            {
-                "callee": "jvmc.Demo:callback()",
-                "direct": true,
-                "line": 22
-            }
-        ]
-    }
-]
+{
+    "jvmc.TargetRunnable:run()": [
+        "jvmc.Demo:callback()"
+    ]
+}

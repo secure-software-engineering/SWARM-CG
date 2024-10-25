@@ -1,12 +1,5 @@
-[
-    {
-        "caller": "cfne.Demo:main(java.lang.String[])",
-        "targets": [
-            {
-                "callee": "cfne.Demo:verifyCall()",
-                "direct": true,
-                "line": 18
-            }
-        ]
-    }
-]
+{
+    "cfne.Demo:main(java.lang.String[])": [
+        "cfne.Demo:verifyCall()"
+    ]
+}

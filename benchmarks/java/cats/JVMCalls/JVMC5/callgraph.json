@@ -1,12 +1,5 @@
-[
-    {
-        "caller": "jvmc.ExceptionalExceptionHandler:uncaughtException(java.lang.Thread,java.lang.Throwable)",
-        "targets": [
-            {
-                "callee": "jvmc.ExceptionalExceptionHandler:callback()",
-                "direct": true,
-                "line": 29
-            }
-        ]
-    }
-]
+{
+    "jvmc.ExceptionalExceptionHandler:uncaughtException(java.lang.Thread,java.lang.Throwable)": [
+        "jvmc.ExceptionalExceptionHandler:callback()"
+    ]
+}

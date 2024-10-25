@@ -1,8 +1,6 @@
 // vc/Class.java
 package vc;
 
-import lib.annotations.callgraph.DirectCall;
-
 interface Interface {
     void method();
 }
@@ -13,7 +11,6 @@ class Class implements Interface {
 
     public void method(){ }
 
-    @DirectCall(name = "method", line = 18, resolvedTargets = "Lvc/Class;")
     public static void main(String[] args){
         Interface i = types[0];
         i.method();

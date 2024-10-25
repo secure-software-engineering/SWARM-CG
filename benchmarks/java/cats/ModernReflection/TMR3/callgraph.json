@@ -1,12 +1,5 @@
-[
-    {
-        "caller": "tmr.Demo:<init>()",
-        "targets": [
-            {
-                "callee": "tmr.Demo:verifyCall()",
-                "direct": true,
-                "line": 18
-            }
-        ]
-    }
-]
+{
+    "tmr.Demo:<init>()": [
+        "tmr.Demo:verifyCall()"
+    ]
+}

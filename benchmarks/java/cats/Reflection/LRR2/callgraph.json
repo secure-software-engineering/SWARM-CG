@@ -1,22 +1,8 @@
-[
-    {
-        "caller": "lrr.IsEven:staticInitializerCalled()",
-        "targets": [
-            {
-                "callee": "lrr.Demo:verifyCall()",
-                "direct": true,
-                "line": 27
-            }
-        ]
-    },
-    {
-        "caller": "lrr.IsOdd:staticInitializerCalled()",
-        "targets": [
-            {
-                "callee": "lrr.Demo:verifyCall()",
-                "direct": true,
-                "line": 40
-            }
-        ]
-    }
-]
+{
+    "lrr.IsEven:staticInitializerCalled()": [
+        "lrr.Demo:verifyCall()"
+    ],
+    "lrr.IsOdd:staticInitializerCalled()": [
+        "lrr.Demo:verifyCall()"
+    ]
+}

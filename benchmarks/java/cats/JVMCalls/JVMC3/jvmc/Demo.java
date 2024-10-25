@@ -1,7 +1,6 @@
 // jvmc/Demo.java
 package jvmc;
 
-import lib.annotations.callgraph.DirectCall;
 
 public class Demo {
 
@@ -15,7 +14,6 @@ public class Demo {
 
 class TargetRunnable implements Runnable {
     
-    @DirectCall(name="verifyReachability", line = 19, resolvedTargets = "Ljvmc/TargetRunnable;")
     public void run(){
         verifyReachability();
         /* Do the hard work */

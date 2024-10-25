@@ -1,12 +1,5 @@
-[
-    {
-        "caller": "csr.CallTarget:staticInitializerCalled()",
-        "targets": [
-            {
-                "callee": "csr.Demo:verifyCall()",
-                "direct": true,
-                "line": 27
-            }
-        ]
-    }
-]
+{
+    "csr.CallTarget:staticInitializerCalled()": [
+        "csr.Demo:verifyCall()"
+    ]
+}

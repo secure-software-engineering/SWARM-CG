@@ -1,17 +1,6 @@
-[
-    {
-        "caller": "lib2.Demo:callOnField()",
-        "targets": [
-            {
-                "callee": "lib2.Type:method()",
-                "direct": true,
-                "line": 12
-            },
-            {
-                "callee": "lib2.Subtype:method()",
-                "direct": true,
-                "line": 12
-            }
-        ]
-    }
-]
+{
+    "lib2.Demo:callOnField()": [
+        "lib2.Type:method()",
+        "lib2.Subtype:method()"
+    ]
+}

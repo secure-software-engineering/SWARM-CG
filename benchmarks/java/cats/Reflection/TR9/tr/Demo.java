@@ -1,8 +1,6 @@
 // tr/Demo.java
 package tr;
 
-import lib.annotations.callgraph.DirectCall;
-
 class Demo {
     public static void verifyCall(){ /* do something */ }
 
@@ -17,7 +15,6 @@ class InitializedClass {
         staticInitializerCalled();
     }
 
-    @DirectCall(name="verifyCall", line=21, resolvedTargets = "Ltr/Demo;")
     static private void staticInitializerCalled(){
         Demo.verifyCall();
     }

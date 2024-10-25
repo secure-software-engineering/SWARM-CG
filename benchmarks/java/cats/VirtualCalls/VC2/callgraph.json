@@ -1,12 +1,5 @@
-[
-    {
-        "caller": "vc.Class:callMethod(vc.Class)",
-        "targets": [
-            {
-                "callee": "vc.SubClass:method()",
-                "direct": true,
-                "line": 11
-            }
-        ]
-    }
-]
+{
+    "vc.Class:callMethod(vc.Class)": [
+        "vc.SubClass:method()"
+    ]
+}

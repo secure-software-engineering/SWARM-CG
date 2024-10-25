@@ -1,17 +1,6 @@
-[
-    {
-        "caller": "j8dim.SuperClass:main(java.lang.String[])",
-        "targets": [
-            {
-                "callee": "j8dim.DirectInterface:method()",
-                "direct": true,
-                "line": 26
-            },
-            {
-                "callee": "j8dim.SuperClass:compute()",
-                "direct": true,
-                "line": 27
-            }
-        ]
-    }
-]
+{
+    "j8dim.SuperClass:main(java.lang.String[])": [
+        "j8dim.DirectInterface:method()",
+        "j8dim.SuperClass:compute()"
+    ]
+}

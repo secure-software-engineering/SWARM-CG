@@ -1,7 +1,6 @@
 // lrr/Demo.java
 package lrr;
 
-import lib.annotations.callgraph.DirectCall;
 
 class Demo {
     public static void verifyCall(){ /* do something */ }
@@ -23,7 +22,6 @@ class IsEven {
          staticInitializerCalled();
      }
 
-     @DirectCall(name="verifyCall", line=27, resolvedTargets = "Llrr/Demo;")
      static private void staticInitializerCalled(){
          Demo.verifyCall();
      }
@@ -36,7 +34,6 @@ class IsEven {
          staticInitializerCalled();
      }
 
-     @DirectCall(name="verifyCall", line=40, resolvedTargets = "Llrr/Demo;")
      static private void staticInitializerCalled(){
          Demo.verifyCall();
      }

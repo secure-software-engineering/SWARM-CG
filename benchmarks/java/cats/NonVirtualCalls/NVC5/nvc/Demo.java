@@ -1,7 +1,6 @@
 // nvc/Demo.java
 package nvc;
 
-import lib.annotations.callgraph.DirectCall;
 
 public class Demo {
     
@@ -21,8 +20,7 @@ class Middle extends Super {
 }
 
 class Sub extends Middle {
-    
-    @DirectCall(name="method", line=26, resolvedTargets = "Lnvc/Middle;")
+
     void method() { 
         super.method(); 
     }

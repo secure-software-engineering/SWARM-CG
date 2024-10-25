@@ -2,7 +2,6 @@
 package csr;
 
 import java.util.Properties;
-import lib.annotations.callgraph.DirectCall;
 
 class Demo {
 
@@ -27,7 +26,6 @@ class TargetClass {
          staticInitializerCalled();
      }
 
-     @DirectCall(name="verifyCall", line=31, resolvedTargets = "Lcsr/Demo;")
      static private void staticInitializerCalled(){
          Demo.verifyCall();
      }

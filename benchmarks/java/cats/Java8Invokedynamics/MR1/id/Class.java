@@ -1,7 +1,6 @@
 // id/Class.java
 package id;
 
-import lib.annotations.callgraph.IndirectCall;
 
 class Class implements Interface {
 
@@ -9,10 +8,6 @@ class Class implements Interface {
         boolean get();
     }
 
-    @IndirectCall(
-           name = "method", returnType = boolean.class, line = 18,
-           resolvedTargets = "Lid/Interface;"
-    )
     public static void main(String[] args){
         Class cls = new Class();
         FIBoolean bc = cls::method;

@@ -8,14 +8,13 @@ import java.io.IOException;
 import java.io.ObjectStreamException;
 import java.io.ObjectInputValidation;
 import java.io.InvalidObjectException;
-import lib.annotations.callgraph.DirectCall;
 
 public class Demo implements Serializable, ObjectInputValidation {
     
     static final long serialVersionUID = 42L;
     
     public void callback() { }
-    @DirectCall(name = "callback", resolvedTargets = "Lser/Demo;", line = 19)
+
     public void validateObject() throws InvalidObjectException {
         callback();
     }

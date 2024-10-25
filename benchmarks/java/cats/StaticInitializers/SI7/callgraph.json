@@ -1,12 +1,5 @@
-[
-    {
-        "caller": "si.Demo:init()",
-        "targets": [
-            {
-                "callee": "si.Demo:callback()",
-                "direct": true,
-                "line": 18
-            }
-        ]
-    }
-]
+{
+    "si.Demo:init()": [
+        "si.Demo:callback()"
+    ]
+}

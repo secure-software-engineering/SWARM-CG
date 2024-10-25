@@ -1,7 +1,6 @@
 // si/Main.java
 package si;
 
-import lib.annotations.callgraph.DirectCall;
 public class Main {
 
 	public static void main(String[] args) {
@@ -12,7 +11,6 @@ public class Main {
 class Subclass extends Superclass {
 	static String name = init();
 
-    @DirectCall(name = "callback", line = 16, resolvedTargets = "Lsi/Subclass;")
 	static String init() {
 		callback();
 		return "Subclass";
@@ -27,7 +25,6 @@ class Superclass extends RootClass {
         superInit();
     }
 
-    @DirectCall(name = "callback", line = 31, resolvedTargets = "Lsi/Superclass;")
     static void superInit(){
         callback();
     }
@@ -41,7 +38,6 @@ class RootClass {
         rootInit();
     }
 
-    @DirectCall(name = "callback", line = 45, resolvedTargets = "Lsi/RootClass;")
     static void rootInit(){
       callback();
     }

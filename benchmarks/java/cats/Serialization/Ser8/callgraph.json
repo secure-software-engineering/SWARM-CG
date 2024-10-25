@@ -1,12 +1,5 @@
-[
-    {
-        "caller": "ser.Demo:validateObject()",
-        "targets": [
-            {
-                "callee": "ser.Demo:callback()",
-                "direct": true,
-                "line": 19
-            }
-        ]
-    }
-]
+{
+    "ser.Demo:validateObject()": [
+        "ser.Demo:callback()"
+    ]
+}

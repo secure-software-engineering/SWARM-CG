@@ -1,12 +1,5 @@
-[
-    {
-        "caller": "unsafe.Demo:main(java.lang.String[])",
-        "targets": [
-            {
-                "callee": "unsafe.SafeTarget:targetMethod()",
-                "direct": true,
-                "line": 24
-            }
-        ]
-    }
-]
+{
+    "unsafe.Demo:main(java.lang.String[])": [
+        "unsafe.SafeTarget:targetMethod()"
+    ]
+}

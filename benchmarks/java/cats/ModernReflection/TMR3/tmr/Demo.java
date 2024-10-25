@@ -5,7 +5,6 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 
-import lib.annotations.callgraph.DirectCall;
 class Demo {
 
     public static void main(String[] args) throws Throwable {
@@ -14,7 +13,6 @@ class Demo {
         Demo f = (Demo) handle.invokeExact();
     }
 
-    @DirectCall(name="verifyCall", line=18, resolvedTargets = "Ltmr/Demo;")
     public Demo() {
         Demo.verifyCall();
     }

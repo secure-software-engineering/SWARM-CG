@@ -1,7 +1,6 @@
 // id/Class.java
 package id;
 
-import lib.annotations.callgraph.IndirectCall;
 
 class Class {
 
@@ -15,7 +14,6 @@ class Class {
 
     public static Runnable[] lambdaArray = new Runnable[10];
 
-    @IndirectCall(name = "doSomething", line = 22, resolvedTargets = "Lid/Class;")
     public static void main(String[] args) {
         Runnable r1 = () -> doSomething();
         lambdaArray[0] = r1;

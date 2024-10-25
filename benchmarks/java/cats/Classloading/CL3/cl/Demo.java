@@ -1,8 +1,4 @@
 package cl;
-
-import lib.annotations.callgraph.IndirectCall;
-import lib.annotations.callgraph.IndirectCalls;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -25,10 +21,6 @@ public class Demo {
         }
     }
 
-    //
-    //
-    //
-    //
     public static void main(String[] args)
             throws ClassNotFoundException, IllegalAccessException, InstantiationException {
         ClassLoader oldParent = Thread.currentThread().getContextClassLoader();

@@ -1,7 +1,6 @@
 // spm3/Class.java
 package spm3;
 
-import lib.annotations.callgraph.IndirectCall;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -16,10 +15,7 @@ class Class {
        public static void method(MyString ms){
            /* do Something */
        }
-       
-       @IndirectCall(
-            name = "method", returnType = void.class, rtParameterTypes = {MyObject.class}, line = 26,
-            resolvedTargets = "Lspm3/Class;")
+
        public static void main(String[] args) throws Throwable {
            MethodType descriptor = MethodType.methodType(void.class, MyObject.class);
            MethodHandle mh = MethodHandles.lookup().findStatic(Class.class, "method", descriptor);

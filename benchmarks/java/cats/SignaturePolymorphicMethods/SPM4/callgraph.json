@@ -1,12 +1,5 @@
-[
-    {
-        "caller": "spm4.VirtualSPMCall:main(java.lang.String[])",
-        "targets": [
-            {
-                "callee": "spm4.SuperClassWithMethod:method(byte)",
-                "direct": false,
-                "line": 19
-            }
-        ]
-    }
-]
+{
+    "spm4.VirtualSPMCall:main(java.lang.String[])": [
+        "spm4.SuperClassWithMethod:method(byte)"
+    ]
+}

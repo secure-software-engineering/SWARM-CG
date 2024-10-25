@@ -1,12 +1,5 @@
-[
-    {
-        "caller": "lrr.TargetClass:staticInitializerCalled()",
-        "targets": [
-            {
-                "callee": "lrr.Demo:verifyCall()",
-                "direct": true,
-                "line": 25
-            }
-        ]
-    }
-]
+{
+    "lrr.TargetClass:staticInitializerCalled()": [
+        "lrr.Demo:verifyCall()"
+    ]
+}

@@ -1,8 +1,6 @@
 // cfne/Demo.java
 package cfne;
 
-import lib.annotations.callgraph.DirectCall;
-
 public class Demo {
 
     public static void verifyCall(){ /* do something */ }
@@ -27,7 +25,6 @@ class LoadedClass {
         staticInitializerCalled();
     }
 
-    @DirectCall(name="verifyCall", line=31, resolvedTargets = "Lcfne/Demo;")
     static private void staticInitializerCalled(){
         Demo.verifyCall();
     }

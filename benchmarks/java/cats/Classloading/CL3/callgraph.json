@@ -1,17 +1,6 @@
-[
-	{
-		"caller": "cl.Demo:main(java.lang.String[])",
-		"targets": [
-			{
-				"callee": "java.lang.Integer:compare(int,int)",
-				"direct": false,
-				"line": 53
-			},
-			{
-				"callee": "java.lang.System:gc()",
-				"direct": false,
-				"line": 54
-			}
-		]
-	}
-]
+{
+    "cl.Demo:main(java.lang.String[])": [
+        "java.lang.Integer:compare(int,int)",
+        "java.lang.System:gc()"
+    ]
+}

@@ -1,12 +1,5 @@
-[
-    {
-        "caller": "ser.Demo:writeObject(java.io.ObjectOutputStream)",
-        "targets": [
-            {
-                "callee": "java.io.ObjectOutputStream:defaultWriteObject()",
-                "direct": true,
-                "line": 15
-            }
-        ]
-    }
-]
+{
+    "ser.Demo:writeObject(java.io.ObjectOutputStream)": [
+        "java.io.ObjectOutputStream:defaultWriteObject()"
+    ]
+}

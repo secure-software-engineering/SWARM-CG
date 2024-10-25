@@ -1,12 +1,5 @@
-[
-    {
-        "caller": "tr.Demo:caller()",
-        "targets": [
-            {
-                "callee": "tr.Demo:target()",
-                "direct": false,
-                "line": 13
-            }
-        ]
-    }
-]
+{
+    "tr.Demo:caller()": [
+        "tr.Demo:target()"
+    ]
+}

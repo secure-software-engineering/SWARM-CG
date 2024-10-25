@@ -1,7 +1,6 @@
 // si/Main.java
 package si;
 
-import lib.annotations.callgraph.DirectCall;
 public class Main {
 
 	public static void main(String[] args) {
@@ -14,7 +13,6 @@ class Demo {
 
     static int assignMe;
 
-    @DirectCall(name = "callback", line = 18, resolvedTargets = "Lsi/Demo;")
 	static String init() {
 		callback();
 		return "Demo";

@@ -1,7 +1,6 @@
 // j8dim/SuperClass.java
 package j8dim;
 
-import lib.annotations.callgraph.DirectCall;
 
 class SuperClass {
 
@@ -9,12 +8,6 @@ class SuperClass {
         // do something
     }
 
-    @DirectCall(
-            name = "method",
-            line = 19,
-            resolvedTargets = "Lj8dim/SuperClass;",
-            prohibitedTargets = {"Lj8dim/Interface;"}
-    )
     public static void main(String[] args){
         Interface i = new SubClass();
         i.method();

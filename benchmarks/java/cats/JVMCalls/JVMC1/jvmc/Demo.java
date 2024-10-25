@@ -4,7 +4,6 @@ package jvmc;
 import java.lang.System;
 import java.lang.Runtime;
 
-import lib.annotations.callgraph.DirectCall;
 
 public class Demo {
 
@@ -18,7 +17,6 @@ public class Demo {
 
 class TargetRunnable implements Runnable {
     
-    @DirectCall(name = "callback", line = 22, resolvedTargets = "Ljvmc/Demo;")
     public void run(){
         Demo.callback();
     }

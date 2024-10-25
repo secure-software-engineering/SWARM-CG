@@ -1,12 +1,5 @@
-[
-    {
-        "caller": "id.Class:main(java.lang.String[])",
-        "targets": [
-            {
-                "callee": "id.Interface:method()",
-                "direct": false,
-                "line": 18
-            }
-        ]
-    }
-]
+{
+    "id.Class:main(java.lang.String[])": [
+        "id.Interface:method()"
+    ]
+}

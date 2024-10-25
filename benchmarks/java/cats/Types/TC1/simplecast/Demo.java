@@ -1,7 +1,6 @@
 // simplecast/Demo.java
 package simplecast;
 
-import lib.annotations.callgraph.DirectCall;
 class Demo {
     public static void main(String[] args) throws Exception {
         if (args.length == 0) 
@@ -10,10 +9,6 @@ class Demo {
           castToTarget(new Demo());
     }
 
-    @DirectCall(
-        name = "target", returnType = String.class, line = 18,
-        resolvedTargets = "Lsimplecast/Target;"
-    )
     static void castToTarget(Object o) {
         Target b = (Target) o;
         b.target();

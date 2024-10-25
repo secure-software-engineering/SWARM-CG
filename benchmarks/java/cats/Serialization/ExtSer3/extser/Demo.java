@@ -9,13 +9,11 @@ import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectInput;
 import java.io.IOException;
-import lib.annotations.callgraph.DirectCall;
 
 public class Demo implements Externalizable {
     
     public void callback() { }
 
-    @DirectCall(name = "callback", resolvedTargets = "Lextser/Demo;", line = 19)
     public Demo() {
         callback();
     }

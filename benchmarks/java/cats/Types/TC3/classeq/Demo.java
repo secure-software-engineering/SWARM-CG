@@ -1,7 +1,6 @@
 // classeq/Demo.java
 package classeq;
 
-import lib.annotations.callgraph.DirectCall;
 class Demo{ 
     public static void main(String[] args) throws Exception {
         if (args.length == 0) 
@@ -10,10 +9,6 @@ class Demo{
           callIfInstanceOfTarget(new Demo());
     }
 
-    @DirectCall(
-        name = "toString", returnType = String.class, line = 18,
-        resolvedTargets = "Lclasseq/Target;"
-    )
     static void callIfInstanceOfTarget(Object o) {
       if (o.getClass() == Target.class)
         o.toString();

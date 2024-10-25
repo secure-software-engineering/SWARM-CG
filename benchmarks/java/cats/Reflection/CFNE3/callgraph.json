@@ -1,12 +1,5 @@
-[
-    {
-        "caller": "cfne.LoadedClass:staticInitializerCalled()",
-        "targets": [
-            {
-                "callee": "cfne.Demo:verifyCall()",
-                "direct": true,
-                "line": 31
-            }
-        ]
-    }
-]
+{
+    "cfne.LoadedClass:staticInitializerCalled()": [
+        "cfne.Demo:verifyCall()"
+    ]
+}

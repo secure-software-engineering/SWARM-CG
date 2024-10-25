@@ -1,8 +1,6 @@
 // jvmc/Demo.java
 package jvmc;
 
-import lib.annotations.callgraph.DirectCall;
-
 public class Demo {
 
 	public static void main(String[] args) throws InterruptedException {
@@ -25,9 +23,8 @@ class ExceptionalExceptionHandler implements Thread.UncaughtExceptionHandler {
  
     private static void callback() { /* do something */ }
     
-    @DirectCall(name="callback", line= 29, resolvedTargets = "Ljvmc/ExceptionalExceptionHandler;")
-     public void uncaughtException(Thread t, Throwable e){
+    public void uncaughtException(Thread t, Throwable e){
         callback();
         // Handle the uncaught Exception (IllegalArgumentException)
-     }
+    }
 }

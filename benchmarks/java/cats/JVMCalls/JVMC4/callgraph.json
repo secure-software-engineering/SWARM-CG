@@ -1,12 +1,5 @@
-[
-    {
-        "caller": "jvmc.Demo:main(java.lang.String[])",
-        "targets": [
-            {
-                "callee": "java.lang.Thread:exit()",
-                "direct": false,
-                "line": 12
-            }
-        ]
-    }
-]
+{
+    "jvmc.Demo:main(java.lang.String[])": [
+        "java.lang.Thread:exit()"
+    ]
+}

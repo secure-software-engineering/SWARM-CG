@@ -11,18 +11,12 @@ import java.io.ObjectOutputStream;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 
-import lib.annotations.callgraph.IndirectCall;
-
 public class DoSerialization {
 
     @FunctionalInterface interface Test extends Serializable{
         String concat(Integer seconds);
     }
-    
-    @IndirectCall(
-            name = "writeReplace",
-            line = 33,
-            resolvedTargets = "Ljava/lang/invoke/SerializedLambda;")
+
     public static void main(String[] args) throws Exception {
         float y = 3.13f;
         String s = "bar";

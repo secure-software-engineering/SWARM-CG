@@ -1,13 +1,9 @@
 // id/Class.java
 package id;
 
-import lib.annotations.callgraph.IndirectCall;
 
 class Class extends SuperClass {
 
-    @IndirectCall(
-       name = "getTypeName", returnType = String.class, line = 12,
-       resolvedTargets = "Lid/SuperClass;")
     public void callViaMethodReference(){
         java.util.function.Supplier<String> stringSupplier = super::getTypeName;
         stringSupplier.get();

@@ -4,16 +4,11 @@ package unsafe;
 import sun.misc.Unsafe;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import lib.annotations.callgraph.DirectCall;
-import lib.annotations.callgraph.DirectCalls;
+
 
 public class Demo {
     private Object objectVar = null;
-    
-    @DirectCalls({
-	    @DirectCall(name = "targetMethod", resolvedTargets = "Lunsafe/UnsafeTarget;", returnType = String.class, line = 29),
-        @DirectCall(name = "targetMethod", resolvedTargets = "Lunsafe/SafeTarget;", returnType = String.class, line = 30)
-    })
+
     public static void main(String[] args) throws Exception {
         Constructor<Unsafe> unsafeConstructor = Unsafe.class.getDeclaredConstructor();
         unsafeConstructor.setAccessible(true);

@@ -1,12 +1,5 @@
-[
-    {
-        "caller": "id.Class:main(java.lang.String[])",
-        "targets": [
-            {
-                "callee": "id.LambdaProvider:doSomething()",
-                "direct": false,
-                "line": 12
-            }
-        ]
-    }
-]
+{
+    "id.Class:main(java.lang.String[])": [
+        "id.LambdaProvider:doSomething()"
+    ]
+}
