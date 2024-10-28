@@ -1,0 +1,5 @@
+{
+    "virtualcalls.VirtualCallDemo:main(java.lang.String[])": [
+        "virtualcalls.VirtualCallDemo:performAction()"
+    ]
+}

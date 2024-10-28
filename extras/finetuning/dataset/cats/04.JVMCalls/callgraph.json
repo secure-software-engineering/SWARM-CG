@@ -1,0 +1,5 @@
+{
+    "jvmcalls.ShutdownTask:run()": [
+        "jvmcalls.JVMHookDemo:onShutdownCallback()"
+    ]
+}

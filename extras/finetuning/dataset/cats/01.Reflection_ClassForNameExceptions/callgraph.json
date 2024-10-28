@@ -1,0 +1,5 @@
+{
+    "reflections.ClassLoadingDemo:main(java.lang.String[])": [
+        "reflections.ClassLoadingDemo:triggerException()"
+    ]
+}

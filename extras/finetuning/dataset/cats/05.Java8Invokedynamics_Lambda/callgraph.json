@@ -1,0 +1,5 @@
+{
+    "invokedynamic.LambdaDemo:main(java.lang.String[])": [
+        "invokedynamic.LambdaDemo:performAction()"
+    ]
+}

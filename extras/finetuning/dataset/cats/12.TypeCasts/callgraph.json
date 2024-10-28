@@ -1,0 +1,5 @@
+{
+    "typecasts.CastDemo:castToTarget(java.lang.Object)": [
+        "typecasts.TargetClass:targetMethod()"
+    ]
+}

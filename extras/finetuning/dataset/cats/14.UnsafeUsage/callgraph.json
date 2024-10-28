@@ -1,0 +1,5 @@
+{
+    "unsafe.UnsafeDemo:main(java.lang.String[])": [
+        "unsafe.UnsafeTargetClass:targetMethod()"
+    ]
+}

@@ -1,0 +1,5 @@
+{
+    "invokedynamic.MethodReferenceDemo:invokeViaMethodReference()": [
+        "invokedynamic.BaseClass:fetchTypeName()"
+    ]
+}

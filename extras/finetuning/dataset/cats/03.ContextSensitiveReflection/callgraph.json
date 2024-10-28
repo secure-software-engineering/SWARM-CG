@@ -1,0 +1,5 @@
+{
+    "reflections.StaticInitializerClass:callStaticInitializer()": [
+        "reflections.ContextSensitiveDemo:triggerVerification()"
+    ]
+}
