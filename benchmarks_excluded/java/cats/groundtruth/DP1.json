@@ -1,0 +1,18 @@
+[
+	{
+		"caller":"dp.Main:main(java.lang.String[])",
+		"targets":
+			[
+				{
+					"callee":"dp.FooImpl:bar(java.lang.Object)",
+					"direct":false,
+					"line":17
+				},
+				{
+					"callee":"dp.DebugProxy:invoke(java.lang.Object,java.lang.reflect.Method,java.lang.Object[])",
+					"direct":false,
+					"line":17
+				}
+			]
+	}
+]

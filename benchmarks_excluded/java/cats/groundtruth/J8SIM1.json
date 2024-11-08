@@ -1,0 +1,13 @@
+[
+	{
+		"caller":"j8sim.Class:main(java.lang.String[])",
+		"targets":
+			[
+				{
+					"callee":"j8sim.Interface:method()",
+					"direct":true,
+					"line":9
+				}
+			]
+	}
+]

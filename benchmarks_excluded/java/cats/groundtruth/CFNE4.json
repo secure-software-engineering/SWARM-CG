@@ -1,0 +1,13 @@
+[
+	{
+		"caller":"cfne.RootClass:staticInitializerCalled()",
+		"targets":
+			[
+				{
+					"callee":"cfne.Demo:verifyCall()",
+					"direct":true,
+					"line":35
+				}
+			]
+	}
+]

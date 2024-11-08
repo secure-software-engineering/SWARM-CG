@@ -1,0 +1,13 @@
+[
+	{
+		"caller":"simplecast.Demo:castToTarget(java.lang.Object)",
+		"targets":
+			[
+				{
+					"callee":"simplecast.Target:target()",
+					"direct":true,
+					"line":18
+				}
+			]
+	}
+]

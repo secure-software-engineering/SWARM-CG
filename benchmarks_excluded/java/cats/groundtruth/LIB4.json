@@ -1,0 +1,13 @@
+[
+	{
+		"caller":"lib4.collude.Demo:interfaceCallSite(lib4.collude.PotentialInterface)",
+		"targets":
+			[
+				{
+					"callee":"lib4.collude.PotentialSuperclass:method()",
+					"direct":true,
+					"line":10
+				}
+			]
+	}
+]

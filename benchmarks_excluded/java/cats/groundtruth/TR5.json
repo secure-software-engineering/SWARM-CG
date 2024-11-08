@@ -1,0 +1,13 @@
+[
+	{
+		"caller":"tr.Demo:<init>()",
+		"targets":
+			[
+				{
+					"callee":"tr.Demo:verifyCall()",
+					"direct":true,
+					"line":9
+				}
+			]
+	}
+]

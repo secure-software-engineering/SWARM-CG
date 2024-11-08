@@ -1,0 +1,13 @@
+[
+	{
+		"caller":"vc.Class:callMethod(vc.Class)",
+		"targets":
+			[
+				{
+					"callee":"vc.SubClass:method()",
+					"direct":true,
+					"line":11
+				}
+			]
+	}
+]

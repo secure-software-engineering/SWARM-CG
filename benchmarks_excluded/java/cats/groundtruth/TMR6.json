@@ -1,0 +1,13 @@
+[
+	{
+		"caller":"tmr.Demo:main(java.lang.String[])",
+		"targets":
+			[
+				{
+					"callee":"tmr.Superclass:target()",
+					"direct":false,
+					"line":18
+				}
+			]
+	}
+]

@@ -1,0 +1,13 @@
+[
+	{
+		"caller":"tr.Demo:caller()",
+		"targets":
+			[
+				{
+					"callee":"tr.Demo:target()",
+					"direct":false,
+					"line":13
+				}
+			]
+	}
+]

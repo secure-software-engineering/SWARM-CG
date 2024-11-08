@@ -1,0 +1,35 @@
+[
+	{
+		"caller":"si.Subclass:init()",
+		"targets":
+			[
+				{
+					"callee":"si.Subclass:callback()",
+					"direct":true,
+					"line":16
+				}
+			]
+	},
+	{
+		"caller":"si.RootClass:rootInit()",
+		"targets":
+			[
+				{
+					"callee":"si.RootClass:callback()",
+					"direct":true,
+					"line":45
+				}
+			]
+	},
+	{
+		"caller":"si.Superclass:superInit()",
+		"targets":
+			[
+				{
+					"callee":"si.Superclass:callback()",
+					"direct":true,
+					"line":31
+				}
+			]
+	}
+]

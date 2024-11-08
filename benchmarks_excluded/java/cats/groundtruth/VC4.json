@@ -1,0 +1,13 @@
+[
+	{
+		"caller":"vc.Class:main(java.lang.String[])",
+		"targets":
+			[
+				{
+					"callee":"vc.Class:method()",
+					"direct":true,
+					"line":18
+				}
+			]
+	}
+]

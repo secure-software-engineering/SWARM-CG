@@ -1,0 +1,13 @@
+[
+	{
+		"caller":"lib3.Demo:libraryCallSite(lib3.Interface)",
+		"targets":
+			[
+				{
+					"callee":"lib3.PotentialSuperclass:method()",
+					"direct":true,
+					"line":10
+				}
+			]
+	}
+]

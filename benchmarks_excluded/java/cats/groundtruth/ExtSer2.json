@@ -1,0 +1,13 @@
+[
+	{
+		"caller":"extser.Demo:readExternal(java.io.ObjectInput)",
+		"targets":
+			[
+				{
+					"callee":"extser.Demo:callback()",
+					"direct":true,
+					"line":17
+				}
+			]
+	}
+]

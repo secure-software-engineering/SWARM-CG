@@ -1,0 +1,13 @@
+[
+	{
+		"caller":"si.Interface:init()",
+		"targets":
+			[
+				{
+					"callee":"si.Interface:callback()",
+					"direct":true,
+					"line":10
+				}
+			]
+	}
+]

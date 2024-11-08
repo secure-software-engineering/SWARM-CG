@@ -1,0 +1,18 @@
+[
+	{
+		"caller":"lib1.Demo:libraryEntryPoint(lib1.Type)",
+		"targets":
+			[
+				{
+					"callee":"lib1.Type:method()",
+					"direct":true,
+					"line":10
+				},
+				{
+					"callee":"lib1.Subtype:method()",
+					"direct":true,
+					"line":10
+				}
+			]
+	}
+]

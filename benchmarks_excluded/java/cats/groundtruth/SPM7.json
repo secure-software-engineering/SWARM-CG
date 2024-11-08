@@ -1,0 +1,13 @@
+[
+	{
+		"caller":"spm7.VirtualSPMCall:main(java.lang.String[])",
+		"targets":
+			[
+				{
+					"callee":"spm7.Superclass:method(java.lang.Object)",
+					"direct":false,
+					"line":18
+				}
+			]
+	}
+]
