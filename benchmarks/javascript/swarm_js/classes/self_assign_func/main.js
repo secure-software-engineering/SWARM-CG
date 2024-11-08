@@ -1,16 +1,16 @@
 class A {
-    func() {
-    }
+  func() {
+  }
 }
   
 class B {
-    constructor(a) {
-      this.a = a;
-    }
-  
-    func() {
-      this.a.func();
-    }
+  constructor(a) {
+    this.a = a;
+  }
+
+  func() {
+    this.a.func();
+  }
 }
 
 const a = new A();

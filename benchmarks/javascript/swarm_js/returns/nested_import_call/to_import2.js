@@ -1,1 +1,3 @@
-export function return_func() {}
+export function return_func() {
+    // Empty function
+}

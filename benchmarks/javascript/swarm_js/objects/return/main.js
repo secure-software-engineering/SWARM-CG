@@ -8,4 +8,3 @@ function func1() {
   
 let b = func1();
 b["a"]();
-  

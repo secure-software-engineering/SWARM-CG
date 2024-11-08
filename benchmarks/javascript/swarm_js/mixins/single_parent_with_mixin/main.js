@@ -19,4 +19,4 @@ class Gamma extends Alpha {
 Object.assign(Gamma.prototype, Beta.prototype);
 
 let instance = new Gamma();
-instance.method(); // Should call Beta method as it is assigned last
+instance.method();

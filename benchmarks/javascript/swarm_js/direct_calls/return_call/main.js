@@ -10,4 +10,3 @@ function func() {
   
 func()();
 func()()();
-  

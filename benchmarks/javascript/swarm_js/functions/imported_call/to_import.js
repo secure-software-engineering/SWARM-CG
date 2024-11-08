@@ -1,1 +1,3 @@
-export function func() {}
+export function func() {
+    // Empty function
+}

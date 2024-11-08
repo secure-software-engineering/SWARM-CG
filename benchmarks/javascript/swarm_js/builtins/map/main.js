@@ -23,4 +23,3 @@ const array3 = [1, 2, 3].map(func3);
 array3.forEach(r => {
     r();
 });
-  

@@ -9,4 +9,3 @@ class Class2 {
 let c = Class1;
 c = Class2;
 new c();
-

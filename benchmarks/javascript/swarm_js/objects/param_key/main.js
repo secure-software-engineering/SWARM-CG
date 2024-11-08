@@ -15,4 +15,3 @@ let d = {
 
 func1();
 func1('b');
-  

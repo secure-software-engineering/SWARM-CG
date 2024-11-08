@@ -12,4 +12,4 @@ class C extends A.B {
 
 const c = new C();
 c.cfunc();
-c.bfunc(); 
+c.bfunc();

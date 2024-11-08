@@ -7,4 +7,3 @@ class MyClass {
 }
   
 new MyClass().func();
-  

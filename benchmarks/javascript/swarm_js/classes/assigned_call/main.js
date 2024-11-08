@@ -5,4 +5,4 @@ class MyClass {
   
 const a = new MyClass();
 const b = a.func;
-b(); 
+b();
