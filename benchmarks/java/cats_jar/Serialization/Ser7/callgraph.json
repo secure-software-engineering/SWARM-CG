@@ -1,0 +1,5 @@
+{
+    "ser.Demo:readResolve()": [
+        "ser.Demo:replace()"
+    ]
+}

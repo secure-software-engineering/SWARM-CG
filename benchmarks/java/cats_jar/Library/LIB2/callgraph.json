@@ -1,0 +1,6 @@
+{
+    "lib2.Demo:callOnField()": [
+        "lib2.Type:method()",
+        "lib2.Subtype:method()"
+    ]
+}

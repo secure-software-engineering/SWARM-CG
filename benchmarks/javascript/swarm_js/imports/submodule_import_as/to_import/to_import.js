@@ -1,4 +1,3 @@
 function func() {
 }
-
 export { func };

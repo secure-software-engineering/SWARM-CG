@@ -1,0 +1,5 @@
+{
+    "tr.InitializedClass:staticInitializerCalled()": [
+        "tr.Demo:verifyCall()"
+    ]
+}

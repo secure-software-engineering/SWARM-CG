@@ -1,0 +1,6 @@
+{
+    "j8dim.CombinedInterface:method()": [
+        "j8dim.SomeInterface:method()",
+        "j8dim.AnotherInterface:method()"
+    ]
+}

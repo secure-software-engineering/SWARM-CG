@@ -1,0 +1,5 @@
+{
+    "csr.TargetClass:staticInitializerCalled()": [
+        "csr.Demo:verifyCall()"
+    ]
+}

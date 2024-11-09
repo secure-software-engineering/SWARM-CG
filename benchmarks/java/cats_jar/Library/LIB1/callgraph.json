@@ -1,0 +1,6 @@
+{
+    "lib1.Demo:libraryEntryPoint(lib1.Type)": [
+        "lib1.Type:method()",
+        "lib1.Subtype:method()"
+    ]
+}

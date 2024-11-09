@@ -1,0 +1,5 @@
+{
+    "vc.Class:callOnInterface(vc.Interface)": [
+        "vc.ClassImpl:method()"
+    ]
+}

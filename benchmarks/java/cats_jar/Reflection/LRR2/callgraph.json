@@ -1,0 +1,8 @@
+{
+    "lrr.IsEven:staticInitializerCalled()": [
+        "lrr.Demo:verifyCall()"
+    ],
+    "lrr.IsOdd:staticInitializerCalled()": [
+        "lrr.Demo:verifyCall()"
+    ]
+}

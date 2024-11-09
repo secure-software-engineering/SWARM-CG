@@ -1,0 +1,5 @@
+{
+    "lib4.collude.Demo:interfaceCallSite(lib4.collude.PotentialInterface)": [
+        "lib4.collude.PotentialSuperclass:method()"
+    ]
+}

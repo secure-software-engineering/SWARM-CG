@@ -1,0 +1,5 @@
+{
+    "extser.Demo:readExternal(java.io.ObjectInput)": [
+        "extser.Demo:callback()"
+    ]
+}

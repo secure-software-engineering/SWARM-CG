@@ -1,0 +1,5 @@
+{
+    "lib5.collude.Demo:interfaceCallSite(lib5.collude.PotentialInterface)": [
+        "lib5.internal.InternalClass:method()"
+    ]
+}

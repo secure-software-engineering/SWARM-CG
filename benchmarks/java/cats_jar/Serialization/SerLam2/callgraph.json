@@ -1,0 +1,5 @@
+{
+    "serlam.DoDeserialization:main(java.lang.String[])": [
+        "java.lang.invoke.SerializedLambda:readResolve()"
+    ]
+}

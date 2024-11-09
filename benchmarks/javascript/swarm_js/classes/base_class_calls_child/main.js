@@ -30,4 +30,4 @@ const b = new B();
 b.func();
 
 const c = new C();
-c.func(); 
+c.func();

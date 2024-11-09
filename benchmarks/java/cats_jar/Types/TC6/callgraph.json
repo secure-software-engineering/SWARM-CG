@@ -1,0 +1,5 @@
+{
+    "tc.Demo:callIfInstanceOfTarget(java.lang.Object)": [
+        "tc.Target:toString()"
+    ]
+}

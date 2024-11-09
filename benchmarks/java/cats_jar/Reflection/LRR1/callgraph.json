@@ -1,0 +1,8 @@
+{
+    "lrr.Left:staticInitializerCalled()": [
+        "lrr.Demo:verifyCall()"
+    ],
+    "lrr.Right:staticInitializerCalled()": [
+        "lrr.Demo:verifyCall()"
+    ]
+}

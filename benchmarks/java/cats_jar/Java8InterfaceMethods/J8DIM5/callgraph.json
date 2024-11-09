@@ -1,0 +1,6 @@
+{
+    "j8dim.SuperClass:main(java.lang.String[])": [
+        "j8dim.DirectInterface:method()",
+        "j8dim.SuperClass:compute()"
+    ]
+}

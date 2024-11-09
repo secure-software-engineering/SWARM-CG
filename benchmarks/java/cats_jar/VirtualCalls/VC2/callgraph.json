@@ -1,0 +1,5 @@
+{
+    "vc.Class:callMethod(vc.Class)": [
+        "vc.SubClass:method()"
+    ]
+}

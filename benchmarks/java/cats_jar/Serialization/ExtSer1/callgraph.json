@@ -1,0 +1,5 @@
+{
+    "extser.Demo:writeExternal(java.io.ObjectOutput)": [
+        "extser.Demo:callback()"
+    ]
+}

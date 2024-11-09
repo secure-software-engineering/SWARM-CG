@@ -1,0 +1,5 @@
+{
+    "si.Demo:init()": [
+        "si.Demo:callback()"
+    ]
+}

@@ -1,0 +1,5 @@
+{
+    "lib3.Demo:libraryCallSite(lib3.Interface)": [
+        "lib3.PotentialSuperclass:method()"
+    ]
+}

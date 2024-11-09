@@ -1,0 +1,5 @@
+{
+    "simplecast.Demo:castToTarget(java.lang.Object)": [
+        "simplecast.Target:target()"
+    ]
+}

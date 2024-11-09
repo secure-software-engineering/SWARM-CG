@@ -1,0 +1,5 @@
+{
+    "ser.Demo:writeReplace()": [
+        "ser.Demo:replace()"
+    ]
+}

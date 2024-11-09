@@ -1,0 +1,5 @@
+{
+    "castclassapi.Demo:castToTarget(java.lang.Class,java.lang.Object)": [
+        "castclassapi.Target:toString()"
+    ]
+}

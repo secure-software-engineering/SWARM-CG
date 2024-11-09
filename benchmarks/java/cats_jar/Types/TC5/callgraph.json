@@ -1,0 +1,5 @@
+{
+    "instanceofclassapi.Demo:callIfInstanceOfTarget(java.lang.Object)": [
+        "instanceofclassapi.Target:toString()"
+    ]
+}

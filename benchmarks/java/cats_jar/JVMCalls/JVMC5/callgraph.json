@@ -1,0 +1,5 @@
+{
+    "jvmc.ExceptionalExceptionHandler:uncaughtException(java.lang.Thread,java.lang.Throwable)": [
+        "jvmc.ExceptionalExceptionHandler:callback()"
+    ]
+}

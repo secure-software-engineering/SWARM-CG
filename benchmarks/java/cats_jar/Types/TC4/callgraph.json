@@ -1,0 +1,5 @@
+{
+    "instanceofcheck.Demo:callIfInstanceOfTarget(java.lang.Object)": [
+        "instanceofcheck.Target:toString()"
+    ]
+}

@@ -1,0 +1,5 @@
+{
+    "id.Class:callViaMethodReference()": [
+        "id.SuperClass:getTypeName()"
+    ]
+}

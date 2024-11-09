@@ -1,0 +1,5 @@
+{
+    "ser.Demo:readObject(java.io.ObjectInputStream)": [
+        "java.io.ObjectInputStream:defaultReadObject()"
+    ]
+}

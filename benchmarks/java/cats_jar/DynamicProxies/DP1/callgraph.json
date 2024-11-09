@@ -1,0 +1,6 @@
+{
+    "dp.Main:main(java.lang.String[])": [
+        "dp.FooImpl:bar(java.lang.Object)",
+        "dp.DebugProxy:invoke(java.lang.Object,java.lang.reflect.Method,java.lang.Object[])"
+    ]
+}

@@ -1,0 +1,5 @@
+{
+    "tr.Demo:caller()": [
+        "tr.Demo:target()"
+    ]
+}

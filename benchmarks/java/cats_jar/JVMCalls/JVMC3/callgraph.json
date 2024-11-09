@@ -1,0 +1,5 @@
+{
+    "jvmc.TargetRunnable:run()": [
+        "jvmc.TargetRunnable:verifyReachability()"
+    ]
+}

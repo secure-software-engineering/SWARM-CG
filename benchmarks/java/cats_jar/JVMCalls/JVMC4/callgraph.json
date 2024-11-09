@@ -1,0 +1,5 @@
+{
+    "jvmc.Demo:main(java.lang.String[])": [
+        "java.lang.Thread:exit()"
+    ]
+}

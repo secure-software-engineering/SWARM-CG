@@ -1,0 +1,5 @@
+{
+    "classeq.Demo:callIfInstanceOfTarget(java.lang.Object)": [
+        "classeq.Target:toString()"
+    ]
+}

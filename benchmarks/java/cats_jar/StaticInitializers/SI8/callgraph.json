@@ -1,0 +1,11 @@
+{
+    "si.Subclass:init()": [
+        "si.Subclass:callback()"
+    ],
+    "si.RootClass:rootInit()": [
+        "si.RootClass:callback()"
+    ],
+    "si.Superclass:superInit()": [
+        "si.Superclass:callback()"
+    ]
+}
