@@ -35,12 +35,8 @@ def parse_cg_to_swarm_json(txt_file_path, output_json_path):
 
     with open(txt_file_path, "r") as txt_file:
         for line in txt_file:
-
             stripped_line = line.strip()
-            print(f"Pattern: {repr(pattern)}")
-            print(f"Stripped line: {repr(stripped_line)}")
             match = re.match(pattern, stripped_line)
-            print(stripped_line)
             if match:
                 caller_class = match.group(1)
                 caller_method = match.group(2)
@@ -61,7 +57,6 @@ def parse_cg_to_swarm_json(txt_file_path, output_json_path):
     # Save the call graph dictionary as JSON
     with open(output_json_path, "w") as json_file:
         json.dump(call_graph, json_file, indent=4)
-    print(f"Call graph converted to JSON and saved to {output_json_path}")
 
 
 def get_sootup_cg(test_file_path, jar_path, analysis_type="CHA"):
@@ -76,10 +71,10 @@ def get_sootup_cg(test_file_path, jar_path, analysis_type="CHA"):
     try:
         # Execute SootUp
         subprocess.run(
-            ["java", "-jar", jar_path, str(test_file_path), analysis_type], check=True
+            ["java", "-jar", jar_path, str(test_file_path), analysis_type],
+            check=True,
+            stderr=subprocess.DEVNULL,
         )
-        print("JAR executed successfully.")
-
         # Find .txt file
         txt_files = list(output_dir.glob("*.txt"))
 
@@ -96,9 +91,6 @@ def get_sootup_cg(test_file_path, jar_path, analysis_type="CHA"):
         return txt_files[0]
 
     except subprocess.CalledProcessError as e:
-        print(f"Error executing JAR: {e}")
-        logger.error(f"Error executing SootUp on {test_file_path}: {e}")
-        logger.debug(traceback.format_exc())
         raise
     except FileNotFoundError as fnf_error:
         logger.error(str(fnf_error))
@@ -130,8 +122,6 @@ def process_test_folder(file_folder, path_to_jar="lib", analysis_type="CHA"):
         # Convert sootup .txt to swarm_js JSON format
         parse_cg_to_swarm_json(cg_txt_file, result_filepath)
 
-        print(f"Call graph JSON created at {result_filepath}")
-
     except Exception as e:
         logger.error(f"Error processing {test_file_path}: {e}")
         logger.debug(traceback.format_exc())
@@ -139,3 +129,4 @@ def process_test_folder(file_folder, path_to_jar="lib", analysis_type="CHA"):
         result_filepath = Path(file_folder) / "main_result.json"
         with open(result_filepath, "w") as file:
             file.write(json.dumps({}))
+        raise

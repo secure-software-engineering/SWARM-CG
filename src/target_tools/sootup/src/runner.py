@@ -15,10 +15,10 @@ logger = utils.setup_logger()
 
 def main_runner(args):
     runner_start_time = time.time()
-
     error_count = 0
     timeout_count = 0
     json_count = 0
+    files_analyzed = 0
 
     # Create result folder for model specific results
     results_src = Path(args.benchmark_path)
@@ -34,9 +34,9 @@ def main_runner(args):
         os.makedirs(results_dst, exist_ok=True)
         utils.copy_folder(results_src, results_dst)
 
-    files_analyzed = 0
     # Iterating through each category in a language
     for cat in sorted(os.listdir(results_dst)):
+        logger.info(f"Analyzing category: {cat}")
         cat_path = os.path.join(results_dst, cat)
 
         # only process directories
@@ -51,7 +51,6 @@ def main_runner(args):
         for test in tests:
             file = os.path.join(results_dst, cat, test)
             try:
-                logger.info(file)
                 process_test_folder(file, args.path_to_jar, args.analysis_type)
             except Exception as e:
                 logger.info(
@@ -73,7 +72,7 @@ def main_runner(args):
         f"Runner finished in {time.time()-runner_start_time:.2f} seconds, with errors:"
         f" {error_count} | JSON errors: {json_count}"
     )
-    logger.info(f"Number of test files analyzed: {files_analyzed}")
+    logger.info(f"Total number of test files analyzed: {files_analyzed}")
     # Move the log file to the results directory
     try:
         if utils.is_running_in_docker():
