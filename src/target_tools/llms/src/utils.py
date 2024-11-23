@@ -386,9 +386,7 @@ def generate_questions_java_from_json(json_file, test_folder, logger=None):
             continue
 
         # Generate questions for the caller
-        question = (
-            f"What are the function calls inside {caller} in the {class_name} class?"
-        )
+        question = f"What are the target functions invoked by {caller} in the {class_name} class?"
         # Append the questions to the list
         questions.append(question)
 

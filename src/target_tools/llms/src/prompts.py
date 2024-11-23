@@ -137,13 +137,11 @@ questions_based_1_java = """## Task Description
 ```java
 // vc/Class.java
 package vc;
-import lib.annotations.callgraph.DirectCall;
 
 class Class {{
 
     public void target(){{ }}
 
-    @DirectCall(name = "target", line = 12, resolvedTargets = "Lvc/Class;")
     public static void main(String[] args){{
         Class cls = new Class();
         cls.target();
@@ -152,8 +150,7 @@ class Class {{
 ```
 
 **Example Questions**:
-1. What are the target function calls made by the caller "vc.Class
-(java.lang.String[])" in the file "vc/Class.java"?
+1. What are the target functions invoked by the caller "main(java.lang.String[])" in the "vc/Class" class?
 
 **Example Answers**:
 1. vc.Class:target()
