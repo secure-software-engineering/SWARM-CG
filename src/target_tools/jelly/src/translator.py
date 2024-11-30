@@ -52,6 +52,10 @@ def parse_func_name_from_ast(ast, start_line, arrow_fun_count=0):
                                             start_line
                                         ):
                                             return function_name
+                                if isinstance(stmt, esprima.nodes.FunctionDeclaration):
+                                    inner_function_name = stmt.id.name
+                                    if int(stmt.id.loc.start.line) == int(start_line):
+                                        return f"{function_name}.{inner_function_name}"
                     elif isinstance(node, esprima.nodes.FunctionExpression):
                         function_name = node.id.name
                         node_start = node.id.loc.start.line
@@ -121,18 +125,36 @@ def parse_func_name_from_ast(ast, start_line, arrow_fun_count=0):
                     elif isinstance(node, esprima.nodes.VariableDeclaration):
                         for decl in node.declarations:
                             if isinstance(decl.init, esprima.nodes.CallExpression):
-                                if isinstance(
-                                    decl.init.callee, esprima.nodes.MemberExpression
+                                if (
+                                    isinstance(decl.init.callee, dict)
+                                    and "object" in decl.init.callee
+                                    and "property" in decl.init.callee
                                 ):
                                     # It's a method call like Array.from or filter
                                     member_start = decl.init.callee.loc.start.line
                                     if int(member_start) == int(start_line):
-                                        if isinstance(
-                                            decl.init.callee.object.callee,
-                                            esprima.nodes.MemberExpression,
+                                        if (
+                                            isinstance(decl.init.callee, dict)
+                                            and "object" in decl.init.callee
+                                            and "property" in decl.init.callee
                                         ):
-                                            function_name = f"{decl.init.callee.object.callee.object.name}.{decl.init.callee.object.callee.property.name}"
-                                            return function_name
+                                            object_name = (
+                                                decl.init.callee["object"].name
+                                                if "name" in decl.init.callee["object"]
+                                                else None
+                                            )
+                                            property_name = (
+                                                decl.init.callee["property"].name
+                                                if "name"
+                                                in decl.init.callee["property"]
+                                                else None
+                                            )
+                                            # Form the function name with object and property names
+                                            if object_name and property_name:
+                                                function_name = (
+                                                    f"{object_name}.{property_name}"
+                                                )
+                                                return function_name
                             elif isinstance(
                                 decl.init, esprima.nodes.ArrowFunctionExpression
                             ):
@@ -153,7 +175,8 @@ def parse_func_name_from_ast(ast, start_line, arrow_fun_count=0):
                                         start_line
                                     ):
                                         return function_name
-    except Exception:
+    except Exception as e:
+        print(e)
         raise
 
 
