@@ -1,5 +1,9 @@
 # SWARM-CG: Swiss Army Knife of Call Graph Micro-Benchmark
 
+<p align="center">
+<img src="logo.png" width="500" align="center">
+</p>
+
 SWARM-CG (Swiss Army Knife of Call Graph Micro-Benchmark) aims to standardize the evaluation of call graph analysis tools by providing a rich set of call graph benchmarks. This repository contains code samples and associated ground truth across multiple languages, facilitating cross-language performance comparisons and discussions.
 
 ## Features
