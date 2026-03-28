@@ -1,9 +1,9 @@
 import os
 import shutil
+import subprocess
 import sys
 
 # TODO: could be dynamically imported
-from result_analysis.utils import run_results_analyzer
 from runners import (
     OllamaRunner,
     PyCGRunner,
@@ -125,7 +125,7 @@ def main():
             logger.error(f"Unknown runner: {runner_name}")
             sys.exit(-1)
 
-    # run_results_analyzer(host_results_path, args.language)
+    run_results_analyzer(host_results_path, args.language)
 
     # Move the log file to the results directory
     try:
@@ -134,34 +134,34 @@ def main():
         logger.error(f"Error moving log file: {e}")
 
 
-# def run_results_analyzer(results_dir, language):
-#     """
-#     Runs the main_analyze_result.py script with the required arguments.
+def run_results_analyzer(results_dir, language):
+    """
+    Runs the main_analyze_result.py script with the required arguments.
 
-#     :param results_dir: Path to the directory containing the results.
-#     :param language: The language to analyze (passed as an argument).
-#     """
+    :param results_dir: Path to the directory containing the results.
+    :param language: The language to analyze (passed as an argument).
+    """
+    logger = setup_logger("Results Analyzer", "results_analyzer.log")
+    analyzer_script = os.path.join(os.path.dirname(__file__), "main_analyze_result.py")
 
-#     analyzer_script = os.path.join(os.path.dirname(__file__), "main_analyze_result.py")
-
-#     try:
-#         # Running the script using subprocess
-#         subprocess.run(
-#             [
-#                 sys.executable,  # Python interpreter
-#                 analyzer_script,  # Path to the analysis script
-#                 "--results_dir",
-#                 results_dir,  # Passing the results directory
-#                 "--language",
-#                 language,  # Passing the language
-#             ],
-#             check=True,  # Raises an exception if the command fails
-#         )
-#         logger.info(
-#             f"Successfully ran analysis on results in {results_dir} for {language}"
-#         )
-#     except subprocess.CalledProcessError as e:
-#         logger.error(f"Error running result analysis: {e}")
+    try:
+        # Running the script using subprocess
+        subprocess.run(
+            [
+                sys.executable,  # Python interpreter
+                analyzer_script,  # Path to the analysis script
+                "--results_dir",
+                results_dir,  # Passing the results directory
+                "--language",
+                language,  # Passing the language
+            ],
+            check=True,  # Raises an exception if the command fails
+        )
+        logger.info(
+            f"Successfully ran analysis on results in {results_dir} for {language}"
+        )
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Error running result analysis: {e}")
 
 if __name__ == "__main__":
     main()
