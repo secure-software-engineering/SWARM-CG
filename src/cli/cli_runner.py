@@ -28,6 +28,7 @@ def parse_runner_args():
             "headergen_cs",
             "tajs",
             "js_callgraph",
+            "agentic_cg",
         ],  # Add more tools as needed
         help="Specify the target tool(s) for call graph construction.",
     )

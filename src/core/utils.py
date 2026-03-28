@@ -4,13 +4,21 @@ from io import BytesIO
 
 
 class FileHandler:
-    def copy_files_to_container(self, container, src, dst):
+    def copy_files_to_container(self, container, src, dst, exclude_extensions=None):
         # Create tar of micro-bench folder
         temp_path = "/tmp/temp.tar"
+
+        def _filter(tarinfo):
+            if exclude_extensions and any(
+                tarinfo.name.endswith(ext) for ext in exclude_extensions
+            ):
+                return None
+            return tarinfo
+
         with tarfile.open(temp_path, "w:gz") as tar:
             # base_folder = os.path.basename(src)
             # Use 'benchmarks' as the constant directory name in the tarball
-            tar.add(src, arcname="benchmarks")
+            tar.add(src, arcname="benchmarks", filter=_filter)
 
         with open(temp_path, "rb") as file:
             data = file.read()

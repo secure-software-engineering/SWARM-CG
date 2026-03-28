@@ -12,6 +12,7 @@ from runners import (
     TAJSRunner,
     JsCallgraphRunner,
     JellyRunner,
+    AgenticCGRunner,
 )
 from cli import parse_runner_args
 from core import load_config, setup_logger
@@ -102,6 +103,16 @@ def main():
         ),
         "jelly": (
             JellyRunner,
+            {
+                "debug": args.debug,
+                "nocache": args.nocache,
+                "config": config,
+                "benchmark_name": args.benchmark_name,
+                "language": args.language,
+            },
+        ),
+        "agentic_cg": (
+            AgenticCGRunner,
             {
                 "debug": args.debug,
                 "nocache": args.nocache,

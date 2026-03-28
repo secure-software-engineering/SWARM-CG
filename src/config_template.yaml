@@ -37,3 +37,11 @@ llm:
   openai_models:
     # - gpt-4o
     # - gpt-4o-mini
+
+agentic_cg:
+  model: "gpt-4o-mini"       # LiteLLM model string
+  api_key: "<YOUR_API_KEY>"
+  api_base: "null"           # leave as "null" for cloud providers
+  max_iterations: 10
+  temperature: 0.1
+  max_workers: 4           # Parallel test cases — tune to server GPU/throughput capacity

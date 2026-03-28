@@ -43,6 +43,7 @@ class BaseRunner:
         self.models = models
 
         self.file_handler = FileHandler()
+        self.copy_exclude_extensions = []  # subclasses can override (e.g. [".json"] for LLM tools)
 
         if not os.path.exists(self.host_results_path):
             os.makedirs(self.host_results_path)
@@ -111,7 +112,10 @@ class BaseRunner:
             # Construct the language-specific src path
             src = os.path.join("..", "benchmarks", self.language, self.benchmark_name)
             dst = "/tmp"
-            self.file_handler.copy_files_to_container(self.container, src, dst)
+            self.file_handler.copy_files_to_container(
+                self.container, src, dst,
+                exclude_extensions=self.copy_exclude_extensions,
+            )
 
             # self.setup_benchmark_external_library()
             logger.info("Benchmark files copied to container")
