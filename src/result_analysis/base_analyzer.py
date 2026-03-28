@@ -35,8 +35,14 @@ class BaseAnalyzer:
                         Path(self.analysis_results_dir)
                         / f"{tool}_micro_benchmark_eval.csv"
                     )
-                    data = self.iterate_cats(tool_results_dir, analysis_results_file)
+                    mismatches_file = (
+                        Path(self.analysis_results_dir)
+                        / f"{tool}_mismatches.csv"
+                    )
+                    data, mismatch_rows = self.iterate_cats(tool_results_dir, analysis_results_file)
                     overall_data[tool] = data["total"]
+                    CSVWriter.write_mismatches_csv(mismatches_file, mismatch_rows)
+                    self.logger.info(f"Mismatches CSV written: {mismatches_file}")
 
             totals_csv = (
                 Path(self.analysis_results_dir) / "totals_micro_benchmark_eval.csv"
@@ -49,6 +55,7 @@ class BaseAnalyzer:
     def iterate_cats(self, tool_results_dir, analysis_results_file):
         metrics = Metrics(self.not_found_counter)
         data = {}
+        mismatch_rows = []
 
         for cat in sorted(get_subdirs(tool_results_dir)):
             self.logger.info(f"Iterating through benchmark categories..")
@@ -78,6 +85,19 @@ class BaseAnalyzer:
 
                 cat_exact_matches["exact_matches"] += exact_matches
                 cat_exact_matches["num_all"] += num_all
+
+                missing, mismatches = metrics.collect_mismatches(
+                    _result_actual, _result_expected
+                )
+                for caller, callee in missing:
+                    mismatch_rows.append(
+                        {"category": cat, "test": test, "type": "missing", "caller": caller, "callee": callee}
+                    )
+                for caller, callee in mismatches:
+                    mismatch_rows.append(
+                        {"category": cat, "test": test, "type": "mismatch", "caller": caller, "callee": callee}
+                    )
+
             data[cat] = {
                 "complete": complete_passed,
                 "sound": sound_passed,
@@ -85,7 +105,7 @@ class BaseAnalyzer:
                 "exact_matches": cat_exact_matches["exact_matches"],
                 "num_all": cat_exact_matches["num_all"],
             }
-        return CSVWriter.write_category_csv(analysis_results_file, data)
+        return CSVWriter.write_category_csv(analysis_results_file, data), mismatch_rows
 
     def data_loader(self, test, is_callsites=False):
         """

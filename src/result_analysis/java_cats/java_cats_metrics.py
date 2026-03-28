@@ -96,3 +96,29 @@ class JavaMetrics:
             num_all = 1
 
         return num_exact_matches, num_all
+
+    def collect_mismatches(self, actual, expected):
+        """
+        Compare actual vs expected Java call graph and return per-edge discrepancies.
+
+        Returns:
+            missing: list of (caller, callee) edges in expected but not in actual
+            mismatches: list of (caller, callee) edges in actual but not in expected
+        """
+        missing = []
+        mismatches = []
+
+        actual_index = {item["caller"]: {c["callee"] for c in item["targets"]} for item in actual}
+        expected_index = {item["caller"]: {c["callee"] for c in item["targets"]} for item in expected}
+
+        for caller, expected_callees in expected_index.items():
+            actual_callees = actual_index.get(caller, set())
+            for callee in expected_callees - actual_callees:
+                missing.append((caller, callee))
+
+        for caller, actual_callees in actual_index.items():
+            expected_callees = expected_index.get(caller, set())
+            for callee in actual_callees - expected_callees:
+                mismatches.append((caller, callee))
+
+        return missing, mismatches

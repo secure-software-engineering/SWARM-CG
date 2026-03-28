@@ -1,4 +1,5 @@
 import csv
+from pathlib import Path
 
 
 class CSVWriter:
@@ -48,6 +49,21 @@ class CSVWriter:
         }
 
         return data
+
+    @staticmethod
+    def write_mismatches_csv(res_file, mismatch_rows):
+        """
+        Write per-fact mismatch/missing details to a CSV file.
+
+        Each row in mismatch_rows should be a dict with keys:
+            category, test, type, caller, callee
+        where type is "missing" (false negative) or "mismatch" (false positive).
+        """
+        header = ["category", "test", "type", "caller", "callee"]
+        with open(res_file, "w+", newline="") as f:
+            writer = csv.DictWriter(f, fieldnames=header)
+            writer.writeheader()
+            writer.writerows(mismatch_rows)
 
     @staticmethod
     def write_totals_csv(totals_csv, overall_data):

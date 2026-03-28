@@ -90,3 +90,36 @@ class Metrics:
             num_all = 1
 
         return float(num_caught) / float(num_all)
+
+    def collect_mismatches(self, actual, expected):
+        """
+        Compare actual vs expected call graph and return per-edge discrepancies.
+
+        Returns:
+            missing: list of (caller, callee) edges in expected but not in actual
+            mismatches: list of (caller, callee) edges in actual but not in expected
+        """
+        missing = []
+        mismatches = []
+
+        # Missing: edges in ground truth not found in actual output (false negatives)
+        for caller, callees in expected.items():
+            actual_callees = actual.get(caller, None)
+            if not callees:
+                # Leaf node — expected empty list
+                if actual_callees is not None and actual_callees != []:
+                    for callee in actual_callees:
+                        mismatches.append((caller, callee))
+                continue
+            for callee in callees:
+                if actual_callees is None or callee not in actual_callees:
+                    missing.append((caller, callee))
+
+        # Mismatches: edges in actual output not present in expected (false positives)
+        for caller, callees in actual.items():
+            expected_callees = expected.get(caller, None)
+            for callee in callees:
+                if expected_callees is None or callee not in expected_callees:
+                    mismatches.append((caller, callee))
+
+        return missing, mismatches
