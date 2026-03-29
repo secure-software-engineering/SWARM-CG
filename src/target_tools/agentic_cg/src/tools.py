@@ -282,6 +282,32 @@ def submit_answers(answers: dict) -> str:
     return json.dumps({"status": "accepted", "count": len(call_graph), "call_graph": call_graph})
 
 
+def _generate_questions_from_gt(callgraph: dict, module_name: str, filename: str) -> dict:
+    """Generate a get_call_sites-style summary from a ground truth call graph dict.
+
+    Used in 'ground_truth' questions mode to produce perfect question coverage without
+    relying on AST analysis. raw_calls are left empty — the agent reads source files to
+    resolve callees.
+    """
+    func_names = list(callgraph.keys())
+    entries = [{"qualified_name": qname, "raw_calls": []} for qname in func_names]
+    questions = []
+    for i, qname in enumerate(func_names, start=1):
+        if qname == module_name:
+            questions.append(f"{i}. What are the module level function calls in {filename}?")
+        else:
+            questions.append(f"{i}. What are the function calls inside '{qname}' in {filename}?")
+    return {
+        "module": module_name,
+        "note": (
+            "Answer each question below using read_file for context, then call submit_answers. "
+            "These questions were generated from ground truth — all function names are exact."
+        ),
+        "questions": questions,
+        "functions": entries,
+    }
+
+
 def _dispatch_submit_call_graph(args: dict) -> str:
     # Models sometimes pass the call graph dict directly as keyword args instead of
     # wrapping it in {"call_graph": {...}}. Accept both forms.

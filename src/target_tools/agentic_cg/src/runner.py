@@ -10,6 +10,7 @@ import litellm
 from tqdm import tqdm
 
 from agent import AgenticCallGraphBuilder
+from tools import _generate_questions_from_gt
 
 logging.basicConfig(
     level=logging.INFO,
@@ -119,16 +120,28 @@ def list_benchmark_files(folder_path: str) -> list:
     return sorted(Path(folder_path).rglob("main.py"))
 
 
-def process_one(agent: AgenticCallGraphBuilder, file_path: Path) -> bool:
+def process_one(agent: AgenticCallGraphBuilder, file_path: Path, questions_mode: str = "ast") -> bool:
     """Process a single benchmark test case. Returns True on success, False on error."""
     result_path = file_path.parent / "main_result.json"
     trajectory_path = file_path.parent / "main_trajectory.json"
     md_path = file_path.parent / "main_trajectory.md"
     try:
+        gt_summary = None
+        if questions_mode == "ground_truth":
+            gt_path = file_path.parent / "callgraph.json"
+            if gt_path.exists():
+                with open(gt_path) as f:
+                    gt_data = json.load(f)
+                gt_summary = _generate_questions_from_gt(gt_data, file_path.stem, file_path.name)
+                logger.info(f"GT questions loaded for {file_path}: {len(gt_data)} functions")
+            else:
+                logger.warning(f"callgraph.json not found at {gt_path}, falling back to AST mode")
+
         logger.info(f"Processing: {file_path}")
         call_graph, trajectory = agent.build_call_graph(
             file_path=str(file_path),
             benchmark_dir=str(file_path.parent),
+            gt_summary=gt_summary,
         )
         with open(result_path, "w") as f:
             json.dump(call_graph, f, indent=4, sort_keys=True)
@@ -162,7 +175,7 @@ def main_runner(args):
     error_count = 0
 
     with ThreadPoolExecutor(max_workers=args.max_workers) as executor:
-        futures = {executor.submit(process_one, agent, fp): fp for fp in benchmark_files}
+        futures = {executor.submit(process_one, agent, fp, args.questions_mode): fp for fp in benchmark_files}
         with tqdm(total=len(futures), desc="Benchmarks", unit="test") as pbar:
             for future in as_completed(futures):
                 if not future.result():
@@ -211,6 +224,17 @@ if __name__ == "__main__":
         type=int,
         default=1,
         help="Number of test cases to process in parallel (default: 1 = sequential)",
+    )
+    parser.add_argument(
+        "--questions_mode",
+        default="ast",
+        choices=["ast", "ground_truth"],
+        help=(
+            "Source for generating per-function questions. "
+            "'ast' (default): questions derived from AST analysis of main.py. "
+            "'ground_truth': questions derived from callgraph.json (requires callgraph.json "
+            "to be present in the container — useful for evaluation, not production)."
+        ),
     )
 
     args = parser.parse_args()

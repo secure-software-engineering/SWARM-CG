@@ -50,6 +50,10 @@ class BaseRunner:
         if not os.path.exists(self.host_results_path):
             os.makedirs(self.host_results_path)
 
+    @property
+    def results_dir_name(self):
+        return self.tool_name
+
     def _build_docker_image(self):
         try:
             logger.info("Building image")
@@ -113,7 +117,7 @@ class BaseRunner:
         """
         ground_truth_files = {"callgraph.json", "linesCallSite.json"}
         results_benchmarks = os.path.join(
-            self.host_results_path, self.tool_name, "benchmarks"
+            self.host_results_path, self.results_dir_name, "benchmarks"
         )
         for dirpath, _, filenames in os.walk(benchmarks_src):
             for filename in filenames:

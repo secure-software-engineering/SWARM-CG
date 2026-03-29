@@ -23,8 +23,18 @@ class AgenticCGRunner(BaseRunner):
         self.language = language
         self.benchmark_name = benchmark_name
         self.model = config.get("agentic_cg", {}).get("model", "gpt-4o-mini")
-        self.copy_exclude_extensions = [".json", ".md"]         # exclude ground truth from container
+        self.questions_mode = config.get("agentic_cg", {}).get("questions_mode", "ast")
+        # In ground_truth mode, callgraph.json must reach the container so runner.py can
+        # generate questions from it. In normal (ast) mode, exclude it so the LLM can't cheat.
+        if self.questions_mode == "ground_truth":
+            self.copy_exclude_extensions = [".md"]
+        else:
+            self.copy_exclude_extensions = [".json", ".md"]
         self.copy_py_content_filter = strip_python_comments     # strip comments so LLM can't read hints
+
+    @property
+    def results_dir_name(self):
+        return f"{self.tool_name}_{self.model}"
 
     def run_test_in_session(self):
         try:
@@ -46,6 +56,8 @@ class AgenticCGRunner(BaseRunner):
                 str(cfg.get("temperature", 0.1)),
                 "--max_workers",
                 str(cfg.get("max_workers", 1)),
+                "--questions_mode",
+                str(cfg.get("questions_mode", "ast")),
             ]
             _, response = self.container.exec_run(" ".join(command_to_run), stream=True)
             for line in response:
@@ -61,7 +73,7 @@ class AgenticCGRunner(BaseRunner):
             self.file_handler.copy_files_from_container(
                 self.container,
                 model_results_path,
-                f"{self.host_results_path}/{self.tool_name}_{self.model}",
+                f"{self.host_results_path}/{self.results_dir_name}",
             )
         except Exception as e:
             logger.error(f"Error copying results for AgenticCG: {e}")

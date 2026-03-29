@@ -44,4 +44,5 @@ agentic_cg:
   api_base: "null"           # leave as "null" for cloud providers
   max_iterations: 10
   temperature: 0.1
-  max_workers: 4           # Parallel test cases — tune to server GPU/throughput capacity
+  max_workers: 4             # Parallel test cases — tune to server GPU/throughput capacity
+  questions_mode: "ast"      # "ast" (default) or "ground_truth" (uses callgraph.json for perfect question coverage — evaluation only)

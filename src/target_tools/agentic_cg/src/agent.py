@@ -117,14 +117,14 @@ class AgenticCallGraphBuilder:
         self.max_iterations = max_iterations
         self.temperature = temperature
 
-    def build_call_graph(self, file_path: str, benchmark_dir: str) -> tuple[dict, list]:
+    def build_call_graph(self, file_path: str, benchmark_dir: str, gt_summary: dict | None = None) -> tuple[dict, list]:
         """
         Run the agentic tool-calling loop for a single benchmark directory.
         Returns (call_graph, trajectory) where:
           - call_graph: final call graph dict in SWARM-CG format ({} on failure)
           - trajectory: list of step dicts recording the full agent interaction
         """
-        messages = self._build_initial_messages(file_path, benchmark_dir)
+        messages = self._build_initial_messages(file_path, benchmark_dir, gt_summary)
         trajectory = [
             {
                 "step": 0,
@@ -298,25 +298,45 @@ class AgenticCallGraphBuilder:
         })
         return {}, trajectory
 
-    def _build_initial_messages(self, file_path: str, benchmark_dir: str) -> list:
+    def _build_initial_messages(
+        self, file_path: str, benchmark_dir: str, gt_summary: dict | None = None
+    ) -> list:
+        if gt_summary is not None:
+            questions_text = "\n".join(gt_summary["questions"])
+            func_list = "\n".join(
+                f"  - {e['qualified_name']}" for e in gt_summary["functions"]
+            )
+            user_content = (
+                f"Please construct the call graph for the Python benchmark at: `{file_path}`\n"
+                f"The benchmark directory containing this test case is: `{benchmark_dir}`\n\n"
+                f"The following questions have been pre-generated for you. "
+                f"You do NOT need to call `get_call_sites` or `list_directory`.\n\n"
+                f"**Questions:**\n{questions_text}\n\n"
+                f"**Functions to include as keys in submit_answers:**\n{func_list}\n\n"
+                "Steps:\n"
+                "1. Call read_file on main.py (and any imported local modules) to understand "
+                "the code and resolve call targets to fully qualified names.\n"
+                "2. Call submit_answers with your answers: a dict mapping each function's "
+                "qualified name to a comma-separated string of its callees "
+                "(empty string if it makes no calls)."
+            )
+        else:
+            user_content = (
+                f"Please construct the call graph for the Python benchmark at: `{file_path}`\n"
+                f"The benchmark directory containing this test case is: `{benchmark_dir}`\n\n"
+                "Steps:\n"
+                "1. Call list_directory on the benchmark directory.\n"
+                "2. Call get_call_sites on main.py — this returns all function definitions and "
+                "a list of questions to answer about each function's call sites.\n"
+                "3. Call read_file on main.py (and any imported local modules) to understand "
+                "the code and resolve call targets to fully qualified names.\n"
+                "4. Call submit_answers with your answers: a dict mapping each function's "
+                "qualified name to a comma-separated string of its callees "
+                "(empty string if it makes no calls)."
+            )
         return [
             {"role": "system", "content": SYSTEM_PROMPT},
-            {
-                "role": "user",
-                "content": (
-                    f"Please construct the call graph for the Python benchmark at: `{file_path}`\n"
-                    f"The benchmark directory containing this test case is: `{benchmark_dir}`\n\n"
-                    "Steps:\n"
-                    "1. Call list_directory on the benchmark directory.\n"
-                    "2. Call get_call_sites on main.py — this returns all function definitions and "
-                    "a list of questions to answer about each function's call sites.\n"
-                    "3. Call read_file on main.py (and any imported local modules) to understand "
-                    "the code and resolve call targets to fully qualified names.\n"
-                    "4. Call submit_answers with your answers: a dict mapping each function's "
-                    "qualified name to a comma-separated string of its callees "
-                    "(empty string if it makes no calls)."
-                ),
-            },
+            {"role": "user", "content": user_content},
         ]
 
     def _call_llm(self, messages: list):
