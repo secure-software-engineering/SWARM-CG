@@ -22,6 +22,7 @@ class AgenticCGRunner(BaseRunner):
         self.config = config
         self.language = language
         self.benchmark_name = benchmark_name
+        self.model = config.get("agentic_cg", {}).get("model", "gpt-4o-mini")
         self.copy_exclude_extensions = [".json", ".md"]         # exclude ground truth from container
         self.copy_py_content_filter = strip_python_comments     # strip comments so LLM can't read hints
 
@@ -60,7 +61,7 @@ class AgenticCGRunner(BaseRunner):
             self.file_handler.copy_files_from_container(
                 self.container,
                 model_results_path,
-                f"{self.host_results_path}/{self.tool_name}",
+                f"{self.host_results_path}/{self.tool_name}_{self.model}",
             )
         except Exception as e:
             logger.error(f"Error copying results for AgenticCG: {e}")

@@ -33,20 +33,12 @@ def list_directory(path: str) -> str:
 
 
 def _get_attribute_chain(node: ast.expr) -> str:
-    """Flatten an attribute chain (e.g. a.b.c) into a dotted string.
-
-    For chained calls like `a()()`, the outer Call has a Call as its func.
-    Returns a `<return_of:X>` sentinel so the LLM knows the return value of X
-    is also being invoked and needs to be traced.
-    """
+    """Flatten an attribute chain (e.g. a.b.c) into a dotted string."""
     if isinstance(node, ast.Name):
         return node.id
     if isinstance(node, ast.Attribute):
         value = _get_attribute_chain(node.value)
         return f"{value}.{node.attr}" if value else node.attr
-    if isinstance(node, ast.Call):
-        inner = _get_attribute_chain(node.func)
-        return f"<return_of:{inner}>" if inner else "<return_of:unknown>"
     return ""
 
 
@@ -243,9 +235,7 @@ def get_call_sites(path: str) -> str:
             "Answer each question below using read_file for context, then call submit_answers. "
             "raw_calls shows unresolved call expressions — resolve them to fully qualified names. "
             "Decorator applications appear in module raw_calls. "
-            "Lambda entries use <lambdaN> naming in source order within their scope. "
-            "<return_of:X> in raw_calls means the return value of X is also being called — "
-            "trace what X returns and include that as an additional callee."
+            "Lambda entries use <lambdaN> naming in source order within their scope."
         ),
         "questions": questions,
         "functions": entries,
@@ -361,8 +351,7 @@ TOOL_SCHEMAS = [
                 "under the module name (e.g. 'main'). Decorator applications (@dec) are "
                 "included as implicit calls in the enclosing scope's raw_calls. Lambda "
                 "expressions are listed as separate entries with '<lambdaN>' names in "
-                "document order within their scope. Chained calls like a()() appear as "
-                "'<return_of:a>' — a hint to trace the return value of a. "
+                "document order within their scope. "
                 "Use read_file to resolve imports and determine the true qualified callee names."
             ),
             "parameters": {
