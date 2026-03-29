@@ -53,13 +53,16 @@ class CSVWriter:
     @staticmethod
     def write_mismatches_csv(res_file, mismatch_rows):
         """
-        Write per-fact mismatch/missing details to a CSV file.
+        Write per-edge discrepancies to a CSV for debugging.
 
-        Each row in mismatch_rows should be a dict with keys:
-            category, test, type, caller, callee
-        where type is "missing" (false negative) or "mismatch" (false positive).
+        Each row in mismatch_rows must be a dict with keys:
+            category, test, issue_type, caller, expected_callee, actual_callee
+
+        issue_type values:
+            "false_negative" — edge present in ground truth but missing from actual output
+            "false_positive" — edge present in actual output but absent from ground truth
         """
-        header = ["category", "test", "type", "caller", "callee"]
+        header = ["category", "test", "issue_type", "caller", "expected_callee", "actual_callee"]
         with open(res_file, "w+", newline="") as f:
             writer = csv.DictWriter(f, fieldnames=header)
             writer.writeheader()

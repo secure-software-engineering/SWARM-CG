@@ -90,13 +90,23 @@ class BaseAnalyzer:
                     _result_actual, _result_expected
                 )
                 for caller, callee in missing:
-                    mismatch_rows.append(
-                        {"category": cat, "test": test, "type": "missing", "caller": caller, "callee": callee}
-                    )
+                    mismatch_rows.append({
+                        "category": cat,
+                        "test": test,
+                        "issue_type": "false_negative",
+                        "caller": caller,
+                        "expected_callee": callee,
+                        "actual_callee": "",
+                    })
                 for caller, callee in mismatches:
-                    mismatch_rows.append(
-                        {"category": cat, "test": test, "type": "mismatch", "caller": caller, "callee": callee}
-                    )
+                    mismatch_rows.append({
+                        "category": cat,
+                        "test": test,
+                        "issue_type": "false_positive",
+                        "caller": caller,
+                        "expected_callee": "",
+                        "actual_callee": callee,
+                    })
 
             data[cat] = {
                 "complete": complete_passed,

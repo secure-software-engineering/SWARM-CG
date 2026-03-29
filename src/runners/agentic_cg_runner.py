@@ -34,7 +34,11 @@ class AgenticCGRunner(BaseRunner):
 
     @property
     def results_dir_name(self):
-        return f"{self.tool_name}_{self.model}"
+        # Model names from OpenAI-compatible endpoints often contain slashes
+        # (e.g. "openai/Qwen/Qwen3-30B"). Replace with underscores so the
+        # result lands in a single flat directory that the analyzer can find.
+        sanitized_model = self.model.replace("/", "_")
+        return f"{self.tool_name}_{sanitized_model}"
 
     def run_test_in_session(self):
         try:
