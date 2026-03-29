@@ -1,5 +1,5 @@
 from .base_runner import BaseRunner
-from core import setup_logger
+from core import setup_logger, strip_python_comments
 
 logger = setup_logger("AgenticCG Runner", "agentic_cg_runner.log")
 
@@ -22,7 +22,8 @@ class AgenticCGRunner(BaseRunner):
         self.config = config
         self.language = language
         self.benchmark_name = benchmark_name
-        self.copy_exclude_extensions = [".json", ".md"]  # exclude ground truth from container
+        self.copy_exclude_extensions = [".json", ".md"]         # exclude ground truth from container
+        self.copy_py_content_filter = strip_python_comments     # strip comments so LLM can't read hints
 
     def run_test_in_session(self):
         try:

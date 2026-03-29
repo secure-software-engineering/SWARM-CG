@@ -1,4 +1,5 @@
 import os
+import shutil
 import time
 import docker
 from core import setup_logger, FileHandler
@@ -43,7 +44,8 @@ class BaseRunner:
         self.models = models
 
         self.file_handler = FileHandler()
-        self.copy_exclude_extensions = []  # subclasses can override (e.g. [".json"] for LLM tools)
+        self.copy_exclude_extensions = []   # subclasses can override (e.g. [".json"] for LLM tools)
+        self.copy_py_content_filter = None  # subclasses can set a transform for .py content
 
         if not os.path.exists(self.host_results_path):
             os.makedirs(self.host_results_path)
@@ -102,6 +104,30 @@ class BaseRunner:
             logger.error(f"Error copying results from container: {e}")
             raise
 
+    def _sync_ground_truth_to_results(self, benchmarks_src):
+        """Copy ground truth files (callgraph.json, linesCallSite.json) from the
+        local benchmarks directory into the corresponding results directories.
+
+        Called when ground truth was excluded from the container copy so the
+        analysis script can still find it in the results folder.
+        """
+        ground_truth_files = {"callgraph.json", "linesCallSite.json"}
+        results_benchmarks = os.path.join(
+            self.host_results_path, self.tool_name, "benchmarks"
+        )
+        for dirpath, _, filenames in os.walk(benchmarks_src):
+            for filename in filenames:
+                if filename not in ground_truth_files:
+                    continue
+                rel = os.path.relpath(dirpath, benchmarks_src)
+                dest_dir = os.path.join(results_benchmarks, rel)
+                if not os.path.isdir(dest_dir):
+                    continue  # no result for this test, skip
+                src_file = os.path.join(dirpath, filename)
+                dest_file = os.path.join(dest_dir, filename)
+                shutil.copy2(src_file, dest_file)
+        logger.info("Ground truth files synced to results directory.")
+
     def run_tool_test(self):
         logger.info("#####################################################")
         logger.info(f"Running : {self.tool_name}")
@@ -115,6 +141,7 @@ class BaseRunner:
             self.file_handler.copy_files_to_container(
                 self.container, src, dst,
                 exclude_extensions=self.copy_exclude_extensions,
+                py_content_filter=self.copy_py_content_filter,
             )
 
             # self.setup_benchmark_external_library()
@@ -138,6 +165,12 @@ class BaseRunner:
                 logger.error(
                     f"Error during execution of copy_results_from_container: {e}"
                 )
+
+            if self.copy_exclude_extensions and ".json" in self.copy_exclude_extensions:
+                try:
+                    self._sync_ground_truth_to_results(src)
+                except Exception as e:
+                    logger.error(f"Error syncing ground truth to results: {e}")
 
         except Exception as e:
             logger.error(f"Error during tool test: {e}")

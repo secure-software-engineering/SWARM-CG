@@ -33,12 +33,20 @@ def list_directory(path: str) -> str:
 
 
 def _get_attribute_chain(node: ast.expr) -> str:
-    """Flatten an attribute chain (e.g. a.b.c) into a dotted string."""
+    """Flatten an attribute chain (e.g. a.b.c) into a dotted string.
+
+    For chained calls like `a()()`, the outer Call has a Call as its func.
+    Returns a `<return_of:X>` sentinel so the LLM knows the return value of X
+    is also being invoked and needs to be traced.
+    """
     if isinstance(node, ast.Name):
         return node.id
     if isinstance(node, ast.Attribute):
         value = _get_attribute_chain(node.value)
         return f"{value}.{node.attr}" if value else node.attr
+    if isinstance(node, ast.Call):
+        inner = _get_attribute_chain(node.func)
+        return f"<return_of:{inner}>" if inner else "<return_of:unknown>"
     return ""
 
 
@@ -104,13 +112,67 @@ class _ScopeVisitor(ast.NodeVisitor):
         self._visit_func(node)
 
 
+def _collect_lambdas(tree: ast.Module, module_name: str) -> list[dict]:
+    """Collect lambda expressions as separate function entries with <lambdaN> naming.
+
+    Lambdas are numbered in source order within their containing scope.
+    A lambda assigned to `x` at module level becomes `main.<lambda1>`, not `main.x`.
+    """
+    entries: list[dict] = []
+    counters: dict[str, int] = {}
+
+    def walk(node, scope_stack: list):
+        if isinstance(node, ast.Lambda):
+            scope_key = ".".join(
+                [module_name]
+                + [
+                    n.name
+                    for n in scope_stack
+                    if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef))
+                ]
+            )
+            counters[scope_key] = counters.get(scope_key, 0) + 1
+            qname = f"{scope_key}.<lambda{counters[scope_key]}>"
+            # Collect raw calls inside this lambda body, not descending into nested lambdas
+            lambda_calls: list[str] = []
+            for child in ast.walk(node.body):
+                if child is not node.body and isinstance(child, ast.Lambda):
+                    continue
+                if isinstance(child, ast.Call):
+                    name = _get_attribute_chain(child.func)
+                    if name:
+                        lambda_calls.append(name)
+            entries.append({"qualified_name": qname, "raw_calls": lambda_calls})
+            # Descend into the lambda body for nested lambdas
+            scope_stack.append(node)
+            for child in ast.iter_child_nodes(node):
+                walk(child, scope_stack)
+            scope_stack.pop()
+            return
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            scope_stack.append(node)
+            for child in ast.iter_child_nodes(node):
+                walk(child, scope_stack)
+            scope_stack.pop()
+        else:
+            for child in ast.iter_child_nodes(node):
+                walk(child, scope_stack)
+
+    walk(tree, [])
+    return entries
+
+
 def get_call_sites(path: str) -> str:
     """
     Parse a Python file and return a JSON summary of function definitions
     with their call sites. Qualified names use module.func or module.Class.method
     format matching the SWARM-CG callgraph.json ground truth convention.
 
-    Also includes module-level call sites under the key equal to the module name.
+    Also includes:
+    - Module-level call sites under the key equal to the module name
+    - Decorator applications as implicit module-level calls
+    - Lambda expressions as separate entries with <lambdaN> naming
+    - Chained calls (a()()) represented as <return_of:X> sentinels
     """
     resolved = _validate_path(path)
     with open(resolved, "r", encoding="utf-8") as f:
@@ -134,11 +196,34 @@ def get_call_sites(path: str) -> str:
                 if name:
                     module_calls.append(name)
 
+    # Also collect decorator applications from module-level function/class definitions.
+    # Applying @dec to a function is an implicit call to dec at module level.
+    for node in tree.body:
+        if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            continue
+        for decorator in node.decorator_list:
+            found_call = False
+            for sub in ast.walk(decorator):
+                if isinstance(sub, ast.Call):
+                    name = _get_attribute_chain(sub.func)
+                    if name:
+                        module_calls.append(name)
+                    found_call = True
+                    break
+            if not found_call:
+                # Bare @dec (no call parens): the decorator itself is called
+                name = _get_attribute_chain(decorator)
+                if name:
+                    module_calls.append(name)
+
     entries = [{"qualified_name": module_name, "raw_calls": module_calls}]
 
     visitor = _ScopeVisitor(module_name)
     visitor.visit(tree)
     entries.extend(visitor.entries)
+
+    # Add lambda entries (numbered in source order within their containing scope)
+    entries.extend(_collect_lambdas(tree, module_name))
 
     # Generate one question per function entry (matches questions_based prompting style)
     questions = []
@@ -156,7 +241,11 @@ def get_call_sites(path: str) -> str:
         "module": module_name,
         "note": (
             "Answer each question below using read_file for context, then call submit_answers. "
-            "raw_calls shows unresolved call expressions — resolve them to fully qualified names."
+            "raw_calls shows unresolved call expressions — resolve them to fully qualified names. "
+            "Decorator applications appear in module raw_calls. "
+            "Lambda entries use <lambdaN> naming in source order within their scope. "
+            "<return_of:X> in raw_calls means the return value of X is also being called — "
+            "trace what X returns and include that as an additional callee."
         ),
         "questions": questions,
         "functions": entries,
@@ -267,10 +356,14 @@ TOOL_SCHEMAS = [
             "description": (
                 "Parse a Python file and return a structured JSON summary of all function "
                 "definitions with their raw call sites. Each entry has a 'qualified_name' "
-                "(e.g. 'main.func', 'main.MyClass.method') and 'raw_calls' listing call "
-                "expressions as written in source. Module-level code is listed under the "
-                "module name (e.g. 'main'). Use read_file to resolve imports and determine "
-                "the true qualified callee names."
+                "(e.g. 'main.func', 'main.MyClass.method', 'main.<lambda1>') and 'raw_calls' "
+                "listing call expressions as written in source. Module-level code is listed "
+                "under the module name (e.g. 'main'). Decorator applications (@dec) are "
+                "included as implicit calls in the enclosing scope's raw_calls. Lambda "
+                "expressions are listed as separate entries with '<lambdaN>' names in "
+                "document order within their scope. Chained calls like a()() appear as "
+                "'<return_of:a>' — a hint to trace the return value of a. "
+                "Use read_file to resolve imports and determine the true qualified callee names."
             ),
             "parameters": {
                 "type": "object",
