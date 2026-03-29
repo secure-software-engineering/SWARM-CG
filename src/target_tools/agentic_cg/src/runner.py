@@ -165,6 +165,7 @@ def main_runner(args):
         api_base=args.api_base if args.api_base and args.api_base != "null" else None,
         max_iterations=args.max_iterations,
         temperature=args.temperature,
+        prompt_id=args.prompt_id,
     )
 
     benchmark_files = list_benchmark_files(args.benchmark_path)
@@ -234,6 +235,16 @@ if __name__ == "__main__":
             "'ast' (default): questions derived from AST analysis of main.py. "
             "'ground_truth': questions derived from callgraph.json (requires callgraph.json "
             "to be present in the container — useful for evaluation, not production)."
+        ),
+    )
+    parser.add_argument(
+        "--prompt_id",
+        default="detailed",
+        choices=["detailed", "simple"],
+        help=(
+            "System prompt to use. "
+            "'detailed' (default): comprehensive instructions with detailed reasoning protocols. "
+            "'simple': concise instructions (better for some models)."
         ),
     )
 

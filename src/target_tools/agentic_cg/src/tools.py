@@ -219,15 +219,24 @@ def get_call_sites(path: str) -> str:
 
     # Generate one question per function entry (matches questions_based prompting style)
     questions = []
+    question_to_func = {}  # Map question number to qualified function name
     for i, entry in enumerate(entries, start=1):
         qname = entry["qualified_name"]
         filename = Path(resolved).name
+        question_to_func[i] = qname
         if qname == module_name:
             questions.append(f"{i}. What are the module level function calls in {filename}?")
         else:
             questions.append(
                 f"{i}. What are the function calls inside '{qname}' in {filename}?"
             )
+
+    # Save mapping for submit_answers to use when parsing numbered string format.
+    # Always overwrite so the mapping stays consistent with the question numbers
+    # returned in this response (ordering may differ from a pre-existing GT mapping).
+    mapping_file = Path(resolved).parent / ".swarmcg_mapping.json"
+    with open(mapping_file, "w") as f:
+        json.dump({"question_to_func": question_to_func, "module": module_name}, f)
 
     summary = {
         "module": module_name,
@@ -261,24 +270,68 @@ def submit_call_graph(call_graph: dict) -> str:
     return json.dumps({"status": "accepted", "count": len(call_graph)})
 
 
-def submit_answers(answers: dict) -> str:
+def submit_answers(answers: str, _benchmark_dir: str = None) -> str:
     """
-    Submit call graph answers in question-based format.
-    answers: dict mapping qualified function names to comma-separated callee strings.
-    E.g. {"main": "main.A, main.B", "main.A": "main.helper", "main.B": ""}
+    Submit call graph answers in numbered string format.
+    Format: "1. answer1\n2. answer2\n3. answer3"
+    Each answer is a comma-separated list of fully qualified callee names.
     Returns JSON with status and the parsed call_graph for the agent to extract.
     """
-    if not isinstance(answers, dict):
-        raise ValueError("answers must be a dict")
+    if not isinstance(answers, str):
+        raise ValueError("answers must be a string with numbered responses")
+
+    # Find the mapping file written by get_call_sites for this benchmark.
+    # _benchmark_dir is injected by the agent runner (not exposed to the LLM schema)
+    # to avoid picking up a different benchmark's mapping file during parallel execution.
+    mapping_file = None
+    if _benchmark_dir:
+        candidate = Path(_benchmark_dir) / ".swarmcg_mapping.json"
+        if candidate.exists():
+            mapping_file = candidate
+
+    if mapping_file is None:
+        # Fallback: search the benchmark tree (not safe for parallel runs)
+        for root, dirs, files in os.walk(ALLOWED_BASE):
+            if ".swarmcg_mapping.json" in files:
+                mapping_file = Path(root) / ".swarmcg_mapping.json"
+                break
+
+    if not mapping_file or not mapping_file.exists():
+        raise ValueError(
+            "String format requires get_call_sites to be called first. "
+            "Mapping file not found."
+        )
+    
+    with open(mapping_file, "r") as f:
+        mapping_data = json.load(f)
+    question_to_func = {int(k): v for k, v in mapping_data["question_to_func"].items()}
+    
+    # Parse numbered answers from string
+    # Format: "1. answer1\n2. answer2\n3. answer3"
+    import re
+    answers_dict = {}
+    # Match lines like "1. some.function, other.function" or "1." (empty answer)
+    pattern = r"^(\d+)\.\s*(.*)$"
+    for line in answers.strip().split("\n"):
+        line = line.strip()
+        if not line:
+            continue
+        match = re.match(pattern, line)
+        if match:
+            qnum = int(match.group(1))
+            answer = match.group(2).strip()
+            if qnum in question_to_func:
+                answers_dict[question_to_func[qnum]] = answer
+            else:
+                raise ValueError(f"Question number {qnum} not found in mapping")
+    
+    # Convert to call graph format
     call_graph = {}
-    for func, callees_str in answers.items():
-        if not isinstance(func, str):
-            raise ValueError(f"Key {func!r} must be a string")
+    for func, callees_str in answers_dict.items():
         if callees_str is None:
             callees_str = ""
-        if not isinstance(callees_str, str):
-            raise ValueError(f"Answer for {func!r} must be a string, got {type(callees_str)}")
         call_graph[func] = [c.strip() for c in callees_str.split(",") if c.strip()]
+    
     return json.dumps({"status": "accepted", "count": len(call_graph), "call_graph": call_graph})
 
 
@@ -397,23 +450,22 @@ TOOL_SCHEMAS = [
         "function": {
             "name": "submit_answers",
             "description": (
-                "Submit your call graph answers in question-based format. This ENDS the agent loop. "
-                "For each function returned by get_call_sites, provide the fully qualified callees "
-                "as a comma-separated string (empty string if no calls). "
-                "Keys are the qualified function names (e.g. 'main', 'main.func', 'main.MyClass.method'). "
-                "Values are comma-separated callee strings (e.g. 'main.helper, <builtin>.print'). "
-                "Every function from get_call_sites must appear as a key."
+                "Submit your call graph answers in numbered string format. This ENDS the agent loop. "
+                "Format: \"1. main.func\\n2. main.helper, <builtin>.print\\n3.\" "
+                "where numbers match the question numbers from get_call_sites output. "
+                "For each question, provide fully qualified callees as a comma-separated list "
+                "(empty if no calls). Every question from get_call_sites must be answered."
             ),
             "parameters": {
                 "type": "object",
                 "properties": {
                     "answers": {
-                        "type": "object",
+                        "type": "string",
                         "description": (
-                            "Dict mapping qualified function names to comma-separated callee strings. "
-                            "Example: {\"main\": \"main.func\", \"main.func\": \"main.helper, <builtin>.print\", \"main.helper\": \"\"}"
+                            "String with numbered answers like '1. main.func\\n2. main.helper\\n3.' "
+                            "where numbers match the questions from get_call_sites. "
+                            "Each line: '<number>. <comma-separated callees>' or '<number>.' for empty."
                         ),
-                        "additionalProperties": {"type": "string"},
                     }
                 },
                 "required": ["answers"],

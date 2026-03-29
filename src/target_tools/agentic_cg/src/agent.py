@@ -2,12 +2,13 @@ import json
 import logging
 import re
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Optional
 
 import litellm
 
-from prompts import SYSTEM_PROMPT
-from tools import TOOL_DISPATCH, TOOL_SCHEMAS
+from prompts import get_prompt
+from tools import TOOL_DISPATCH, TOOL_SCHEMAS, submit_answers as _submit_answers_fn
 
 logger = logging.getLogger("agent")
 
@@ -110,12 +111,15 @@ class AgenticCallGraphBuilder:
         api_base: Optional[str],
         max_iterations: int,
         temperature: float,
+        prompt_id: str = "detailed",
     ):
         self.model = model
         self.api_key = api_key or None
         self.api_base = api_base or None
         self.max_iterations = max_iterations
         self.temperature = temperature
+        self.prompt_id = prompt_id
+        self.system_prompt = get_prompt(prompt_id)
 
     def build_call_graph(self, file_path: str, benchmark_dir: str, gt_summary: dict | None = None) -> tuple[dict, list]:
         """
@@ -124,6 +128,19 @@ class AgenticCallGraphBuilder:
           - call_graph: final call graph dict in SWARM-CG format ({} on failure)
           - trajectory: list of step dicts recording the full agent interaction
         """
+        # If gt_summary is provided, save the mapping file so submit_answers can use it
+        if gt_summary is not None:
+            mapping_file = Path(benchmark_dir) / ".swarmcg_mapping.json"
+            question_to_func = {}
+            for i, entry in enumerate(gt_summary["functions"], start=1):
+                question_to_func[i] = entry["qualified_name"]
+            mapping_data = {
+                "question_to_func": question_to_func,
+                "module": gt_summary.get("module", Path(file_path).stem)
+            }
+            with open(mapping_file, "w") as f:
+                json.dump(mapping_data, f)
+        
         messages = self._build_initial_messages(file_path, benchmark_dir, gt_summary)
         trajectory = [
             {
@@ -232,7 +249,15 @@ class AgenticCallGraphBuilder:
                 if tool_args is not None:
                     if tool_name in ("submit_call_graph", "submit_answers"):
                         try:
-                            submit_result_msg = TOOL_DISPATCH[tool_name](tool_args)
+                            if tool_name == "submit_answers":
+                                # Pass benchmark_dir (local variable, not shared instance state)
+                                # so submit_answers finds the correct mapping file.
+                                # Using self._current_benchmark_dir would race when the same
+                                # agent instance serves multiple threads (max_workers > 1).
+                                answers_val = tool_args.get("answers", tool_args) if isinstance(tool_args, dict) else tool_args
+                                submit_result_msg = _submit_answers_fn(answers_val, _benchmark_dir=benchmark_dir)
+                            else:
+                                submit_result_msg = TOOL_DISPATCH[tool_name](tool_args)
                             parsed = json.loads(submit_result_msg)
                             if "call_graph" in parsed:
                                 # submit_answers returns the parsed call graph in its result
@@ -335,7 +360,7 @@ class AgenticCallGraphBuilder:
                 "(empty string if it makes no calls)."
             )
         return [
-            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "system", "content": self.system_prompt},
             {"role": "user", "content": user_content},
         ]
 

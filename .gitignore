@@ -163,5 +163,6 @@ cython_debug/
 
 .data
 results
+results_old
 src/config.yaml
 .vscode/launch.json

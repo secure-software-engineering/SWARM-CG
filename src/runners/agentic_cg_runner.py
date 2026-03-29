@@ -62,6 +62,8 @@ class AgenticCGRunner(BaseRunner):
                 str(cfg.get("max_workers", 1)),
                 "--questions_mode",
                 str(cfg.get("questions_mode", "ast")),
+                "--prompt_id",
+                str(cfg.get("prompt_id", "detailed")),
             ]
             _, response = self.container.exec_run(" ".join(command_to_run), stream=True)
             for line in response:
