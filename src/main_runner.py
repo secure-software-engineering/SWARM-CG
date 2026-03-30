@@ -13,6 +13,7 @@ from runners import (
     JsCallgraphRunner,
     JellyRunner,
     AgenticCGRunner,
+    LiteLLMRunner,
 )
 from cli import parse_runner_args
 from core import load_config, setup_logger
@@ -113,6 +114,16 @@ def main():
         ),
         "agentic_cg": (
             AgenticCGRunner,
+            {
+                "debug": args.debug,
+                "nocache": args.nocache,
+                "config": config,
+                "benchmark_name": args.benchmark_name,
+                "language": args.language,
+            },
+        ),
+        "litellm": (
+            LiteLLMRunner,
             {
                 "debug": args.debug,
                 "nocache": args.nocache,

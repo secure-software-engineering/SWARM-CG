@@ -25,6 +25,7 @@ def parse_runner_args():
             "ollama",
             "pycg",
             "llms",
+            "litellm",
             "headergen_cs",
             "tajs",
             "js_callgraph",

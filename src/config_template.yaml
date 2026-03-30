@@ -38,6 +38,16 @@ llm:
     # - gpt-4o
     # - gpt-4o-mini
 
+litellm:
+  prompt_id: "questions_based_1_py"
+  api_base: null  # Optional: Custom API endpoint (e.g., "http://localhost:8000/v1" for proxy)
+  api_key: ""     # API key for authentication
+  max_workers: 4  # Number of parallel workers for processing test cases
+  models:
+    - ollama/llama3
+    # - openai/gpt-4o
+    # - anthropic/claude-sonnet-4-5
+
 agentic_cg:
   model: "gpt-4o-mini"       # LiteLLM model string
   api_key: "<YOUR_API_KEY>"

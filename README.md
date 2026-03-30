@@ -55,7 +55,63 @@ docker run \
       swarmcg --language python --benchmark_name pycg --tool llms 
 ```
 
-🛠️ Available options: `pycg`, `ollama`, `llms`, `agentic_cg`
+🛠️ Available options: `pycg`, `ollama`, `llms`, `litellm`, `agentic_cg`
+
+---
+
+## 🚀 LiteLLM Tool
+
+`litellm` is an evaluation tool that uses [LiteLLM](https://github.com/BerriAI/litellm) to support any LLM provider for call graph construction. It features **parallel processing** with thread-safe operations for fast benchmark evaluation.
+
+### Key Features
+
+- **Universal LLM Support**: Works with 100+ LLM providers (OpenAI, Anthropic, Azure, Ollama, vLLM, etc.)
+- **Parallel Processing**: Processes multiple test cases concurrently with configurable worker count
+- **Thread-Safe Operations**: Safe concurrent execution with thread-safe counters and logging
+- **Flexible Configuration**: Easy model switching via config file
+
+### Running via SWARM-CG pipeline (Docker)
+
+Set your configuration in `src/config.yaml` under the `litellm` section:
+
+```yaml
+litellm:
+  prompt_id: "questions_based_1_py"
+  api_key: "token-sse123"
+  api_base: "http://your-server:8000/v1"
+  max_workers: 4              # Number of parallel workers
+  models:
+    - openai/gpt-4o
+    - ollama/llama3
+```
+
+Then run:
+
+```bash
+docker run \
+      -v /var/run/docker.sock:/var/run/docker.sock \
+      -v ./results:/app/results \
+      -v ./src:/app/src \
+      swarmcg --language python --benchmark_name pycg --tool litellm
+```
+
+### Running directly (no Docker, for development)
+
+```bash
+cd src/target_tools/litellm/src
+pip install -r ../requirements.txt
+
+export OPENAI_API_KEY=sk-...
+export LITELLM_API_KEY=token-abc123  # For custom proxies
+
+python runner.py \
+    --language python \
+    --benchmark_path /path/to/benchmarks/python/pycg \
+    --prompt_id questions_based_1_py \
+    --api_base http://your-server:8000/v1 \
+    --models openai/gpt-4o \
+    --max_workers 8
+```
 
 ---
 
